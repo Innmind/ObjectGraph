@@ -15,7 +15,8 @@
         "issues": "http://github.com/Innmind/ObjectGraph/issues"
     },
     "require": {
-        "php": "~7.2"
+        "php": "~7.2",
+        "innmind/immutable": "^2.10"
     },
     "autoload": {
         "psr-4": {
