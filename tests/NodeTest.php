@@ -16,7 +16,7 @@ class NodeTest extends TestCase
     {
         $node = new Node(new \stdClass);
 
-        $this->assertNull($node->relate(new Relation(
+        $this->assertSame($node, $node->relate(new Relation(
             new Property('bar'),
             new Node(new \stdClass)
         )));

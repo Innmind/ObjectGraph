@@ -17,11 +17,13 @@ final class Node
         $this->relations = Map::of('string', Relation::class);
     }
 
-    public function relate(Relation $relation): void
+    public function relate(Relation $relation): self
     {
         $this->relations = $this->relations->put(
             (string) $relation->property(),
             $relation
         );
+
+        return $this;
     }
 }
