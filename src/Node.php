@@ -4,7 +4,11 @@ declare(strict_types = 1);
 namespace Innmind\ObjectGraph;
 
 use Innmind\ObjectGraph\Node\ClassName;
-use Innmind\Immutable\Map;
+use Innmind\Immutable\{
+    Map,
+    SetInterface,
+    Set,
+};
 
 final class Node
 {
@@ -25,5 +29,13 @@ final class Node
         );
 
         return $this;
+    }
+
+    /**
+     * @return SetInterface<Relation>
+     */
+    public function relations(): SetInterface
+    {
+        return Set::of(Relation::class, ...$this->relations->values());
     }
 }
