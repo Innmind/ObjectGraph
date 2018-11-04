@@ -31,6 +31,11 @@ final class Node
         return $this;
     }
 
+    public function class(): ClassName
+    {
+        return $this->class;
+    }
+
     /**
      * @return SetInterface<Relation>
      */

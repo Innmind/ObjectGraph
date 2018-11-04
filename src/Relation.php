@@ -20,4 +20,9 @@ final class Relation
     {
         return $this->property;
     }
+
+    public function node(): Node
+    {
+        return $this->node;
+    }
 }
