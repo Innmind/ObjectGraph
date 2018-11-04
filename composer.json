@@ -1,0 +1,40 @@
+{
+    "name": "innmind/object-graph",
+    "type": "library",
+    "description": "Extract object graph out of a root object",
+    "keywords": ["object graph", "graphviz", "dot"],
+    "homepage": "http://github.com/Innmind/ObjectGraph",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Baptiste Langlade",
+            "email": "langlade.baptiste@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "http://github.com/Innmind/ObjectGraph/issues"
+    },
+    "require": {
+        "php": "~7.2",
+        "innmind/immutable": "^2.10",
+        "innmind/reflection": "^3.0",
+        "innmind/graphviz": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Innmind\\ObjectGraph\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Innmind\\ObjectGraph\\": "tests/",
+            "Fixtures\\Innmind\\ObjectGraph\\": "fixtures/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~7.0"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --colors=always"
+    }
+}
