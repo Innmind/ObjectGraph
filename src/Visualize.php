@@ -6,16 +6,14 @@ namespace Innmind\ObjectGraph;
 use Innmind\ObjectGraph\Exception\RecursiveGraph;
 use Innmind\Graphviz;
 use Innmind\Colour\RGBA;
-use Innmind\Immutable\{
-    Map,
-    Str,
-};
+use Innmind\Stream\Readable;
+use Innmind\Immutable\Map;
 
 final class Visualize
 {
     private $nodes;
 
-    public function __invoke(Node $node): Str
+    public function __invoke(Node $node): Readable
     {
         try {
             $this->nodes = Map::of(Node::class, Graphviz\Node::class);

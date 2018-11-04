@@ -18,7 +18,7 @@
         "php": "~7.2",
         "innmind/immutable": "^2.10",
         "innmind/reflection": "^3.0",
-        "innmind/graphviz": "^1.1"
+        "innmind/graphviz": "^1.2"
     },
     "autoload": {
         "psr-4": {

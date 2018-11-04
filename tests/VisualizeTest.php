@@ -8,7 +8,7 @@ use Innmind\ObjectGraph\{
     Graph,
     Node,
 };
-use Innmind\Immutable\Str;
+use Innmind\Stream\Readable;
 use Fixtures\Innmind\ObjectGraph\Foo;
 use PHPUnit\Framework\TestCase;
 
@@ -25,7 +25,8 @@ class VisualizeTest extends TestCase
         $node = $graph($root);
         $dot = (new Visualize)($node);
 
-        $this->assertInstanceOf(Str::class, $dot);
+        $this->assertInstanceOf(Readable::class, $dot);
+        $this->assertNotEmpty((string) $dot);
     }
 
     public function testRenderRecursiveGraph()
@@ -44,6 +45,7 @@ class VisualizeTest extends TestCase
 
         $dot = (new Visualize)($node);
 
-        $this->assertInstanceOf(Str::class, $dot);
+        $this->assertInstanceOf(Readable::class, $dot);
+        $this->assertNotEmpty((string) $dot);
     }
 }
