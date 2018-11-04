@@ -17,7 +17,7 @@ final class Node
 
     public function __construct(object $object)
     {
-        $this->class = new ClassName(\get_class($object));
+        $this->class = new ClassName($object);
         $this->relations = Map::of('string', Relation::class);
     }
 

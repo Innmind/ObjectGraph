@@ -3,20 +3,13 @@ declare(strict_types = 1);
 
 namespace Innmind\ObjectGraph\Node;
 
-use Innmind\ObjectGraph\Exception\DomainException;
-use Innmind\Immutable\Str;
-
 final class ClassName
 {
     private $value;
 
-    public function __construct(string $value)
+    public function __construct(object $object)
     {
-        if (Str::of($value)->empty()) {
-            throw new DomainException;
-        }
-
-        $this->value = $value;
+        $this->value = \get_class($object);
     }
 
     public function __toString(): string
