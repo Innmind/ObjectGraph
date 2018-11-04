@@ -26,11 +26,6 @@ class VisualizeTest extends TestCase
         $dot = (new Visualize)($node);
 
         $this->assertInstanceOf(Str::class, $dot);
-        $expected = <<<DOT
-
-DOT;
-
-        $this->assertSame($expected, (string) $dot);
     }
 
     public function testRenderRecursiveGraph()
@@ -50,10 +45,5 @@ DOT;
         $dot = (new Visualize)($node);
 
         $this->assertInstanceOf(Str::class, $dot);
-        $expected = <<<DOT
-
-DOT;
-
-        $this->assertSame($expected, (string) $dot);
     }
 }
