@@ -17,7 +17,8 @@
     "require": {
         "php": "~7.2",
         "innmind/immutable": "^2.10",
-        "innmind/reflection": "^3.0"
+        "innmind/reflection": "^3.0",
+        "innmind/graphviz": "^1.1"
     },
     "autoload": {
         "psr-4": {
