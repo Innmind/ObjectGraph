@@ -18,6 +18,8 @@ composer require innmind/object-graph
 
 ## Usage
 
+### Visualization
+
 ```php
 use Innmind\ObjectGraph\{
     Graph,
@@ -42,3 +44,89 @@ $os
 ```
 
 This will generate a `graph.svg` file representing the object graph of your application.
+
+### Assertions
+
+#### Acylic
+
+```php
+use Innmind\ObjectGraph\{
+    Assert\Acyclic,
+    Graph,
+};
+
+$foo = new Foo;
+$bar = new Bar;
+$foo->someProperty = $bar;
+
+(new Acyclic)(
+    (new Graph)($foo)
+); // true
+
+$bar->someProperty = $foo;
+
+(new Acyclic)(
+    (new Graph)($foo)
+); // false
+```
+
+#### Stack
+
+Assert that somme class depends on another, useful to make sure decorators are assembled correctly.
+
+```php
+use Innmind\ObjectGraph\{
+    Assert\Stack,
+    Graph,
+};
+
+$requestHandler = new CatchExceptions(
+    new Debug(
+        new Security(
+            new Router($controllers)
+        )
+    )
+);
+$stack = Stack::of(
+    CatchExceptions::class,
+    Security::class,
+    Router::class
+);
+
+$stack((new Graph)($requestHandler)); // true
+
+$requestHandler = new Security(
+    new CatchExceptions(
+        new Debug(
+            new Router($controllers)
+        )
+    )
+);
+
+$stack((new Graph)($requestHandler)); // false as Security is above CatchExceptions
+```
+
+#### Boundaries
+
+Useful to make sure some bounded context doesnt depend on another.
+
+```php
+use Innmind\ObjectGraph\{
+    Assert\Boundary,
+    Graph,
+};
+
+$boundary = Boundary::of(
+    'BoundedContext\\Foo', // namespace to protect
+    'BoundedContext\\Bar',
+    'BoundedContext\\Baz'
+);
+
+$object = new BoundedContext\Foo\SomeClass(
+    new Indirection(
+        new BoundedContext\Bar\SomeClass
+    )
+);
+
+$boundary((new Graph)($object)); // false as Foo depends on Bar
+```
