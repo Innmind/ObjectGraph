@@ -25,9 +25,11 @@ class BoundaryTest extends TestCase
             'Innmind\\ObjectGraph',
             'stdClass'
         );
-        $object = new Baz(
-            new Bar(
-                new Foo
+        $object = new Indirection(
+            new Baz(
+                new Bar(
+                    new Foo
+                )
             )
         );
 
