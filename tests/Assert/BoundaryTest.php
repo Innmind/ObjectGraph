@@ -42,9 +42,11 @@ class BoundaryTest extends TestCase
             Free::class,
             'stdClass'
         );
-        $object = new Free(
-            new Indirection(
-                new \stdClass
+        $object = new Indirection(
+            new Free(
+                new Indirection(
+                    new \stdClass
+                )
             )
         );
 
