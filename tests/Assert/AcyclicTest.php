@@ -26,7 +26,7 @@ class AcyclicTest extends TestCase
         $b->foo = $c;
         $c->foo = $a;
 
-        $this->assertTrue(
+        $this->assertFalse(
             (new Acyclic)(
                 (new Graph)($a)
             )
@@ -48,7 +48,7 @@ class AcyclicTest extends TestCase
         $b->foo = $c;
         $c->foo = new \stdClass;
 
-        $this->assertFalse(
+        $this->assertTrue(
             (new Acyclic)(
                 (new Graph)($a)
             )
