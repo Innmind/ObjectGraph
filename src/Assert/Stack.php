@@ -33,6 +33,10 @@ final class Stack
 
     private function visit(Node $node, StreamInterface $stack): StreamInterface
     {
+        if ($stack->size() === 0) {
+            return $stack;
+        }
+
         if ($stack->first() === (string) $node->class()) {
             $stack = $stack->drop(1);
         }

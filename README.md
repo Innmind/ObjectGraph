@@ -6,7 +6,7 @@
 | [![Code Coverage](https://scrutinizer-ci.com/g/Innmind/ObjectGraph/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Innmind/Http/?branch=master) | [![Code Coverage](https://scrutinizer-ci.com/g/Innmind/ObjectGraph/badges/coverage.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/Http/?branch=develop) |
 | [![Build Status](https://scrutinizer-ci.com/g/Innmind/ObjectGraph/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Innmind/Http/build-status/master) | [![Build Status](https://scrutinizer-ci.com/g/Innmind/ObjectGraph/badges/build.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/Http/build-status/develop) |
 
-Samll library to generate an abtract graph out of an object and its dependencies.
+Small library to generate an abstract graph out of an object and its dependencies.
 
 You can then visualize this graph by rendering it with graphviz, or you could also run some analysis on it to check boundaries in your app are not crossed (enforce bounded context).
 
@@ -25,14 +25,17 @@ use Innmind\ObjectGraph\{
     Graph,
     Visualize,
 };
+use Innmind\Server\Control\{
+    ServerFactory,
+    Server\Command,
+};
 
 $graph = new Graph;
 $visualize = new Visualize;
 
 $objectGraph = $graph($theRootObjectOfYourApp); // the object could be the framework instance for example
 
-$os
-    ->control()
+ServerFactory::build()
     ->processes()
     ->execute(
         Command::foreground('dot')
@@ -44,6 +47,10 @@ $os
 ```
 
 This will generate a `graph.svg` file representing the object graph of your application.
+
+**Note**: This example uses `innmind/server-control` to generate the svg file but the package is not a direct dependency, you can use the stream returned by `$visualize()` however you wish.
+
+**Note 2**: The use of `innmind/server-control` in this example won't work on Windows (at time of writing) as the library doesn't support the platform. To accomplish the same result you could write `file_put_contents('graph.dot', (string) $visualize($objectGraph))` and then run manually the `dot` command in you terminal.
 
 ### Assertions
 

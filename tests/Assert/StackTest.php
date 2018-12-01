@@ -50,4 +50,24 @@ class StackTest extends TestCase
             (new Graph)($object)
         ));
     }
+
+    public function testObjectGraphDeeperThanExpectedStack()
+    {
+        $object = new Baz(
+            new Bar(
+                new Foo
+            )
+        );
+        $stack = Stack::of(Baz::class, Bar::class);
+
+        $this->assertTrue($stack(
+            (new Graph)($object)
+        ));
+
+        $stack = Stack::of(Baz::class, Foo::class);
+
+        $this->assertTrue($stack(
+            (new Graph)($object)
+        ));
+    }
 }

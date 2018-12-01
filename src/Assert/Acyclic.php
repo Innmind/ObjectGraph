@@ -19,9 +19,9 @@ final class Acyclic
         try {
             $this->visit($node, Set::of(Node::class));
 
-            return false;
-        } catch (\Exception $e) {
             return true;
+        } catch (\Exception $e) {
+            return false;
         }
     }
 
