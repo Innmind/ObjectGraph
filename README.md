@@ -52,6 +52,8 @@ This will generate a `graph.svg` file representing the object graph of your appl
 
 **Note 2**: The use of `innmind/server-control` in this example won't work on Windows (at time of writing) as the library doesn't support the platform. To accomplish the same result you could write `file_put_contents('graph.dot', (string) $visualize($objectGraph))` and then run manually the `dot` command in you terminal.
 
+**Note 3**: You can pass an implementation of [`LocationRewriter`](src/LocationRewriter.php) as the first argument of `Visualize` so you can rewrite the url to the class file that will be used in the generated graph (useful if you want to generate urls to [open the files directly in your IDE](https://github.com/sanduhrs/phpstorm-url-handler#usage)).
+
 ### Assertions
 
 #### Acylic
