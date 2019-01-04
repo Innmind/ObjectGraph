@@ -51,18 +51,6 @@ final class Visualize
         $node->relations()->foreach(function(Relation $relation) use ($dotNode): void {
             $child = $this->visit($relation->node());
 
-
-
-            // $edges = $dotNode->edges()->filter(static function(Graphviz\Edge $edge) use ($child): bool {
-            //     return $edge->to() === $child;
-            // });
-
-            // if ($edges->size() === 1) {
-            //     $edges->current()->asBidirectional();
-
-            //     return;
-            // }
-
             $dotNode
                 ->linkedTo($child)
                 ->displayAs((string) $relation->property());
