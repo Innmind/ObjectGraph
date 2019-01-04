@@ -45,7 +45,8 @@ final class Visualize
         }
 
         $dotNode = Graphviz\Node\Node::named('object_'.$node->reference())
-            ->displayAs(\str_replace('\\', '\\\\', (string) $node->class()));
+            ->displayAs(\str_replace('\\', '\\\\', (string) $node->class()))
+            ->target($node->location());
         $this->nodes = $this->nodes->put($node, $dotNode);
 
         $node->relations()->foreach(function(Relation $relation) use ($dotNode): void {
