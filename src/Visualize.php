@@ -19,9 +19,9 @@ final class Visualize
     private $nodes;
     private $rewriteLocation;
 
-    public function __construct(LocationRewiter $rewriteLocation = null)
+    public function __construct(LocationRewriter $rewriteLocation = null)
     {
-        $this->rewriteLocation = $rewriteLocation ?? new class implements LocationRewiter {
+        $this->rewriteLocation = $rewriteLocation ?? new class implements LocationRewriter {
             public function __invoke(UrlInterface $location): UrlInterface
             {
                 return $location;
