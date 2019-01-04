@@ -7,11 +7,27 @@ use Innmind\ObjectGraph\Exception\RecursiveGraph;
 use Innmind\Graphviz;
 use Innmind\Colour\RGBA;
 use Innmind\Stream\Readable;
+use Innmind\Url\{
+    SchemeInterface,
+    Scheme,
+    UrlInterface,
+};
 use Innmind\Immutable\Map;
 
 final class Visualize
 {
     private $nodes;
+    private $rewriteLocation;
+
+    public function __construct(LocationRewiter $rewriteLocation = null)
+    {
+        $this->rewriteLocation = $rewriteLocation ?? new class implements LocationRewiter {
+            public function __invoke(UrlInterface $location): UrlInterface
+            {
+                return $location;
+            }
+        };
+    }
 
     public function __invoke(Node $node): Readable
     {
@@ -46,7 +62,9 @@ final class Visualize
 
         $dotNode = Graphviz\Node\Node::named('object_'.$node->reference())
             ->displayAs(\str_replace('\\', '\\\\', (string) $node->class()))
-            ->target($node->location());
+            ->target(
+                ($this->rewriteLocation)($node->location())
+            );
         $this->nodes = $this->nodes->put($node, $dotNode);
 
         $node->relations()->foreach(function(Relation $relation) use ($dotNode): void {
