@@ -21,6 +21,7 @@ final class Node
 {
     private $class;
     private $reference;
+    private $location;
     private $relations;
 
     public function __construct(object $object)
