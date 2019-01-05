@@ -10,11 +10,13 @@ use Innmind\ObjectGraph\{
 use Innmind\Immutable\{
     StreamInterface,
     Stream,
+    Set,
 };
 
 final class Stack
 {
     private $stack;
+    private $nodes;
 
     private function __construct(string ...$classes)
     {
@@ -28,11 +30,23 @@ final class Stack
 
     public function __invoke(Node $node): bool
     {
-        return $this->visit($node, $this->stack)->size() === 0;
+        try {
+            $this->nodes = Set::of(Node::class);
+
+            return $this->visit($node, $this->stack)->size() === 0;
+        } finally {
+            $this->nodes = null;
+        }
     }
 
     private function visit(Node $node, StreamInterface $stack): StreamInterface
     {
+        if ($this->nodes->contains($node)) {
+            return $stack;
+        }
+
+        $this->nodes = $this->nodes->add($node);
+
         if ($stack->size() === 0) {
             return $stack;
         }

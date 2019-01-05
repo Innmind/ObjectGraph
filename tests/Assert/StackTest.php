@@ -70,4 +70,31 @@ class StackTest extends TestCase
             (new Graph)($object)
         ));
     }
+
+    public function testStackFoundInCyclicGraph()
+    {
+        $a = new class {
+            public $foo;
+        };
+        $b = new class {
+            public $bar;
+            public $foo;
+        };
+        $c = new class {
+            public $foo;
+        };
+        $a->foo = $b;
+        // this cycle could prevent finding the stack due to infinite recursion
+        // ending in a segfault, the infinite recursion occur because "bar" is
+        // defined before "foo" in the "b" class
+        $b->bar = $a;
+        $b->foo = $c;
+        $c->foo = $a;
+
+        $stack = Stack::of(get_class($a), get_class($b), get_class($c));
+
+        $this->assertTrue($stack(
+            (new Graph)($a)
+        ));
+    }
 }
