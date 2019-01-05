@@ -7,6 +7,10 @@ use Innmind\ObjectGraph\{
     Node\ClassName,
     Node\Reference,
 };
+use Innmind\Url\{
+    UrlInterface,
+    Url,
+};
 use Innmind\Immutable\{
     Map,
     SetInterface,
@@ -17,12 +21,16 @@ final class Node
 {
     private $class;
     private $reference;
+    private $location;
     private $relations;
 
     public function __construct(object $object)
     {
+        $file = (new \ReflectionObject($object))->getFileName();
+
         $this->class = new ClassName($object);
         $this->reference = new Reference($object);
+        $this->location = Url::fromString('file://'.$file);
         $this->relations = Map::of('string', Relation::class);
     }
 
@@ -44,6 +52,11 @@ final class Node
     public function reference(): Reference
     {
         return $this->reference;
+    }
+
+    public function location(): UrlInterface
+    {
+        return $this->location;
     }
 
     /**
