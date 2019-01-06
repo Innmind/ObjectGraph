@@ -78,21 +78,38 @@ final class Graph
         return $properties->reduce(
             $node,
             function(Node $node, string $property, iterable $iterable): Node {
-                $pairs = Stream::of(Pair::class);
+                $pairs = Map::of('int', Pair::class);
 
                 foreach ($iterable as $key => $value) {
-                    $pairs = $pairs->add(new Pair($key, $value));
+                    $pairs = $pairs->put(
+                        $pairs->size(), // index of the pair
+                        new Pair($key, $value)
+                    );
                 }
 
                 $collection = $pairs->reduce(
                     new Node(new \ArrayObject),
-                    function(Node $collection, Pair $pair): Node {
+                    function(Node $collection, int $index, Pair $pair): Node {
+                        $node = $this->visit($pair);
+
+                        if ($node->relations()->size() === 0) {
+                            // do not add the pair in the graph if it doesn't
+                            // contain any object
+                            return $collection;
+                        }
+
                         return $collection->relate(new Relation(
-                            new Relation\Property((string) $collection->relations()->size()), // index of the pair
-                            $this->visit($pair)
+                            new Relation\Property((string) $index),
+                            $node
                         ));
                     }
                 );
+
+                if ($collection->relations()->size() === 0) {
+                    // do not add the collection to the graph if it doesn't
+                    // contain any object
+                    return $node;
+                }
 
                 return $node->relate(new Relation(
                     new Relation\Property($property),

@@ -71,6 +71,7 @@ class GraphTest extends TestCase
         $a = new class {
             public $map;
             public $set;
+            public $ints = [42];
 
             public function __construct()
             {
