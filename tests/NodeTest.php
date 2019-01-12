@@ -16,7 +16,7 @@ class NodeTest extends TestCase
 {
     public function testInterface()
     {
-        $node = new Node(new class {});
+        $node = new Node($object = new class {});
 
         $this->assertInstanceOf(SetInterface::class, $node->relations());
         $this->assertSame(Relation::class, (string) $node->relations()->type());
@@ -29,5 +29,12 @@ class NodeTest extends TestCase
         )));
         $this->assertCount(1, $node->relations());
         $this->assertSame([$relation], $node->relations()->toPrimitive());
+        $this->assertNull($node->removeRelations());
+        $this->assertCount(0, $node->relations());
+        $this->assertTrue($node->comesFrom($object));
+        $this->assertFalse($node->comesFrom(new class {}));
+        $this->assertFalse($node->isDependency());
+        $this->assertNull($node->flagAsDependency());
+        $this->assertTrue($node->isDependency());
     }
 }

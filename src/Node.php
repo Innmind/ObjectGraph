@@ -23,6 +23,7 @@ final class Node
     private $reference;
     private $location;
     private $relations;
+    private $dependency = false;
 
     public function __construct(object $object)
     {
@@ -65,5 +66,25 @@ final class Node
     public function relations(): SetInterface
     {
         return Set::of(Relation::class, ...$this->relations->values());
+    }
+
+    public function removeRelations(): void
+    {
+        $this->relations = $this->relations->clear();
+    }
+
+    public function comesFrom(object $object): bool
+    {
+        return $this->reference->equals(new Reference($object));
+    }
+
+    public function flagAsDependency(): void
+    {
+        $this->dependency = true;
+    }
+
+    public function isDependency(): bool
+    {
+        return $this->dependency;
     }
 }
