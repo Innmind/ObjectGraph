@@ -12,6 +12,11 @@ final class Reference
         $this->value = \spl_object_hash($object);
     }
 
+    public function equals(self $self): bool
+    {
+        return (string) $this === (string) $self;
+    }
+
     public function __toString(): string
     {
         return $this->value;

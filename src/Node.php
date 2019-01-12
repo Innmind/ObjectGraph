@@ -66,4 +66,9 @@ final class Node
     {
         return Set::of(Relation::class, ...$this->relations->values());
     }
+
+    public function comesFrom(object $object): bool
+    {
+        return $this->reference->equals(new Reference($object));
+    }
 }
