@@ -65,6 +65,14 @@ final class Visualize
             ->target(
                 ($this->rewriteLocation)($node->location())
             );
+
+        if ($node->isDependency()) {
+            $dotNode->shaped(
+                Graphviz\Node\Shape::box()
+                    ->fillWithColor(RGBA::fromString('#ffb600'))
+            );
+        }
+
         $this->nodes = $this->nodes->put($node, $dotNode);
 
         $node->relations()->foreach(function(Relation $relation) use ($dotNode): void {

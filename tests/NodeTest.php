@@ -31,5 +31,8 @@ class NodeTest extends TestCase
         $this->assertSame([$relation], $node->relations()->toPrimitive());
         $this->assertTrue($node->comesFrom($object));
         $this->assertFalse($node->comesFrom(new class {}));
+        $this->assertFalse($node->isDependency());
+        $this->assertNull($node->flagAsDependency());
+        $this->assertTrue($node->isDependency());
     }
 }
