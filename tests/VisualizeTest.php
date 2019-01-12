@@ -7,6 +7,7 @@ use Innmind\ObjectGraph\{
     Visualize,
     Graph,
     Node,
+    Visitor\FlagDependencies,
 };
 use Innmind\Stream\Readable;
 use Fixtures\Innmind\ObjectGraph\Foo;
@@ -23,6 +24,8 @@ class VisualizeTest extends TestCase
         $root = new Foo($a, $b);
 
         $node = $graph($root);
+        (new FlagDependencies($leaf))($node);
+
         $dot = (new Visualize)($node);
 
         $this->assertInstanceOf(Readable::class, $dot);
