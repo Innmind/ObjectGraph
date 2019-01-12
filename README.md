@@ -56,6 +56,8 @@ This will generate a `graph.svg` file representing the object graph of your appl
 
 **Note 4**: The `Graph` does a little [trick](src/Graph.php#L73) to discover the objects in iterables so the whole graph can be discovered, it consists in a modified representation of iterables in the graph. If the iterable is an object its class won't be displayed in the graph, instead it will be displayed as an `ArrayObject` containing a set of pairs.
 
+**Note 5**: You can flag dependencies (orm, http transport, etc...) and remove their sub-graph via [`src/Visitor/FlagDependencies.php`](src/Visitor/FlagDependencies.php) and [`src/Visitor/RemoveDependenciesSubGraph.php`](src/Visitor/RemoveDependenciesSubGraph.php).
+
 ### Assertions
 
 #### Acylic
