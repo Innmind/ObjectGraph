@@ -29,6 +29,8 @@ class NodeTest extends TestCase
         )));
         $this->assertCount(1, $node->relations());
         $this->assertSame([$relation], $node->relations()->toPrimitive());
+        $this->assertNull($node->removeRelations());
+        $this->assertCount(0, $node->relations());
         $this->assertTrue($node->comesFrom($object));
         $this->assertFalse($node->comesFrom(new class {}));
         $this->assertFalse($node->isDependency());
