@@ -12,19 +12,33 @@ use Innmind\Url\{
     Scheme,
     UrlInterface,
 };
-use Innmind\Immutable\Map;
+use Innmind\Immutable\{
+    MapInterface,
+    Map,
+    SetInterface,
+    Set,
+};
 
 final class Visualize
 {
     private $nodes;
     private $rewriteLocation;
+    private $clusterize;
 
-    public function __construct(LocationRewriter $rewriteLocation = null)
-    {
+    public function __construct(
+        LocationRewriter $rewriteLocation = null,
+        Clusterize $clusterize = null
+    ) {
         $this->rewriteLocation = $rewriteLocation ?? new class implements LocationRewriter {
             public function __invoke(UrlInterface $location): UrlInterface
             {
                 return $location;
+            }
+        };
+        $this->clusterize = $clusterize ?? new class implements Clusterize {
+            public function __invoke(MapInterface $nodes): SetInterface
+            {
+                return Set::of(Graphviz\Graph::class);
             }
         };
     }
@@ -46,6 +60,12 @@ final class Visualize
                             ->fillWithColor(RGBA::fromString('#0f0')
                         )
                     )
+            );
+            $graph = ($this->clusterize)($this->nodes)->reduce(
+                $graph,
+                static function(Graphviz\Graph $graph, Graphviz\Graph $cluster): Graphviz\Graph {
+                    return $graph->cluster($cluster);
+                }
             );
 
             return (new Graphviz\Layout\Dot)($graph);
