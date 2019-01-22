@@ -16,7 +16,7 @@
     },
     "require": {
         "php": "~7.2",
-        "innmind/immutable": "^2.10",
+        "innmind/immutable": "^2.13",
         "innmind/reflection": "^3.0",
         "innmind/graphviz": "^1.2",
         "innmind/url": "^2.0"

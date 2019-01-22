@@ -25,6 +25,7 @@ use Innmind\ObjectGraph\{
     Graph,
     Visualize,
     LocationRewriter\SublimeHandler,
+    Clusterize\ByNamespace,
 };
 use Innmind\Server\Control\{
     ServerFactory,
@@ -33,7 +34,14 @@ use Innmind\Server\Control\{
 
 $graph = new Graph;
 $visualize = new Visualize(
-    new SublimeHandler // optional, useful to open the file in Sublime Text instead of the browser
+    new SublimeHandler, // optional, useful to open the file in Sublime Text instead of the browser
+    new ByNamespace( // optional
+        Map::of(NamespacePattern::class, 'string')
+            (new NamespacePattern('MyProject\App'), 'app')
+            (new NamespacePattern('MyProject\Domain'), 'domain')
+            (new NamespacePattern('VendorA'), 'infrastructure')
+            (new NamespacePattern('VendorB'), 'infrastructure')
+    )
 );
 
 $objectGraph = $graph($theRootObjectOfYourApp); // the object could be the framework instance for example
