@@ -24,6 +24,7 @@ composer require innmind/object-graph
 use Innmind\ObjectGraph\{
     Graph,
     Visualize,
+    LocationRewriter\SublimeHandler,
 };
 use Innmind\Server\Control\{
     ServerFactory,
@@ -31,7 +32,9 @@ use Innmind\Server\Control\{
 };
 
 $graph = new Graph;
-$visualize = new Visualize;
+$visualize = new Visualize(
+    new SublimeHandler // optional, useful to open the file in Sublime Text instead of the browser
+);
 
 $objectGraph = $graph($theRootObjectOfYourApp); // the object could be the framework instance for example
 
