@@ -10,6 +10,7 @@ use Innmind\ObjectGraph\{
     NamespacePattern,
     Visitor\FlagDependencies,
     Clusterize\ByNamespace,
+    LocationRewriter\SublimeHandler,
 };
 use Innmind\Stream\Readable;
 use Innmind\Immutable\Map;
@@ -53,6 +54,22 @@ class VisualizeTest extends TestCase
         $node = $graph($a);
 
         $dot = (new Visualize)($node);
+
+        $this->assertInstanceOf(Readable::class, $dot);
+        $this->assertNotEmpty((string) $dot);
+    }
+
+    public function testRewriteLocation()
+    {
+        $graph = new Graph;
+        $leaf = new Foo;
+        $a = new Foo($leaf);
+        $b = new Foo($leaf);
+        $root = new Foo($a, $b);
+
+        $node = $graph($root);
+
+        $dot = (new Visualize(new SublimeHandler))($node);
 
         $this->assertInstanceOf(Readable::class, $dot);
         $this->assertNotEmpty((string) $dot);
