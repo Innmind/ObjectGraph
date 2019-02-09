@@ -17,6 +17,7 @@ use Innmind\Immutable\{
     Map,
     SetInterface,
     Set,
+    Str,
 };
 
 final class Visualize
@@ -81,7 +82,11 @@ final class Visualize
         }
 
         $dotNode = Graphviz\Node\Node::named('object_'.$node->reference())
-            ->displayAs(\str_replace('\\', '\\\\', (string) $node->class()))
+            ->displayAs(
+                (string) Str::of((string) $node->class())
+                    ->replace("\x00", '') // remove the invisible character used in the name of anonymous classes
+                    ->replace('\\', '\\\\')
+            )
             ->target(
                 ($this->rewriteLocation)($node->location())
             );
