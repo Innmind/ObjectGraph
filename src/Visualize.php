@@ -98,6 +98,14 @@ final class Visualize
             );
         }
 
+        if ($node->highlighted()) {
+            $dotNode->shaped(
+                Graphviz\Node\Shape::ellipse(0.01)
+                    ->withColor(RGBA::fromString('#0f0'))
+                    ->fillWithColor(RGBA::fromString('#0f0'))
+            );
+        }
+
         $this->nodes = $this->nodes->put($node, $dotNode);
 
         $node->relations()->foreach(function(Relation $relation) use ($dotNode): void {

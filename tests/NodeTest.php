@@ -36,5 +36,8 @@ class NodeTest extends TestCase
         $this->assertFalse($node->isDependency());
         $this->assertNull($node->flagAsDependency());
         $this->assertTrue($node->isDependency());
+        $this->assertFalse($node->highlighted());
+        $this->assertNull($node->highlight());
+        $this->assertTrue($node->highlighted());
     }
 }

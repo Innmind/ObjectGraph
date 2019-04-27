@@ -24,6 +24,7 @@ final class Node
     private $location;
     private $relations;
     private $dependency = false;
+    private $highlighted = false;
 
     public function __construct(object $object)
     {
@@ -86,5 +87,15 @@ final class Node
     public function isDependency(): bool
     {
         return $this->dependency;
+    }
+
+    public function highlight(): void
+    {
+        $this->highlighted = true;
+    }
+
+    public function highlighted(): bool
+    {
+        return $this->highlighted;
     }
 }
