@@ -100,7 +100,7 @@ final class Visualize
 
         if ($node->highlighted()) {
             $dotNode->shaped(
-                Graphviz\Node\Shape::ellipse(0.01)
+                Graphviz\Node\Shape::ellipse()
                     ->withColor(RGBA::fromString('#0f0'))
                     ->fillWithColor(RGBA::fromString('#0f0'))
             );
