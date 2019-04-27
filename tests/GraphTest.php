@@ -117,4 +117,30 @@ class GraphTest extends TestCase
         $this->assertSame('value', (string) $pair->relations()->current()->property());
         $this->assertSame($innerB, $pair->relations()->current()->node());
     }
+
+    public function testHighlightPathToLeaf()
+    {
+        $graph = new Graph;
+        $leaf = new Foo;
+        $a = new Foo($leaf);
+        $b = new Foo($leaf, new Foo);
+        $root = new Foo($a, $b);
+
+        $node = $graph($root);
+        $node->highlightPathTo($leaf);
+
+        $this->assertInstanceOf(Node::class, $node);
+        [$a, $b] = $node->relations()->toPrimitive();
+        $this->assertTrue($a->highlighted());
+        $this->assertTrue($b->highlighted());
+        $this->assertTrue($a->node()->highlighted());
+        $this->assertTrue($b->node()->highlighted());
+        $this->assertTrue($a->node()->relations()->current()->highlighted());
+        $this->assertTrue($b->node()->relations()->current()->highlighted());
+        $this->assertTrue($a->node()->relations()->current()->node()->highlighted());
+        $this->assertTrue($b->node()->relations()->current()->node()->highlighted());
+        [$a, $b] = $b->node()->relations()->toPrimitive();
+        $this->assertFalse($b->highlighted());
+        $this->assertFalse($b->node()->highlighted());
+    }
 }

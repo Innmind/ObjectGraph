@@ -36,5 +36,23 @@ class NodeTest extends TestCase
         $this->assertFalse($node->isDependency());
         $this->assertNull($node->flagAsDependency());
         $this->assertTrue($node->isDependency());
+        $this->assertFalse($node->highlighted());
+        $this->assertNull($node->highlight());
+        $this->assertTrue($node->highlighted());
+
+        $this->assertFalse($relation->highlighted());
+        $this->assertNull($relation->highlight());
+        $this->assertTrue($relation->highlighted());
+    }
+
+    public function testHighlightingPathInARecursiveGraphDoesNotSegfault()
+    {
+        $node = new Node(new class {});
+        $node->relate(new Relation(
+            new Property('self'),
+            $node
+        ));
+
+        $this->assertNull($node->highlightPathTo(new \stdClass));
     }
 }
