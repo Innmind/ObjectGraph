@@ -112,7 +112,7 @@ class VisualizeTest extends TestCase
 
         $this->assertInstanceOf(Readable::class, $dot);
         $this->assertNotEmpty((string) $dot);
-        $this->assertContains('#00ff00', (string) $dot);
+        $this->assertStringContainsString('#00ff00', (string) $dot);
         $this->assertSame(3, \substr_count((string) $dot, '#00ff00')); // root + highlighted
     }
 
@@ -131,7 +131,7 @@ class VisualizeTest extends TestCase
 
         $this->assertInstanceOf(Readable::class, $dot);
         $this->assertNotEmpty((string) $dot);
-        $this->assertContains('#00ff00', (string) $dot);
+        $this->assertStringContainsString('#00ff00', (string) $dot);
         $this->assertSame(2, \substr_count((string) $dot, '#00ff00')); // root + edge
     }
 }
