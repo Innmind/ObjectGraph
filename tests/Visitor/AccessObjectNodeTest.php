@@ -45,4 +45,30 @@ class AccessObjectNodeTest extends TestCase
 
         (new AccessObjectNode(new \stdClass))($node);
     }
+
+    public function testAccessNodeWhenFoundOnFirstRelationship()
+    {
+        $object = new class {
+            public $a;
+            public $b;
+        };
+        $dependency = new class {
+            public $should;
+        };
+        $alt = new class {
+            public $shouldNot;
+        };
+        $subDependency = new class {
+        };
+        $object->a = $dependency;
+        $object->b = $alt;
+        $dependency->should = $subDependency;
+        $alt->shouldNot = $subDependency;
+
+        $node = (new AccessObjectNode($dependency))(
+            (new Graph)($object)
+        );
+
+        $this->assertTrue($node->comesFrom($dependency));
+    }
 }
