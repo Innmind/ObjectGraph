@@ -111,9 +111,15 @@ final class Visualize
         $node->relations()->foreach(function(Relation $relation) use ($dotNode): void {
             $child = $this->visit($relation->node());
 
-            $dotNode
+            $edge = $dotNode
                 ->linkedTo($child)
                 ->displayAs((string) $relation->property());
+
+            if ($relation->highlighted()) {
+                $edge
+                    ->bold()
+                    ->useColor(RGBA::fromString('#0f0'));
+            }
         });
 
         return $dotNode;

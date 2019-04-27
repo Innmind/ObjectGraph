@@ -39,5 +39,9 @@ class NodeTest extends TestCase
         $this->assertFalse($node->highlighted());
         $this->assertNull($node->highlight());
         $this->assertTrue($node->highlighted());
+
+        $this->assertFalse($relation->highlighted());
+        $this->assertNull($relation->highlight());
+        $this->assertTrue($relation->highlighted());
     }
 }
