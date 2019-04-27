@@ -36,4 +36,13 @@ final class Relation
     {
         return $this->highlighted;
     }
+
+    public function highlightPathTo(object $object): void
+    {
+        $this->node->highlightPathTo($object);
+
+        if ($this->node->highlighted()) {
+            $this->highlight();
+        }
+    }
 }

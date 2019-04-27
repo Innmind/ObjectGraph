@@ -25,6 +25,7 @@ final class Node
     private $relations;
     private $dependency = false;
     private $highlighted = false;
+    private $highlightingPath = false;
 
     public function __construct(object $object)
     {
@@ -97,5 +98,36 @@ final class Node
     public function highlighted(): bool
     {
         return $this->highlighted;
+    }
+
+    public function highlightPathTo(object $object): void
+    {
+        if ($this->highlightingPath) {
+            return;
+        }
+
+        if ($this->comesFrom($object)) {
+            $this->highlight();
+
+            return;
+        }
+
+        $this->highlightingPath = true;
+
+        $highlighted = $this
+            ->relations
+            ->values()
+            ->foreach(static function(Relation $relation) use ($object): void {
+                $relation->highlightPathTo($object);
+            })
+            ->filter(static function(Relation $relation): bool {
+                return $relation->highlighted();
+            });
+
+        if (!$highlighted->empty()) {
+            $this->highlight();
+        }
+
+        $this->highlightingPath = false;
     }
 }
