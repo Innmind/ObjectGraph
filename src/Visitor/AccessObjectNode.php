@@ -41,7 +41,7 @@ final class AccessObjectNode
         return $node->relations()->reduce(
             null,
             function(?Node $target, Relation $relation): ?Node {
-                return $this->visit($relation->node());
+                return $target ?? $this->visit($relation->node());
             }
         );
     }
