@@ -91,6 +91,13 @@ final class Visualize
                 ($this->rewriteLocation)($node->location())
             );
 
+        if ($node->isDependent()) {
+            $dotNode->shaped(
+                Graphviz\Node\Shape::Mrecord()
+                    ->fillWithColor(RGBA::fromString('#00b6ff'))
+            );
+        }
+
         if ($node->isDependency()) {
             $dotNode->shaped(
                 Graphviz\Node\Shape::box()

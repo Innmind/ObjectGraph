@@ -69,6 +69,8 @@ This will generate a `graph.svg` file representing the object graph of your appl
 
 **Note 5**: You can flag dependencies (orm, http transport, etc...) and remove their sub-graph via [`src/Visitor/FlagDependencies.php`](src/Visitor/FlagDependencies.php) and [`src/Visitor/RemoveDependenciesSubGraph.php`](src/Visitor/RemoveDependenciesSubGraph.php).
 
+**Note 6**: You can flag the objects depending on a set of dependencies (such as controllers on a command bus) via [`src/Visitor/FlagDependents.php`](src/Visitor/FlagDependents.php).
+
 ### Assertions
 
 #### Acylic

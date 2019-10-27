@@ -15,6 +15,10 @@ class AccessObjectNodeTest extends TestCase
 {
     public function testAccessNode()
     {
+        // root
+        //  |-> a
+        //  |    |-> leaf <-|
+        //  |-> b ----------|
         $graph = new Graph;
         $leaf = new Foo;
         $a = new Foo($leaf);
@@ -33,6 +37,10 @@ class AccessObjectNodeTest extends TestCase
 
     public function testThrowWhenObjectNotInGraph()
     {
+        // root
+        //  |-> a
+        //  |    |-> leaf <-|
+        //  |-> b ----------|
         $graph = new Graph;
         $leaf = new Foo;
         $a = new Foo($leaf);
@@ -48,6 +56,10 @@ class AccessObjectNodeTest extends TestCase
 
     public function testAccessNodeWhenFoundOnFirstRelationship()
     {
+        // object
+        //  |-> dependency
+        //  |    |-> subDependency <-|
+        //  |-> alt -----------------|
         $object = new class {
             public $a;
             public $b;

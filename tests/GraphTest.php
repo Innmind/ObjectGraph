@@ -18,6 +18,10 @@ class GraphTest extends TestCase
 {
     public function testInvokation()
     {
+        // root
+        //  |-> a
+        //  |    |-> leaf <-|
+        //  |-> b ----------|
         $graph = new Graph;
         $leaf = new Foo;
         $a = new Foo($leaf);
@@ -45,6 +49,8 @@ class GraphTest extends TestCase
     {
         $graph = new Graph;
 
+        // a <-----|
+        //  |-> b -|
         $a = new class {
             public $foo;
         };
@@ -120,6 +126,11 @@ class GraphTest extends TestCase
 
     public function testHighlightPathToLeaf()
     {
+        // root
+        //  |-> a
+        //  |    |-> leaf <-|
+        //  |-> b ----------|
+        //       |-> new Foo
         $graph = new Graph;
         $leaf = new Foo;
         $a = new Foo($leaf);

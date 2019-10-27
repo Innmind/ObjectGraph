@@ -13,6 +13,9 @@ class AcyclicTest extends TestCase
 {
     public function testCyclicGraph()
     {
+        // a <----------|
+        //  |-> b       |
+        //       |-> c -|
         $a = new class {
             public $foo;
         };
@@ -35,6 +38,10 @@ class AcyclicTest extends TestCase
 
     public function testAcyclicGraph()
     {
+        // a
+        //  |-> b
+        //       |-> c
+        //            |-> new stdClass
         $a = new class {
             public $foo;
         };

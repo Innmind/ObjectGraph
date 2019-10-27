@@ -73,6 +73,9 @@ class StackTest extends TestCase
 
     public function testStackFoundInCyclicGraph()
     {
+        // a <-----|----|
+        //  |-> b -|    |
+        //       |-> c -|
         $a = new class {
             public $foo;
         };
