@@ -55,4 +55,48 @@ class NodeTest extends TestCase
 
         $this->assertNull($node->highlightPathTo(new \stdClass));
     }
+
+    public function testDependsOn()
+    {
+        $object = new class {
+            public $foo;
+        };
+        $dependency = new class {};
+        $object->foo = $dependency;
+
+        $node = new Node($object);
+        $node->relate(new Relation(
+            new Property('foo'),
+            new Node($dependency)
+        ));
+
+        $this->assertTrue($node->dependsOn($dependency));
+        $this->assertFalse($node->dependsOn(new class {}));
+    }
+
+    public function testFlagAsDependentOn()
+    {
+        $object = new class {
+            public $foo;
+            public $bar;
+        };
+        $dependency = new class {};
+        $dependency2 = new class {};
+        $object->foo = $dependency;
+        $object->bar = $dependency2;
+
+        $node = new Node($object);
+        $node->relate($foo = new Relation(
+            new Property('foo'),
+            new Node($dependency)
+        ));
+        $node->relate($bar = new Relation(
+            new Property('bar'),
+            new Node($dependency2)
+        ));
+
+        $this->assertFalse($node->isDependent());
+        $this->assertNull($node->flagAsDependent());
+        $this->assertTrue($node->isDependent());
+    }
 }

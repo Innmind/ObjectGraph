@@ -24,6 +24,7 @@ final class Node
     private $location;
     private $relations;
     private $dependency = false;
+    private $dependent = false;
     private $highlighted = false;
     private $highlightingPath = false;
 
@@ -73,6 +74,26 @@ final class Node
     public function removeRelations(): void
     {
         $this->relations = $this->relations->clear();
+    }
+
+    public function dependsOn(object $dependency): bool
+    {
+        return $this->relations->values()->reduce(
+            false,
+            function(bool $isDependent, Relation $relation) use ($dependency): bool {
+                return $isDependent || $relation->node()->comesFrom($dependency);
+            }
+        );
+    }
+
+    public function flagAsDependent(): void
+    {
+        $this->dependent = true;
+    }
+
+    public function isDependent(): bool
+    {
+        return $this->dependent;
     }
 
     public function comesFrom(object $object): bool
