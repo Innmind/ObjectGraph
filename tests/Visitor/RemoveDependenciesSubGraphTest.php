@@ -15,6 +15,13 @@ class RemoveDependenciesSubGraphTest extends TestCase
 {
     public function testInvokation()
     {
+        // root
+        //  |-> level10 <---------|
+        //  |    |-> level2       |
+        //  |         |-> level3  |
+        //  |              |------|
+        //  |-> level11
+        //       |-> level4
         $root = new Node(new class {});
         $level10 = new Node(new class {});
         $level11 = new Node(new class {});

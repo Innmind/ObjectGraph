@@ -24,6 +24,10 @@ class VisualizeTest extends TestCase
 {
     public function testInvokation()
     {
+        // root
+        //  |-> a
+        //  |    |-> leaf <-|
+        //  |-> b ----------|
         $graph = new Graph;
         $leaf = new Foo;
         $a = new Foo($leaf);
@@ -41,6 +45,8 @@ class VisualizeTest extends TestCase
 
     public function testRenderRecursiveGraph()
     {
+        // a <-----|
+        //  |-> b -|
         $graph = new Graph;
         $a = new class {
             public $foo;
@@ -61,6 +67,10 @@ class VisualizeTest extends TestCase
 
     public function testRewriteLocation()
     {
+        // root
+        //  |-> a
+        //  |    |-> leaf <-|
+        //  |-> b ----------|
         $graph = new Graph;
         $leaf = new Foo;
         $a = new Foo($leaf);
@@ -83,6 +93,10 @@ class VisualizeTest extends TestCase
                 (new NamespacePattern(Bar::class), 'bar')
         );
 
+        // root
+        //  |-> a
+        //  |    |-> leaf <-|
+        //  |-> b ----------|
         $graph = new Graph;
         $leaf = new Foo;
         $a = new Foo($leaf);
@@ -99,6 +113,10 @@ class VisualizeTest extends TestCase
 
     public function testHighlight()
     {
+        // root
+        //  |-> a
+        //  |    |-> leaf <-|
+        //  |-> b ----------|
         $graph = new Graph;
         $leaf = new Foo;
         $a = new Foo($leaf);
@@ -118,6 +136,10 @@ class VisualizeTest extends TestCase
 
     public function testHighlightRelation()
     {
+        // root
+        //  |-> a
+        //  |    |-> leaf <-|
+        //  |-> b ----------|
         $graph = new Graph;
         $leaf = new Foo;
         $a = new Foo($leaf);
@@ -137,6 +159,10 @@ class VisualizeTest extends TestCase
 
     public function testRenderDependent()
     {
+        // root
+        //  |-> a
+        //  |    |-> leaf <-|
+        //  |-> b ----------|
         $graph = new Graph;
         $leaf = new Foo;
         $a = new Foo($leaf);
