@@ -15,6 +15,10 @@ class FlagDependenciesTest extends TestCase
 {
     public function testInvokation()
     {
+        // root
+        //  |-> level1 <----------|
+        //       |-> level2       |
+        //            |-> level3 -|
         $root = new Node(new class {});
         $level1 = new Node(new class {});
         $level2 = new Node($dependency = new class {});
