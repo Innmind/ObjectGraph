@@ -8,19 +8,20 @@ use Innmind\ObjectGraph\{
     Relation,
 };
 use Innmind\Immutable\{
-    StreamInterface,
-    Stream,
+    Sequence,
     Set,
 };
 
 final class Stack
 {
-    private Stream $stack;
+    /** @var Sequence<string> */
+    private Sequence $stack;
+    /** @var Set<Node>|null */
     private ?Set $nodes = null;
 
     private function __construct(string ...$classes)
     {
-        $this->stack = Stream::of('string', ...$classes);
+        $this->stack = Sequence::strings(...$classes);
     }
 
     public static function of(string ...$classes): self
@@ -39,13 +40,13 @@ final class Stack
         }
     }
 
-    private function visit(Node $node, StreamInterface $stack): StreamInterface
+    private function visit(Node $node, Sequence $stack): Sequence
     {
         if ($this->nodes->contains($node)) {
             return $stack;
         }
 
-        $this->nodes = $this->nodes->add($node);
+        $this->nodes = ($this->nodes)($node);
 
         if ($stack->size() === 0) {
             return $stack;
@@ -57,7 +58,7 @@ final class Stack
 
         return $node->relations()->reduce(
             $stack,
-            function(StreamInterface $stack, Relation $relation): StreamInterface {
+            function(Sequence $stack, Relation $relation): Sequence {
                 return $this->visit($relation->node(), $stack);
             },
         );

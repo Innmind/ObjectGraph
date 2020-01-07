@@ -14,6 +14,7 @@ use Innmind\ObjectGraph\{
 };
 use Innmind\Stream\Readable;
 use Innmind\Immutable\Map;
+use function Innmind\Immutable\first;
 use Fixtures\Innmind\ObjectGraph\{
     Foo,
     Bar,
@@ -40,7 +41,7 @@ class VisualizeTest extends TestCase
         $dot = (new Visualize)($node);
 
         $this->assertInstanceOf(Readable::class, $dot);
-        $this->assertNotEmpty((string) $dot);
+        $this->assertNotEmpty($dot->toString());
     }
 
     public function testRenderRecursiveGraph()
@@ -62,7 +63,7 @@ class VisualizeTest extends TestCase
         $dot = (new Visualize)($node);
 
         $this->assertInstanceOf(Readable::class, $dot);
-        $this->assertNotEmpty((string) $dot);
+        $this->assertNotEmpty($dot->toString());
     }
 
     public function testRewriteLocation()
@@ -82,7 +83,7 @@ class VisualizeTest extends TestCase
         $dot = (new Visualize(new SublimeHandler))($node);
 
         $this->assertInstanceOf(Readable::class, $dot);
-        $this->assertNotEmpty((string) $dot);
+        $this->assertNotEmpty($dot->toString());
     }
 
     public function testClusterize()
@@ -108,7 +109,7 @@ class VisualizeTest extends TestCase
         $dot = (new Visualize(null, $clusterize))($node);
 
         $this->assertInstanceOf(Readable::class, $dot);
-        $this->assertNotEmpty((string) $dot);
+        $this->assertNotEmpty($dot->toString());
     }
 
     public function testHighlight()
@@ -124,14 +125,14 @@ class VisualizeTest extends TestCase
         $root = new Foo($a, $b);
 
         $node = $graph($root);
-        $node->relations()->current()->node()->highlight();
+        first($node->relations())->node()->highlight();
 
         $dot = (new Visualize)($node);
 
         $this->assertInstanceOf(Readable::class, $dot);
-        $this->assertNotEmpty((string) $dot);
-        $this->assertStringContainsString('#00ff00', (string) $dot);
-        $this->assertSame(3, \substr_count((string) $dot, '#00ff00')); // root + highlighted
+        $this->assertNotEmpty($dot->toString());
+        $this->assertStringContainsString('#00ff00', $dot->toString());
+        $this->assertSame(3, \substr_count($dot->toString(), '#00ff00')); // root + highlighted
     }
 
     public function testHighlightRelation()
@@ -147,14 +148,14 @@ class VisualizeTest extends TestCase
         $root = new Foo($a, $b);
 
         $node = $graph($root);
-        $node->relations()->current()->highlight();
+        first($node->relations())->highlight();
 
         $dot = (new Visualize)($node);
 
         $this->assertInstanceOf(Readable::class, $dot);
-        $this->assertNotEmpty((string) $dot);
-        $this->assertStringContainsString('#00ff00', (string) $dot);
-        $this->assertSame(2, \substr_count((string) $dot, '#00ff00')); // root + edge
+        $this->assertNotEmpty($dot->toString());
+        $this->assertStringContainsString('#00ff00', $dot->toString());
+        $this->assertSame(2, \substr_count($dot->toString(), '#00ff00')); // root + edge
     }
 
     public function testRenderDependent()
@@ -170,13 +171,13 @@ class VisualizeTest extends TestCase
         $root = new Foo($a, $b);
 
         $node = $graph($root);
-        $node->relations()->current()->node()->flagAsDependent();
+        first($node->relations())->node()->flagAsDependent();
 
         $dot = (new Visualize)($node);
 
         $this->assertInstanceOf(Readable::class, $dot);
-        $this->assertNotEmpty((string) $dot);
-        $this->assertStringContainsString('#00b6ff', (string) $dot);
-        $this->assertSame(1, \substr_count((string) $dot, '#00b6ff')); // a
+        $this->assertNotEmpty($dot->toString());
+        $this->assertStringContainsString('#00b6ff', $dot->toString());
+        $this->assertSame(1, \substr_count($dot->toString(), '#00b6ff')); // a
     }
 }

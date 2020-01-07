@@ -9,15 +9,14 @@ use Innmind\Reflection\{
     ExtractionStrategy\ReflectionStrategy,
 };
 use Innmind\Immutable\{
-    MapInterface,
     Map,
     Pair,
-    Stream,
 };
+use function Innmind\Immutable\unwrap;
 
 final class Graph
 {
-    private ?MapInterface $nodes = null;
+    private ?Map $nodes = null;
 
     public function __invoke(object $root): Node
     {
@@ -47,7 +46,7 @@ final class Graph
             null,
             new ReflectionStrategy,
         )
-            ->extract(...$properties);
+            ->extract(...unwrap($properties));
 
         $iterables = $properties->filter(static function(string $property, $value): bool {
             return \is_iterable($value);
@@ -66,9 +65,9 @@ final class Graph
     }
 
     /**
-     * @param MapInterface<string, iterable> $properties
+     * @param Map<string, iterable> $properties
      */
-    private function visitIterables(Node $node, MapInterface $properties): Node
+    private function visitIterables(Node $node, Map $properties): Node
     {
         // this function transform any "property:string => iterable" into the
         // format "property:string ArrayObject<Innmind\Immutable\Pair>" so it
@@ -120,9 +119,9 @@ final class Graph
     }
 
     /**
-     * @param  MapInterface<string, object> $properties
+     * @param  Map<string, object> $properties
      */
-    private function visitObjects(Node $node, MapInterface $properties): Node
+    private function visitObjects(Node $node, Map $properties): Node
     {
         return $properties->reduce(
             $node,

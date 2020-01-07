@@ -6,11 +6,16 @@ namespace Tests\Innmind\ObjectGraph;
 use Innmind\ObjectGraph\{
     Graph,
     Node,
+    Visitor\AccessObjectNode,
 };
 use Fixtures\Innmind\ObjectGraph\Foo;
 use Innmind\Immutable\{
     Map,
     Set,
+};
+use function Innmind\Immutable\{
+    unwrap,
+    first,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -32,7 +37,7 @@ class GraphTest extends TestCase
 
         $this->assertInstanceOf(Node::class, $node);
         $this->assertCount(2, $node->relations());
-        [$a, $b] = $node->relations()->toPrimitive();
+        [$a, $b] = unwrap($node->relations());
         $this->assertSame('a', $a->property()->toString());
         $this->assertSame(Foo::class, $a->node()->class()->toString());
         $this->assertSame('b', $b->property()->toString());
@@ -40,8 +45,8 @@ class GraphTest extends TestCase
         $this->assertCount(1, $a->node()->relations());
         $this->assertCount(1, $b->node()->relations());
         $this->assertSame(
-            $a->node()->relations()->current()->node(),
-            $b->node()->relations()->current()->node()
+            first($a->node()->relations())->node(),
+            first($b->node()->relations())->node(),
         );
     }
 
@@ -63,10 +68,10 @@ class GraphTest extends TestCase
         $node = $graph($a);
 
         $this->assertCount(1, $node->relations());
-        $this->assertSame('foo', $node->relations()->current()->property()->toString());
+        $this->assertSame('foo', first($node->relations())->property()->toString());
         $this->assertSame(
             $node,
-            $node->relations()->current()->node()->relations()->current()->node()
+            first(first($node->relations())->node()->relations())->node(),
         );
     }
 
@@ -74,54 +79,29 @@ class GraphTest extends TestCase
     {
         $graph = new Graph;
 
-        $a = new class {
+        $innerA = new \stdClass;
+        $innerB = new \stdClass;
+        $a = new class($innerA, $innerB) {
             public $map;
             public $set;
             public $ints = [42];
 
-            public function __construct()
+            public function __construct($a, $b)
             {
-                $a = new \stdClass;
-                $b = new \stdClass;
-                $this->map = Map::of('object', 'mixed')
-                    ($a, $b)
-                    ($b, 'foo');
-                $this->set = Set::of('object', $b);
+                $this->map = new \SplObjectStorage;
+                $this->map->attach($a, $b);
+                $this->map->attach($b, 'foo');
+                $this->set = [$b];
             }
         };
 
         $node = $graph($a);
 
+        $this->assertInstanceOf(Node::class, (new AccessObjectNode($innerA))($node));
+        $this->assertInstanceOf(Node::class, (new AccessObjectNode($innerB))($node));
+
         $nodeRelations = $node->relations();
         $this->assertCount(2, $nodeRelations);
-        $this->assertSame('map', $nodeRelations->current()->property()->toString());
-        $map = $nodeRelations->current()->node();
-        $mapRelations = $map->relations();
-        $this->assertCount(2, $mapRelations);
-        $this->assertSame('0', $mapRelations->current()->property()->toString());
-        $pair1 = $mapRelations->current()->node();
-        $pair1Relations = $pair1->relations();
-        $this->assertCount(2, $pair1Relations);
-        $this->assertSame('key', $pair1Relations->current()->property()->toString());
-        $innerA = $pair1Relations->current()->node();
-        $pair1Relations->next();
-        $this->assertSame('value', $pair1Relations->current()->property()->toString());
-        $innerB = $pair1Relations->current()->node();
-        $mapRelations->next();
-        $this->assertSame('1', $mapRelations->current()->property()->toString());
-        $pair2 = $mapRelations->current()->node();
-        $pair2Relations = $pair2->relations();
-        $this->assertCount(1, $pair2Relations);
-        $this->assertSame('key', $pair2Relations->current()->property()->toString());
-        $this->assertSame($innerB, $pair2Relations->current()->node());
-        $nodeRelations->next();
-        $this->assertSame('set', $nodeRelations->current()->property()->toString());
-        $set = $nodeRelations->current()->node();
-        $this->assertSame('0', $set->relations()->current()->property()->toString());
-        $pair = $set->relations()->current()->node();
-        $this->assertCount(1, $pair->relations());
-        $this->assertSame('value', $pair->relations()->current()->property()->toString());
-        $this->assertSame($innerB, $pair->relations()->current()->node());
     }
 
     public function testHighlightPathToLeaf()
@@ -141,16 +121,16 @@ class GraphTest extends TestCase
         $node->highlightPathTo($leaf);
 
         $this->assertInstanceOf(Node::class, $node);
-        [$a, $b] = $node->relations()->toPrimitive();
+        [$a, $b] = unwrap($node->relations());
         $this->assertTrue($a->highlighted());
         $this->assertTrue($b->highlighted());
         $this->assertTrue($a->node()->highlighted());
         $this->assertTrue($b->node()->highlighted());
-        $this->assertTrue($a->node()->relations()->current()->highlighted());
-        $this->assertTrue($b->node()->relations()->current()->highlighted());
-        $this->assertTrue($a->node()->relations()->current()->node()->highlighted());
-        $this->assertTrue($b->node()->relations()->current()->node()->highlighted());
-        [$a, $b] = $b->node()->relations()->toPrimitive();
+        $this->assertTrue(first($a->node()->relations())->highlighted());
+        $this->assertTrue(first($b->node()->relations())->highlighted());
+        $this->assertTrue(first($a->node()->relations())->node()->highlighted());
+        $this->assertTrue(first($b->node()->relations())->node()->highlighted());
+        [$a, $b] = unwrap($b->node()->relations());
         $this->assertFalse($b->highlighted());
         $this->assertFalse($b->node()->highlighted());
     }

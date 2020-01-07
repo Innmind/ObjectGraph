@@ -16,10 +16,10 @@
     },
     "require": {
         "php": "~7.4",
-        "innmind/immutable": "^2.13",
-        "innmind/reflection": "^3.0",
-        "innmind/graphviz": "^1.2",
-        "innmind/url": "^2.0"
+        "innmind/immutable": "~3.0",
+        "innmind/reflection": "~4.0",
+        "innmind/graphviz": "~2.0",
+        "innmind/url": "~3.0"
     },
     "autoload": {
         "psr-4": {

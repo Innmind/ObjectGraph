@@ -7,15 +7,12 @@ use Innmind\ObjectGraph\{
     Node\ClassName,
     Node\Reference,
 };
-use Innmind\Url\{
-    UrlInterface,
-    Url,
-};
+use Innmind\Url\Url;
 use Innmind\Immutable\{
     Map,
-    SetInterface,
     Set,
 };
+use function Innmind\Immutable\unwrap;
 
 final class Node
 {
@@ -34,7 +31,7 @@ final class Node
 
         $this->class = new ClassName($object);
         $this->reference = new Reference($object);
-        $this->location = Url::fromString('file://'.$file);
+        $this->location = Url::of('file://'.$file);
         $this->relations = Map::of('string', Relation::class);
     }
 
@@ -58,17 +55,17 @@ final class Node
         return $this->reference;
     }
 
-    public function location(): UrlInterface
+    public function location(): Url
     {
         return $this->location;
     }
 
     /**
-     * @return SetInterface<Relation>
+     * @return Set<Relation>
      */
-    public function relations(): SetInterface
+    public function relations(): Set
     {
-        return Set::of(Relation::class, ...$this->relations->values());
+        return Set::of(Relation::class, ...unwrap($this->relations->values()));
     }
 
     public function removeRelations(): void
@@ -135,12 +132,13 @@ final class Node
 
         $this->highlightingPath = true;
 
-        $highlighted = $this
+        $this
             ->relations
             ->values()
             ->foreach(static function(Relation $relation) use ($object): void {
                 $relation->highlightPathTo($object);
-            })
+            });
+        $highlighted = $this->relations->values()
             ->filter(static function(Relation $relation): bool {
                 return $relation->highlighted();
             });

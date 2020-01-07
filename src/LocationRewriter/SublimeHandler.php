@@ -5,7 +5,7 @@ namespace Innmind\ObjectGraph\LocationRewriter;
 
 use Innmind\ObjectGraph\LocationRewriter;
 use Innmind\Url\{
-    UrlInterface,
+    Url,
     Scheme,
 };
 
@@ -17,8 +17,8 @@ use Innmind\Url\{
  */
 final class SublimeHandler implements LocationRewriter
 {
-    public function __invoke(UrlInterface $location): UrlInterface
+    public function __invoke(Url $location): Url
     {
-        return $location->withScheme(new Scheme('sublime'));
+        return $location->withScheme(Scheme::of('sublime'));
     }
 }

@@ -5,16 +5,16 @@ namespace Innmind\ObjectGraph;
 
 use Innmind\Graphviz;
 use Innmind\Immutable\{
-    MapInterface,
-    SetInterface,
+    Map,
+    Set,
 };
 
 interface Clusterize
 {
     /**
-     * @param MapInterface<Node, Graphviz\Node> $nodes
+     * @param Map<Node, Graphviz\Node> $nodes
      *
-     * @return SetInterface<Graphviz\Graph>
+     * @return Set<Graphviz\Graph>
      */
-    public function __invoke(MapInterface $nodes): SetInterface;
+    public function __invoke(Map $nodes): Set;
 }
