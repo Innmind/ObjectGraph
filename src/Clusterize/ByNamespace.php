@@ -12,7 +12,6 @@ use Innmind\Graphviz;
 use Innmind\Immutable\{
     Map,
     Set,
-    Pair,
 };
 use function Innmind\Immutable\{
     assertMap,
@@ -35,41 +34,35 @@ final class ByNamespace implements Clusterize
      */
     public function __invoke(Map $nodes): Set
     {
-        $graphs = $this->clusters->values()->reduce(
-            Map::of('string', Graphviz\Graph::class),
-            static function(Map $graphs, string $name): Map {
+        $graphs = $this->clusters->values()->toMapOf(
+            'string',
+            Graphviz\Graph::class,
+            static function(string $name): \Generator {
                 $graph = Graphviz\Graph\Graph::directed(
                     $name,
                     Graphviz\Graph\Rankdir::leftToRight(),
                 );
                 $graph->displayAs($name);
 
-                return ($graphs)($name, $graph);
+                yield $name => $graph;
             },
         );
-        $clusters = $this
-            ->clusters
-            ->reduce(
-                Map::of(Graphviz\Graph::class, NamespacePattern::class),
-                static function(Map $clusters, NamespacePattern $pattern, string $name) use ($graphs): Map {
-                    return ($clusters)(
-                        $graphs->get($name),
-                        $pattern,
-                    );
-                },
-            )
-            ->map(function(Graphviz\Graph $cluster, NamespacePattern $pattern) use ($nodes): Pair {
-                return new Pair(
-                    $this->cluster($nodes, $cluster, $pattern),
-                    $pattern,
-                );
-            })
+        $clusters = $this->clusters->toMapOf(
+            Graphviz\Graph::class,
+            NamespacePattern::class,
+            static function(NamespacePattern $pattern, string $name) use ($graphs): \Generator {
+                yield $graphs->get($name) => $pattern;
+            },
+        );
+        $clusters->foreach(function(Graphviz\Graph $cluster, NamespacePattern $pattern) use ($nodes): void {
+            $this->cluster($nodes, $cluster, $pattern);
+        });
+
+        return $clusters
             ->keys()
             ->filter(static function(Graphviz\Graph $graph): bool {
                 return $graph->roots()->size() > 0;
             });
-
-        return Set::of(Graphviz\Graph::class, ...unwrap($clusters));
     }
 
     /**
@@ -79,21 +72,16 @@ final class ByNamespace implements Clusterize
         Map $nodes,
         Graphviz\Graph $cluster,
         NamespacePattern $pattern
-    ): Graphviz\Graph {
-        return $nodes
+    ): void {
+        $nodes
             ->filter(static function(Node $node) use ($pattern): bool {
                 return $node->class()->in($pattern);
             })
             ->values()
-            ->reduce(
-                $cluster,
-                static function(Graphviz\Graph $cluster, Graphviz\Node $node): Graphviz\Graph {
-                    $cluster->add(
-                        new Graphviz\Node\Node($node->name()),
-                    );
-
-                    return $cluster;
-                },
-            );
+            ->foreach(static function(Graphviz\Node $node) use ($cluster): void {
+                $cluster->add(
+                    new Graphviz\Node\Node($node->name()),
+                );
+            });
     }
 }

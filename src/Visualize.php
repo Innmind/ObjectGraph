@@ -54,12 +54,9 @@ final class Visualize
                 ),
             );
             $graph->add($root);
-            $graph = ($this->clusterize)($this->nodes)->reduce(
-                $graph,
-                static function(Graphviz\Graph $graph, Graphviz\Graph $cluster): Graphviz\Graph {
+            ($this->clusterize)($this->nodes)->foreach(
+                static function(Graphviz\Graph $cluster) use ($graph): void {
                     $graph->cluster($cluster);
-
-                    return $graph;
                 },
             );
 
@@ -108,7 +105,7 @@ final class Visualize
             );
         }
 
-        $this->nodes = $this->nodes->put($node, $dotNode);
+        $this->nodes = ($this->nodes)($node, $dotNode);
 
         $node->relations()->foreach(function(Relation $relation) use ($dotNode): void {
             $child = $this->visit($relation->node());

@@ -37,7 +37,7 @@ final class Node
 
     public function relate(Relation $relation): self
     {
-        $this->relations = $this->relations->put(
+        $this->relations = ($this->relations)(
             $relation->property()->toString(),
             $relation,
         );
@@ -65,7 +65,7 @@ final class Node
      */
     public function relations(): Set
     {
-        return Set::of(Relation::class, ...unwrap($this->relations->values()));
+        return $this->relations->values()->toSetOf(Relation::class);
     }
 
     public function removeRelations(): void

@@ -36,7 +36,7 @@ final class Graph
         }
 
         $node = new Node($object);
-        $this->nodes = $this->nodes->put($object, $node);
+        $this->nodes = ($this->nodes)($object, $node);
 
         $properties = ReflectionClass::of(\get_class($object))->properties();
 
@@ -80,7 +80,7 @@ final class Graph
                 $pairs = Map::of('int', Pair::class);
 
                 foreach ($iterable as $key => $value) {
-                    $pairs = $pairs->put(
+                    $pairs = ($pairs)(
                         $pairs->size(), // index of the pair
                         new Pair($key, $value),
                     );
