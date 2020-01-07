@@ -33,10 +33,10 @@ class GraphTest extends TestCase
         $this->assertInstanceOf(Node::class, $node);
         $this->assertCount(2, $node->relations());
         [$a, $b] = $node->relations()->toPrimitive();
-        $this->assertSame('a', (string) $a->property());
-        $this->assertSame(Foo::class, (string) $a->node()->class());
-        $this->assertSame('b', (string) $b->property());
-        $this->assertSame(Foo::class, (string) $b->node()->class());
+        $this->assertSame('a', $a->property()->toString());
+        $this->assertSame(Foo::class, $a->node()->class()->toString());
+        $this->assertSame('b', $b->property()->toString());
+        $this->assertSame(Foo::class, $b->node()->class()->toString());
         $this->assertCount(1, $a->node()->relations());
         $this->assertCount(1, $b->node()->relations());
         $this->assertSame(
@@ -63,7 +63,7 @@ class GraphTest extends TestCase
         $node = $graph($a);
 
         $this->assertCount(1, $node->relations());
-        $this->assertSame('foo', (string) $node->relations()->current()->property());
+        $this->assertSame('foo', $node->relations()->current()->property()->toString());
         $this->assertSame(
             $node,
             $node->relations()->current()->node()->relations()->current()->node()
@@ -94,33 +94,33 @@ class GraphTest extends TestCase
 
         $nodeRelations = $node->relations();
         $this->assertCount(2, $nodeRelations);
-        $this->assertSame('map', (string) $nodeRelations->current()->property());
+        $this->assertSame('map', $nodeRelations->current()->property()->toString());
         $map = $nodeRelations->current()->node();
         $mapRelations = $map->relations();
         $this->assertCount(2, $mapRelations);
-        $this->assertSame('0', (string) $mapRelations->current()->property());
+        $this->assertSame('0', $mapRelations->current()->property()->toString());
         $pair1 = $mapRelations->current()->node();
         $pair1Relations = $pair1->relations();
         $this->assertCount(2, $pair1Relations);
-        $this->assertSame('key', (string) $pair1Relations->current()->property());
+        $this->assertSame('key', $pair1Relations->current()->property()->toString());
         $innerA = $pair1Relations->current()->node();
         $pair1Relations->next();
-        $this->assertSame('value', (string) $pair1Relations->current()->property());
+        $this->assertSame('value', $pair1Relations->current()->property()->toString());
         $innerB = $pair1Relations->current()->node();
         $mapRelations->next();
-        $this->assertSame('1', (string) $mapRelations->current()->property());
+        $this->assertSame('1', $mapRelations->current()->property()->toString());
         $pair2 = $mapRelations->current()->node();
         $pair2Relations = $pair2->relations();
         $this->assertCount(1, $pair2Relations);
-        $this->assertSame('key', (string) $pair2Relations->current()->property());
+        $this->assertSame('key', $pair2Relations->current()->property()->toString());
         $this->assertSame($innerB, $pair2Relations->current()->node());
         $nodeRelations->next();
-        $this->assertSame('set', (string) $nodeRelations->current()->property());
+        $this->assertSame('set', $nodeRelations->current()->property()->toString());
         $set = $nodeRelations->current()->node();
-        $this->assertSame('0', (string) $set->relations()->current()->property());
+        $this->assertSame('0', $set->relations()->current()->property()->toString());
         $pair = $set->relations()->current()->node();
         $this->assertCount(1, $pair->relations());
-        $this->assertSame('value', (string) $pair->relations()->current()->property());
+        $this->assertSame('value', $pair->relations()->current()->property()->toString());
         $this->assertSame($innerB, $pair->relations()->current()->node());
     }
 

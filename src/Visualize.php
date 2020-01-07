@@ -81,9 +81,9 @@ final class Visualize
             return $this->nodes->get($node);
         }
 
-        $dotNode = Graphviz\Node\Node::named('object_'.$node->reference())
+        $dotNode = Graphviz\Node\Node::named('object_'.$node->reference()->toString())
             ->displayAs(
-                (string) Str::of((string) $node->class())
+                (string) Str::of($node->class()->toString())
                     ->replace("\x00", '') // remove the invisible character used in the name of anonymous classes
                     ->replace('\\', '\\\\')
             )
@@ -120,7 +120,7 @@ final class Visualize
 
             $edge = $dotNode
                 ->linkedTo($child)
-                ->displayAs((string) $relation->property());
+                ->displayAs($relation->property()->toString());
 
             if ($relation->highlighted()) {
                 $edge

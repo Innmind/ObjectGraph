@@ -15,7 +15,7 @@ class ClassNameTest extends TestCase
     {
         $class = new ClassName(new \stdClass);
 
-        $this->assertSame('stdClass', (string) $class);
+        $this->assertSame('stdClass', $class->toString());
     }
 
     public function testIn()

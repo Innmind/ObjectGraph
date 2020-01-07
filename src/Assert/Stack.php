@@ -51,7 +51,7 @@ final class Stack
             return $stack;
         }
 
-        if ($stack->first() === (string) $node->class()) {
+        if ($stack->first() === $node->class()->toString()) {
             $stack = $stack->drop(1);
         }
 

@@ -41,7 +41,7 @@ final class Node
     public function relate(Relation $relation): self
     {
         $this->relations = $this->relations->put(
-            (string) $relation->property(),
+            $relation->property()->toString(),
             $relation
         );
 

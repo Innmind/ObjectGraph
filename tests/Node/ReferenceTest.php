@@ -12,7 +12,7 @@ class ReferenceTest extends TestCase
     {
         $reference = new Reference($object = new \stdClass);
 
-        $this->assertSame(\spl_object_hash($object), (string) $reference);
+        $this->assertSame(\spl_object_hash($object), $reference->toString());
     }
 
     public function testEquals()
