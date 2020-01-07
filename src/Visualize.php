@@ -50,7 +50,7 @@ final class Visualize
             $this->nodes = Map::of(Node::class, Graphviz\Node::class);
             $graph = Graphviz\Graph\Graph::directed(
                 'G',
-                Graphviz\Graph\Rankdir::leftToRight()
+                Graphviz\Graph\Rankdir::leftToRight(),
             );
 
             $graph->add(
@@ -59,14 +59,14 @@ final class Visualize
                     ->shaped(
                         Graphviz\Node\Shape::hexagon()
                             ->fillWithColor(RGBA::fromString('#0f0')
-                        )
-                    )
+                        ),
+                    ),
             );
             $graph = ($this->clusterize)($this->nodes)->reduce(
                 $graph,
                 static function(Graphviz\Graph $graph, Graphviz\Graph $cluster): Graphviz\Graph {
                     return $graph->cluster($cluster);
-                }
+                },
             );
 
             return (new Graphviz\Layout\Dot)($graph);
@@ -85,23 +85,23 @@ final class Visualize
             ->displayAs(
                 (string) Str::of($node->class()->toString())
                     ->replace("\x00", '') // remove the invisible character used in the name of anonymous classes
-                    ->replace('\\', '\\\\')
+                    ->replace('\\', '\\\\'),
             )
             ->target(
-                ($this->rewriteLocation)($node->location())
+                ($this->rewriteLocation)($node->location()),
             );
 
         if ($node->isDependent()) {
             $dotNode->shaped(
                 Graphviz\Node\Shape::Mrecord()
-                    ->fillWithColor(RGBA::fromString('#00b6ff'))
+                    ->fillWithColor(RGBA::fromString('#00b6ff')),
             );
         }
 
         if ($node->isDependency()) {
             $dotNode->shaped(
                 Graphviz\Node\Shape::box()
-                    ->fillWithColor(RGBA::fromString('#ffb600'))
+                    ->fillWithColor(RGBA::fromString('#ffb600')),
             );
         }
 
@@ -109,7 +109,7 @@ final class Visualize
             $dotNode->shaped(
                 Graphviz\Node\Shape::ellipse()
                     ->withColor(RGBA::fromString('#0f0'))
-                    ->fillWithColor(RGBA::fromString('#0f0'))
+                    ->fillWithColor(RGBA::fromString('#0f0')),
             );
         }
 

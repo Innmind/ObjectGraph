@@ -42,7 +42,7 @@ final class Node
     {
         $this->relations = $this->relations->put(
             $relation->property()->toString(),
-            $relation
+            $relation,
         );
 
         return $this;
@@ -82,7 +82,7 @@ final class Node
             false,
             function(bool $isDependent, Relation $relation) use ($dependency): bool {
                 return $isDependent || $relation->node()->comesFrom($dependency);
-            }
+            },
         );
     }
 

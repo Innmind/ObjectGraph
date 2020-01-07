@@ -34,7 +34,7 @@ final class Boundary
             new NamespacePattern($exclusion),
             ...array_map(static function(string $exclusion): NamespacePattern {
                 return new NamespacePattern($exclusion);
-            }, $exclusions)
+            }, $exclusions),
         );
     }
 

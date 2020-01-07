@@ -38,10 +38,9 @@ final class FlagDependencies
 
         return $node->relations()->reduce(
             $visited->add($node),
-            function(SetInterface $visited, Relation $relation): SetInterface
-            {
+            function(SetInterface $visited, Relation $relation): SetInterface {
                 return $this->visit($relation->node(), $visited);
-            }
+            },
         );
     }
 
@@ -51,7 +50,7 @@ final class FlagDependencies
             false,
             static function(bool $isDependency, object $dependency) use ($node): bool {
                 return $isDependency || $node->comesFrom($dependency);
-            }
+            },
         );
     }
 }

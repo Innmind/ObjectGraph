@@ -45,7 +45,7 @@ final class Graph
             $object,
             null,
             null,
-            new ReflectionStrategy
+            new ReflectionStrategy,
         )
             ->extract(...$properties);
 
@@ -83,7 +83,7 @@ final class Graph
                 foreach ($iterable as $key => $value) {
                     $pairs = $pairs->put(
                         $pairs->size(), // index of the pair
-                        new Pair($key, $value)
+                        new Pair($key, $value),
                     );
                 }
 
@@ -100,9 +100,9 @@ final class Graph
 
                         return $collection->relate(new Relation(
                             new Relation\Property((string) $index),
-                            $node
+                            $node,
                         ));
-                    }
+                    },
                 );
 
                 if ($collection->relations()->size() === 0) {
@@ -113,9 +113,9 @@ final class Graph
 
                 return $node->relate(new Relation(
                     new Relation\Property($property),
-                    $collection
+                    $collection,
                 ));
-            }
+            },
         );
     }
 
@@ -129,9 +129,9 @@ final class Graph
             function(Node $node, string $property, object $value): Node {
                 return $node->relate(new Relation(
                     new Relation\Property($property),
-                    $this->visit($value)
+                    $this->visit($value),
                 ));
-            }
+            },
         );
     }
 }

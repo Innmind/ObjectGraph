@@ -59,7 +59,7 @@ final class Stack
             $stack,
             function(StreamInterface $stack, Relation $relation): StreamInterface {
                 return $this->visit($relation->node(), $stack);
-            }
+            },
         );
     }
 }

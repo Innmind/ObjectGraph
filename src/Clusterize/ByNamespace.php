@@ -42,9 +42,9 @@ final class ByNamespace implements Clusterize
                     Graphviz\Graph\Graph::directed(
                         $name,
                         Graphviz\Graph\Rankdir::leftToRight()
-                    )->displayAs($name)
+                    )->displayAs($name),
                 );
-            }
+            },
         );
         $clusters = $this
             ->clusters
@@ -53,14 +53,14 @@ final class ByNamespace implements Clusterize
                 static function(MapInterface $clusters, NamespacePattern $pattern, string $name) use ($graphs): MapInterface {
                     return $clusters->put(
                         $graphs->get($name),
-                        $pattern
+                        $pattern,
                     );
-                }
+                },
             )
             ->map(function(Graphviz\Graph $cluster, NamespacePattern $pattern) use ($nodes): Pair {
                 return new Pair(
                     $this->cluster($nodes, $cluster, $pattern),
-                    $pattern
+                    $pattern,
                 );
             })
             ->keys()
@@ -88,9 +88,9 @@ final class ByNamespace implements Clusterize
                 $cluster,
                 static function(Graphviz\Graph $cluster, Graphviz\Node $node): Graphviz\Graph {
                     return $cluster->add(
-                        new Graphviz\Node\Node($node->name())
+                        new Graphviz\Node\Node($node->name()),
                     );
-                }
+                },
             );
     }
 }

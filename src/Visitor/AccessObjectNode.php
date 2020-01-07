@@ -42,7 +42,7 @@ final class AccessObjectNode
             null,
             function(?Node $target, Relation $relation): ?Node {
                 return $target ?? $this->visit($relation->node());
-            }
+            },
         );
     }
 }

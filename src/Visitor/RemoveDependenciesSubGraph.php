@@ -33,7 +33,7 @@ final class RemoveDependenciesSubGraph
             $visited->add($node),
             function(SetInterface $visited, Relation $relation): SetInterface {
                 return $this->visit($relation->node(), $visited);
-            }
+            },
         );
     }
 }
