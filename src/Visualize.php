@@ -22,9 +22,9 @@ use Innmind\Immutable\{
 
 final class Visualize
 {
-    private $nodes;
-    private $rewriteLocation;
-    private $clusterize;
+    private ?MapInterface $nodes = null;
+    private LocationRewriter $rewriteLocation;
+    private Clusterize $clusterize;
 
     public function __construct(
         LocationRewriter $rewriteLocation = null,

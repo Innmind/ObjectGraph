@@ -17,7 +17,7 @@ use Innmind\Immutable\{
 
 final class Graph
 {
-    private $nodes;
+    private ?MapInterface $nodes = null;
 
     public function __invoke(object $root): Node
     {

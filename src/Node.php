@@ -19,14 +19,14 @@ use Innmind\Immutable\{
 
 final class Node
 {
-    private $class;
-    private $reference;
-    private $location;
-    private $relations;
-    private $dependency = false;
-    private $dependent = false;
-    private $highlighted = false;
-    private $highlightingPath = false;
+    private ClassName $class;
+    private Reference $reference;
+    private Url $location;
+    private Map $relations;
+    private bool $dependency = false;
+    private bool $dependent = false;
+    private bool $highlighted = false;
+    private bool $highlightingPath = false;
 
     public function __construct(object $object)
     {

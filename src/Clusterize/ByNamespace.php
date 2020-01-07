@@ -20,7 +20,7 @@ use function Innmind\Immutable\assertMap;
 
 final class ByNamespace implements Clusterize
 {
-    private $clusters;
+    private MapInterface $clusters;
 
     public function __construct(MapInterface $clusters)
     {

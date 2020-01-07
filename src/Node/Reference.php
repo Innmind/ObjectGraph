@@ -5,7 +5,7 @@ namespace Innmind\ObjectGraph\Node;
 
 final class Reference
 {
-    private $value;
+    private string $value;
 
     public function __construct(object $object)
     {

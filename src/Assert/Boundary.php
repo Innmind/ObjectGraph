@@ -12,8 +12,8 @@ use Innmind\Immutable\Set;
 
 final class Boundary
 {
-    private $namespace;
-    private $exclusions;
+    private NamespacePattern $namespace;
+    private Set $exclusions;
 
     public function __construct(
         NamespacePattern $namespace,

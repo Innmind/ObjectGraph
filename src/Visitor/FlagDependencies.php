@@ -14,7 +14,7 @@ use Innmind\Immutable\{
 
 final class FlagDependencies
 {
-    private $dependencies;
+    private Set $dependencies;
 
     public function __construct(object ...$dependencies)
     {

@@ -11,7 +11,7 @@ use Innmind\ObjectGraph\{
 
 final class AccessObjectNode
 {
-    private $object;
+    private object $object;
 
     public function __construct(object $object)
     {

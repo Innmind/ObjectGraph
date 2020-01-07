@@ -15,8 +15,8 @@ use Innmind\Immutable\{
 
 final class Stack
 {
-    private $stack;
-    private $nodes;
+    private Stream $stack;
+    private ?Set $nodes = null;
 
     private function __construct(string ...$classes)
     {
