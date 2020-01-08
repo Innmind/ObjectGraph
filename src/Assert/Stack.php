@@ -16,12 +16,15 @@ final class Stack
 {
     /** @var Sequence<string> */
     private Sequence $stack;
-    /** @var Set<Node>|null */
-    private ?Set $nodes = null;
+    /** @var Set<Node> */
+    private Set $nodes;
 
     private function __construct(string ...$classes)
     {
+        /** @var Sequence<string> */
         $this->stack = Sequence::strings(...$classes);
+        /** @var Set<Node> */
+        $this->nodes = Set::of(Node::class);
     }
 
     public static function of(string ...$classes): self
@@ -32,11 +35,11 @@ final class Stack
     public function __invoke(Node $node): bool
     {
         try {
-            $this->nodes = Set::of(Node::class);
+            $this->nodes = $this->nodes->clear();
 
             return $this->visit($node, $this->stack)->size() === 0;
         } finally {
-            $this->nodes = null;
+            $this->nodes = $this->nodes->clear();
         }
     }
 

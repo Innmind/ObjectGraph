@@ -16,16 +16,23 @@ use function Innmind\Immutable\unwrap;
 
 final class ParseSetAndSequence implements Visit
 {
+    /**
+     * @var Map<object, Node> $nodes
+     *
+     * @return Map<object, Node>
+     */
     public function __invoke(
         Map $nodes,
         object $object,
         Visit $visit
     ): Map {
         if ($nodes->contains($object)) {
+            /** @var Map<object, Node> */
             return $nodes;
         }
 
         if (!$object instanceof Set && !$object instanceof Sequence) {
+            /** @var Map<object, Node> */
             return $nodes;
         }
 
@@ -35,6 +42,7 @@ final class ParseSetAndSequence implements Visit
         $i = 0;
         $values = unwrap($object);
 
+        /** @var mixed $value */
         foreach ($values as $value) {
             if (\is_object($value)) {
                 $nodes = $visit($nodes, $value, $visit);
@@ -49,6 +57,7 @@ final class ParseSetAndSequence implements Visit
             ++$i;
         }
 
+        /** @var Map<object, Node> */
         return $nodes;
     }
 }

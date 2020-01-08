@@ -8,6 +8,7 @@ use Innmind\Immutable\Map;
 
 final class Delegate implements Visit
 {
+    /** @var list<Visit> */
     private array $visitors;
 
     public function __construct(Visit ...$visitors)
@@ -15,6 +16,11 @@ final class Delegate implements Visit
         $this->visitors = $visitors;
     }
 
+    /**
+     * @var Map<object, Node> $nodes
+     *
+     * @return Map<object, Node>
+     */
     public function __invoke(
         Map $nodes,
         object $object,
@@ -24,6 +30,7 @@ final class Delegate implements Visit
             $nodes = $visit($nodes, $object, $this);
         }
 
+        /** @var Map<object, Node> */
         return $nodes;
     }
 }

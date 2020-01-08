@@ -17,12 +17,18 @@ use function Innmind\Immutable\unwrap;
 
 final class ExtractProperties implements Visit
 {
+    /**
+     * @var Map<object, Node> $nodes
+     *
+     * @return Map<object, Node>
+     */
     public function __invoke(
         Map $nodes,
         object $object,
         Visit $visit
     ): Map {
         if ($nodes->contains($object)) {
+            /** @var Map<object, Node> */
             return $nodes;
         }
 
@@ -39,6 +45,10 @@ final class ExtractProperties implements Visit
         )
             ->extract(...unwrap($properties));
 
+        /**
+         * @psalm-suppress MissingClosureReturnType
+         * @var Map<object, Node>
+         */
         return $properties
             ->map(static function(string $property, $value) {
                 if (\is_array($value)) {

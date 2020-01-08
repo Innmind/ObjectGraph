@@ -16,7 +16,8 @@ use Innmind\Immutable\{
 
 final class Visualize
 {
-    private ?Map $nodes = null;
+    /** @var Map<Node, Graphviz\Node> */
+    private Map $nodes;
     private LocationRewriter $rewriteLocation;
     private Clusterize $clusterize;
 
@@ -24,6 +25,8 @@ final class Visualize
         LocationRewriter $rewriteLocation = null,
         Clusterize $clusterize = null
     ) {
+        /** @var Map<Node, Graphviz\Node> */
+        $this->nodes = Map::of(Node::class, Graphviz\Node::class);
         $this->rewriteLocation = $rewriteLocation ?? new class implements LocationRewriter {
             public function __invoke(Url $location): Url
             {
@@ -33,6 +36,7 @@ final class Visualize
         $this->clusterize = $clusterize ?? new class implements Clusterize {
             public function __invoke(Map $nodes): Set
             {
+                /** @var Set<Graphviz\Graph> */
                 return Set::of(Graphviz\Graph::class);
             }
         };
@@ -41,7 +45,8 @@ final class Visualize
     public function __invoke(Node $node): Readable
     {
         try {
-            $this->nodes = Map::of(Node::class, Graphviz\Node::class);
+            $this->nodes = $this->nodes->clear();
+
             $graph = Graphviz\Graph\Graph::directed(
                 'G',
                 Graphviz\Graph\Rankdir::leftToRight(),
@@ -62,7 +67,7 @@ final class Visualize
 
             return (new Graphviz\Layout\Dot)($graph);
         } finally {
-            $this->nodes = null;
+            $this->nodes = $this->nodes->clear();
         }
     }
 

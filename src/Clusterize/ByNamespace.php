@@ -58,6 +58,7 @@ final class ByNamespace implements Clusterize
             $this->cluster($nodes, $cluster, $pattern);
         });
 
+        /** @var Set<Graphviz\Graph> */
         return $clusters
             ->keys()
             ->filter(static function(Graphviz\Graph $graph): bool {
