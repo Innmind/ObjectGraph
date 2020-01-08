@@ -15,6 +15,7 @@ final class Graph
             new Graph\ParseSplObjectStorage,
             new Graph\ParseIterable,
             new Graph\ParseSetAndSequence,
+            new Graph\ParseMap,
             new Graph\ExtractProperties,
         );
     }

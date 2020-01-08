@@ -88,9 +88,9 @@ class GraphTest extends TestCase
 
             public function __construct($a, $b)
             {
-                $this->map = new \SplObjectStorage;
-                $this->map->attach($a, $b);
-                $this->map->attach($b, 'foo');
+                $this->map = Map::of('object', 'mixed')
+                    ($a, $b)
+                    ($b, 'foo');
                 $this->set = Set::objects($b);
             }
         };
