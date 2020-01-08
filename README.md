@@ -39,8 +39,8 @@ $visualize = new Visualize(
             (new NamespacePattern('MyProject\App'), 'app')
             (new NamespacePattern('MyProject\Domain'), 'domain')
             (new NamespacePattern('VendorA'), 'infrastructure')
-            (new NamespacePattern('VendorB'), 'infrastructure')
-    )
+            (new NamespacePattern('VendorB'), 'infrastructure'),
+    ),
 );
 
 $objectGraph = $graph($theRootObjectOfYourApp); // the object could be the framework instance for example
@@ -51,7 +51,7 @@ ServerFactory::build()
         Command::foreground('dot')
             ->withShortOption('Tsvg')
             ->withShortOption('o', 'graph.svg')
-            ->withInput($visualize($objectGraph))
+            ->withInput($visualize($objectGraph)),
     )
     ->wait();
 ```
@@ -85,13 +85,13 @@ $bar = new Bar;
 $foo->someProperty = $bar;
 
 (new Acyclic)(
-    (new Graph)($foo)
+    (new Graph)($foo),
 ); // true
 
 $bar->someProperty = $foo;
 
 (new Acyclic)(
-    (new Graph)($foo)
+    (new Graph)($foo),
 ); // false
 ```
 
@@ -108,14 +108,14 @@ use Innmind\ObjectGraph\{
 $requestHandler = new CatchExceptions(
     new Debug(
         new Security(
-            new Router($controllers)
-        )
-    )
+            new Router($controllers),
+        ),
+    ),
 );
 $stack = Stack::of(
     CatchExceptions::class,
     Security::class,
-    Router::class
+    Router::class,
 );
 
 $stack((new Graph)($requestHandler)); // true
@@ -123,9 +123,9 @@ $stack((new Graph)($requestHandler)); // true
 $requestHandler = new Security(
     new CatchExceptions(
         new Debug(
-            new Router($controllers)
-        )
-    )
+            new Router($controllers),
+        ),
+    ),
 );
 
 $stack((new Graph)($requestHandler)); // false as Security is above CatchExceptions
@@ -144,13 +144,13 @@ use Innmind\ObjectGraph\{
 $boundary = Boundary::of(
     'BoundedContext\\Foo', // namespace to protect
     'BoundedContext\\Bar',
-    'BoundedContext\\Baz'
+    'BoundedContext\\Baz',
 );
 
 $object = new BoundedContext\Foo\SomeClass(
     new Indirection(
-        new BoundedContext\Bar\SomeClass
-    )
+        new BoundedContext\Bar\SomeClass,
+    ),
 );
 
 $boundary((new Graph)($object)); // false as Foo depends on Bar
