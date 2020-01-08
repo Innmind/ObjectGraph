@@ -33,14 +33,23 @@ final class ParseIterable implements Visit
         $i = 0;
 
         foreach ($object as $key => $value) {
-            $pair = new Pair($key, $value);
-            $nodes = $visit($nodes, $pair, $visit);
-            $pairNode = $nodes->get($pair);
+            if (\is_object($key)) {
+                $nodes = $visit($nodes, $key, $visit);
+                $keyNode = $nodes->get($key);
 
-            if (!$pairNode->relations()->empty()) {
                 $node->relate(new Relation(
-                    new Relation\Property((string) $i),
-                    $pairNode,
+                    new Relation\Property("key[$i]"),
+                    $keyNode,
+                ));
+            }
+
+            if (\is_object($value)) {
+                $nodes = $visit($nodes, $value, $visit);
+                $valueNode = $nodes->get($value);
+
+                $node->relate(new Relation(
+                    new Relation\Property("value[$i]"),
+                    $valueNode,
                 ));
             }
 

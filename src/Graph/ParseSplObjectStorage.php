@@ -34,13 +34,27 @@ final class ParseSplObjectStorage implements Visit
 
         foreach ($object as $key) {
             $value = $object[$key];
-            $pair = new Pair($key, $value);
-            $nodes = $visit($nodes, $pair, $visit);
 
-            $node->relate(new Relation(
-                new Relation\Property((string) $i),
-                $nodes->get($pair),
-            ));
+            if (\is_object($key)) {
+                $nodes = $visit($nodes, $key, $visit);
+                $keyNode = $nodes->get($key);
+
+                $node->relate(new Relation(
+                    new Relation\Property("key[$i]"),
+                    $keyNode,
+                ));
+            }
+
+            if (\is_object($value)) {
+                $nodes = $visit($nodes, $value, $visit);
+                $valueNode = $nodes->get($value);
+
+                $node->relate(new Relation(
+                    new Relation\Property("value[$i]"),
+                    $valueNode,
+                ));
+            }
+
             ++$i;
         }
 

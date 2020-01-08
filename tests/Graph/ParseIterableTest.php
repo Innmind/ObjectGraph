@@ -58,10 +58,10 @@ class ParseIterableTest extends TestCase
         $this->assertNotSame($nodes, $newNodes);
         $node = $newNodes->get($iterable);
         $relations = unwrap($node->relations());
-        $this->assertCount(1, $relations);
-        $relations = unwrap($relations[0]->node()->relations());
         $this->assertCount(2, $relations);
+        $this->assertSame('key[0]', $relations[0]->property()->toString());
         $this->assertTrue($relations[0]->node()->comesFrom($key));
+        $this->assertSame('value[0]', $relations[1]->property()->toString());
         $this->assertTrue($relations[1]->node()->comesFrom($value));
     }
 }
