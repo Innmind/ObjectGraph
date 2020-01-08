@@ -14,6 +14,7 @@ final class Graph
         $this->visit = new Graph\Delegate(
             new Graph\ParseSplObjectStorage,
             new Graph\ParseIterable,
+            new Graph\ParseSetAndSequence,
             new Graph\ExtractProperties,
         );
     }

@@ -91,7 +91,7 @@ class GraphTest extends TestCase
                 $this->map = new \SplObjectStorage;
                 $this->map->attach($a, $b);
                 $this->map->attach($b, 'foo');
-                $this->set = [$b];
+                $this->set = Set::objects($b);
             }
         };
 
