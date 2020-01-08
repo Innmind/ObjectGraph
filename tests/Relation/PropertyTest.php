@@ -15,7 +15,7 @@ class PropertyTest extends TestCase
     {
         $class = new Property('foo');
 
-        $this->assertSame('foo', (string) $class);
+        $this->assertSame('foo', $class->toString());
     }
 
     public function testThrowWhenEmptyClass()

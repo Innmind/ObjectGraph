@@ -3,9 +3,9 @@ declare(strict_types = 1);
 
 namespace Innmind\ObjectGraph;
 
-use Innmind\Url\UrlInterface;
+use Innmind\Url\Url;
 
 interface LocationRewriter
 {
-    public function __invoke(UrlInterface $location): UrlInterface;
+    public function __invoke(Url $location): Url;
 }

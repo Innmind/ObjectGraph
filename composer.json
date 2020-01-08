@@ -15,11 +15,11 @@
         "issues": "http://github.com/Innmind/ObjectGraph/issues"
     },
     "require": {
-        "php": "~7.2",
-        "innmind/immutable": "^2.13",
-        "innmind/reflection": "^3.0",
-        "innmind/graphviz": "^1.2",
-        "innmind/url": "^2.0"
+        "php": "~7.4",
+        "innmind/immutable": "~3.0",
+        "innmind/reflection": "~4.0",
+        "innmind/graphviz": "~2.0",
+        "innmind/url": "~3.0"
     },
     "autoload": {
         "psr-4": {
@@ -33,7 +33,8 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "~8.0"
+        "phpunit/phpunit": "~8.0",
+        "vimeo/psalm": "~3.7.0"
     },
     "scripts": {
         "test": "vendor/bin/phpunit --colors=always"

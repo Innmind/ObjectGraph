@@ -11,7 +11,7 @@ use Innmind\ObjectGraph\{
 
 final class AccessObjectNode
 {
-    private $object;
+    private object $object;
 
     public function __construct(object $object)
     {
@@ -42,7 +42,7 @@ final class AccessObjectNode
             null,
             function(?Node $target, Relation $relation): ?Node {
                 return $target ?? $this->visit($relation->node());
-            }
+            },
         );
     }
 }

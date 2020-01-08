@@ -7,10 +7,7 @@ use Innmind\ObjectGraph\{
     LocationRewriter\SublimeHandler,
     LocationRewriter,
 };
-use Innmind\Url\{
-    UrlInterface,
-    Url,
-};
+use Innmind\Url\Url;
 use PHPUnit\Framework\TestCase;
 
 class SublimeHandlerTest extends TestCase
@@ -22,9 +19,9 @@ class SublimeHandlerTest extends TestCase
 
     public function testInvokation()
     {
-        $url = (new SublimeHandler)(Url::fromString('http://example.com/foo'));
+        $url = (new SublimeHandler)(Url::of('http://example.com/foo'));
 
-        $this->assertInstanceOf(UrlInterface::class, $url);
-        $this->assertSame('sublime://example.com/foo', (string) $url);
+        $this->assertInstanceOf(Url::class, $url);
+        $this->assertSame('sublime://example.com/foo', $url->toString());
     }
 }

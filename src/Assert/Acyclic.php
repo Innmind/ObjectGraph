@@ -7,10 +7,7 @@ use Innmind\ObjectGraph\{
     Node,
     Relation,
 };
-use Innmind\Immutable\{
-    SetInterface,
-    Set,
-};
+use Innmind\Immutable\Set;
 
 final class Acyclic
 {
@@ -25,9 +22,9 @@ final class Acyclic
         }
     }
 
-    private function visit(Node $node, SetInterface $visiting): void
+    private function visit(Node $node, Set $visiting): void
     {
-        $visiting = $visiting->add($node);
+        $visiting = ($visiting)($node);
         $node->relations()->foreach(function(Relation $relation) use ($visiting): void {
             if ($visiting->contains($relation->node())) {
                 throw new \Exception;

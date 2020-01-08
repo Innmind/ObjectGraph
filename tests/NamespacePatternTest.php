@@ -15,7 +15,7 @@ class NamespacePatternTest extends TestCase
     {
         $namespace = new NamespacePattern('Foo\Bar');
 
-        $this->assertSame('Foo\\Bar', (string) $namespace);
+        $this->assertSame('Foo\\Bar', $namespace->toString());
     }
 
     public function testThrowWhenNamespaceStartsWithANumber()

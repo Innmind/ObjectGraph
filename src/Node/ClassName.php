@@ -8,7 +8,7 @@ use Innmind\Immutable\Str;
 
 final class ClassName
 {
-    private $value;
+    private string $value;
 
     public function __construct(object $object)
     {
@@ -17,13 +17,13 @@ final class ClassName
 
     public function in(NamespacePattern $namespace): bool
     {
-        $namespace = (string) $namespace;
+        $namespace = $namespace->toString();
         $self = Str::of($this->value);
 
         return $self->contains($namespace) && $self->position($namespace) === 0;
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->value;
     }

@@ -8,8 +8,9 @@ use Innmind\ObjectGraph\{
     Relation,
     Relation\Property,
 };
-use Innmind\Url\UrlInterface;
-use Innmind\Immutable\SetInterface;
+use Innmind\Url\Url;
+use Innmind\Immutable\Set;
+use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
 
 class NodeTest extends TestCase
@@ -18,17 +19,17 @@ class NodeTest extends TestCase
     {
         $node = new Node($object = new class {});
 
-        $this->assertInstanceOf(SetInterface::class, $node->relations());
-        $this->assertSame(Relation::class, (string) $node->relations()->type());
-        $this->assertInstanceOf(UrlInterface::class, $node->location());
-        $this->assertSame('file://'.__FILE__, (string) $node->location());
+        $this->assertInstanceOf(Set::class, $node->relations());
+        $this->assertSame(Relation::class, $node->relations()->type());
+        $this->assertInstanceOf(Url::class, $node->location());
+        $this->assertSame('file://'.__FILE__, $node->location()->toString());
         $this->assertCount(0, $node->relations());
-        $this->assertSame($node, $node->relate($relation = new Relation(
+        $this->assertNull($node->relate($relation = new Relation(
             new Property('bar'),
             new Node(new \stdClass)
         )));
         $this->assertCount(1, $node->relations());
-        $this->assertSame([$relation], $node->relations()->toPrimitive());
+        $this->assertSame([$relation], unwrap($node->relations()));
         $this->assertNull($node->removeRelations());
         $this->assertCount(0, $node->relations());
         $this->assertTrue($node->comesFrom($object));

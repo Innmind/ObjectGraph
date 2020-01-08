@@ -8,7 +8,7 @@ use Innmind\Immutable\Str;
 
 final class NamespacePattern
 {
-    private $value;
+    private string $value;
 
     public function __construct(string $value)
     {
@@ -19,7 +19,7 @@ final class NamespacePattern
         $this->value = $value;
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->value;
     }

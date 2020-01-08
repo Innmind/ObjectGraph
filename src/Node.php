@@ -7,26 +7,23 @@ use Innmind\ObjectGraph\{
     Node\ClassName,
     Node\Reference,
 };
-use Innmind\Url\{
-    UrlInterface,
-    Url,
-};
+use Innmind\Url\Url;
 use Innmind\Immutable\{
     Map,
-    SetInterface,
     Set,
 };
+use function Innmind\Immutable\unwrap;
 
 final class Node
 {
-    private $class;
-    private $reference;
-    private $location;
-    private $relations;
-    private $dependency = false;
-    private $dependent = false;
-    private $highlighted = false;
-    private $highlightingPath = false;
+    private ClassName $class;
+    private Reference $reference;
+    private Url $location;
+    private Map $relations;
+    private bool $dependency = false;
+    private bool $dependent = false;
+    private bool $highlighted = false;
+    private bool $highlightingPath = false;
 
     public function __construct(object $object)
     {
@@ -34,18 +31,16 @@ final class Node
 
         $this->class = new ClassName($object);
         $this->reference = new Reference($object);
-        $this->location = Url::fromString('file://'.$file);
+        $this->location = Url::of('file://'.$file);
         $this->relations = Map::of('string', Relation::class);
     }
 
-    public function relate(Relation $relation): self
+    public function relate(Relation $relation): void
     {
-        $this->relations = $this->relations->put(
-            (string) $relation->property(),
-            $relation
+        $this->relations = ($this->relations)(
+            $relation->property()->toString(),
+            $relation,
         );
-
-        return $this;
     }
 
     public function class(): ClassName
@@ -58,17 +53,17 @@ final class Node
         return $this->reference;
     }
 
-    public function location(): UrlInterface
+    public function location(): Url
     {
         return $this->location;
     }
 
     /**
-     * @return SetInterface<Relation>
+     * @return Set<Relation>
      */
-    public function relations(): SetInterface
+    public function relations(): Set
     {
-        return Set::of(Relation::class, ...$this->relations->values());
+        return $this->relations->values()->toSetOf(Relation::class);
     }
 
     public function removeRelations(): void
@@ -82,7 +77,7 @@ final class Node
             false,
             function(bool $isDependent, Relation $relation) use ($dependency): bool {
                 return $isDependent || $relation->node()->comesFrom($dependency);
-            }
+            },
         );
     }
 
@@ -135,12 +130,13 @@ final class Node
 
         $this->highlightingPath = true;
 
-        $highlighted = $this
+        $this
             ->relations
             ->values()
             ->foreach(static function(Relation $relation) use ($object): void {
                 $relation->highlightPathTo($object);
-            })
+            });
+        $highlighted = $this->relations->values()
             ->filter(static function(Relation $relation): bool {
                 return $relation->highlighted();
             });

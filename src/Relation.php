@@ -7,9 +7,9 @@ use Innmind\ObjectGraph\Relation\Property;
 
 final class Relation
 {
-    private $property;
-    private $node;
-    private $highlighted = false;
+    private Property $property;
+    private Node $node;
+    private bool $highlighted = false;
 
     public function __construct(Property $property, Node $node)
     {

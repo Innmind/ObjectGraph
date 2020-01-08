@@ -12,7 +12,11 @@ use Innmind\ObjectGraph\{
 use Innmind\Graphviz;
 use Innmind\Immutable\{
     Map,
-    SetInterface,
+    Set,
+};
+use function Innmind\Immutable\{
+    first,
+    unwrap,
 };
 use Fixtures\Innmind\ObjectGraph\{
     Foo,
@@ -34,7 +38,7 @@ class ByNamespaceTest extends TestCase
     public function testThrowWhenInvalidMapKey()
     {
         $this->expectException(\TypeError::class);
-        $this->expectExceptionMessage('Argument 1 must be of type MapInterface<Innmind\ObjectGraph\NamespacePattern, string>');
+        $this->expectExceptionMessage('Argument 1 must be of type Map<Innmind\ObjectGraph\NamespacePattern, string>');
 
         new ByNamespace(Map::of('string', 'string'));
     }
@@ -42,7 +46,7 @@ class ByNamespaceTest extends TestCase
     public function testThrowWhenInvalidMapValue()
     {
         $this->expectException(\TypeError::class);
-        $this->expectExceptionMessage('Argument 1 must be of type MapInterface<Innmind\ObjectGraph\NamespacePattern, string>');
+        $this->expectExceptionMessage('Argument 1 must be of type Map<Innmind\ObjectGraph\NamespacePattern, string>');
 
         new ByNamespace(Map::of(NamespacePattern::class, 'object'));
     }
@@ -75,35 +79,36 @@ class ByNamespaceTest extends TestCase
                 (new Node($foo3), $foo3 = Graphviz\Node\Node::named('foo3'))
         );
 
-        $this->assertInstanceOf(SetInterface::class, $clusters);
-        $this->assertSame(Graphviz\Graph::class, (string) $clusters->type());
+        $this->assertInstanceOf(Set::class, $clusters);
+        $this->assertSame(Graphviz\Graph::class, $clusters->type());
         $this->assertCount(3, $clusters);
-        $cluster = $clusters->current();
-        $this->assertSame('foo', (string) $cluster->name());
+        $cluster = first($clusters);
+        $this->assertSame('foo', $cluster->name()->toString());
         $this->assertCount(3, $cluster->roots());
-        $roots = $cluster->roots();
-        $this->assertSame('foo', (string) $roots->current()->name());
-        $this->assertNotSame($foo, $roots->current());
-        $roots->next();
-        $this->assertSame('foo2', (string) $roots->current()->name());
-        $this->assertNotSame($foo2, $roots->current());
-        $roots->next();
-        $this->assertSame('foo3', (string) $roots->current()->name());
-        $this->assertNotSame($foo3, $roots->current());
-        $clusters->next();
-        $cluster = $clusters->current();
-        $this->assertSame('bar', (string) $cluster->name());
+        $roots = unwrap($cluster->roots());
+        $this->assertSame('foo', current($roots)->name()->toString());
+        $this->assertNotSame($foo, current($roots));
+        next($roots);
+        $this->assertSame('foo2', current($roots)->name()->toString());
+        $this->assertNotSame($foo2, current($roots));
+        next($roots);
+        $this->assertSame('foo3', current($roots)->name()->toString());
+        $this->assertNotSame($foo3, current($roots));
+        $clusters = unwrap($clusters);
+        next($clusters);
+        $cluster = current($clusters);
+        $this->assertSame('bar', $cluster->name()->toString());
+        $this->assertCount(1, $cluster->roots());
+        $roots = unwrap($cluster->roots());
+        $this->assertSame('bar', current($roots)->name()->toString());
+        $this->assertNotSame($bar, current($roots));
+        next($clusters);
+        $cluster = current($clusters);
+        $this->assertSame('baz', $cluster->name()->toString());
         $this->assertCount(1, $cluster->roots());
         $roots = $cluster->roots();
-        $this->assertSame('bar', (string) $roots->current()->name());
-        $this->assertNotSame($bar, $roots->current());
-        $clusters->next();
-        $cluster = $clusters->current();
-        $this->assertSame('baz', (string) $cluster->name());
-        $this->assertCount(1, $cluster->roots());
-        $roots = $cluster->roots();
-        $this->assertSame('baz', (string) $roots->current()->name());
-        $this->assertNotSame($baz, $roots->current());
+        $this->assertSame('baz', first($roots)->name()->toString());
+        $this->assertNotSame($baz, first($roots));
     }
 
     public function testClustersInstancesAreNotReused()

@@ -7,18 +7,15 @@ use Innmind\ObjectGraph\{
     Node,
     Relation,
 };
-use Innmind\Immutable\{
-    SetInterface,
-    Set,
-};
+use Innmind\Immutable\Set;
 
 final class FlagDependents
 {
-    private $dependencies;
+    private Set $dependencies;
 
     public function __construct(object ...$dependencies)
     {
-        $this->dependencies = Set::of('object', ...$dependencies);
+        $this->dependencies = Set::objects(...$dependencies);
     }
 
     public function __invoke(Node $node): void
@@ -26,7 +23,7 @@ final class FlagDependents
         $this->visit($node, Set::of(Node::class));
     }
 
-    private function visit(Node $node, SetInterface $visited): SetInterface
+    private function visit(Node $node, Set $visited): Set
     {
         if ($visited->contains($node)) {
             return $visited;
@@ -37,11 +34,10 @@ final class FlagDependents
         }
 
         return $node->relations()->reduce(
-            $visited->add($node),
-            function(SetInterface $visited, Relation $relation): SetInterface
-            {
+            ($visited)($node),
+            function(Set $visited, Relation $relation): Set {
                 return $this->visit($relation->node(), $visited);
-            }
+            },
         );
     }
 
@@ -51,7 +47,7 @@ final class FlagDependents
             false,
             static function(bool $isDependent, object $dependency) use ($node): bool {
                 return $isDependent || $node->dependsOn($dependency);
-            }
+            },
         );
     }
 }

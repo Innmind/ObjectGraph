@@ -5,7 +5,7 @@ namespace Innmind\ObjectGraph\Node;
 
 final class Reference
 {
-    private $value;
+    private string $value;
 
     public function __construct(object $object)
     {
@@ -14,10 +14,10 @@ final class Reference
 
     public function equals(self $self): bool
     {
-        return (string) $this === (string) $self;
+        return $this->value === $self->value;
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->value;
     }
