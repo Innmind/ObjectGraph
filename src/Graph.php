@@ -59,24 +59,24 @@ final class Graph
                 return !$iterables->contains($property); // because an iterable can be an object
             });
 
-        $node = $this->visitIterables($node, $iterables);
+        $this->visitIterables($node, $iterables);
+        $this->visitObjects($node, $objects);
 
-        return $this->visitObjects($node, $objects);
+        return $node;
     }
 
     /**
      * @param Map<string, iterable> $properties
      */
-    private function visitIterables(Node $node, Map $properties): Node
+    private function visitIterables(Node $node, Map $properties): void
     {
         // this function transform any "property:string => iterable" into the
         // format "property:string ArrayObject<Innmind\Immutable\Pair>" so it
         // can respect the fact that a property is referenced only once in a node
         // it as the side effect of modifying the true nature of the iterable
         // but it is the only solution to adapt to any types of iterables
-        return $properties->reduce(
-            $node,
-            function(Node $node, string $property, iterable $iterable): Node {
+        $properties->foreach(
+            function(string $property, iterable $iterable) use ($node): void {
                 $pairs = Map::of('int', Pair::class);
 
                 foreach ($iterable as $key => $value) {
@@ -86,18 +86,18 @@ final class Graph
                     );
                 }
 
-                $collection = $pairs->reduce(
-                    new Node(new \ArrayObject),
-                    function(Node $collection, int $index, Pair $pair): Node {
+                $collection = new Node(new \ArrayObject);
+                $pairs->foreach(
+                    function(int $index, Pair $pair) use ($collection): void {
                         $node = $this->visit($pair);
 
                         if ($node->relations()->size() === 0) {
                             // do not add the pair in the graph if it doesn't
                             // contain any object
-                            return $collection;
+                            return;
                         }
 
-                        return $collection->relate(new Relation(
+                        $collection->relate(new Relation(
                             new Relation\Property((string) $index),
                             $node,
                         ));
@@ -107,10 +107,10 @@ final class Graph
                 if ($collection->relations()->size() === 0) {
                     // do not add the collection to the graph if it doesn't
                     // contain any object
-                    return $node;
+                    return;
                 }
 
-                return $node->relate(new Relation(
+                $node->relate(new Relation(
                     new Relation\Property($property),
                     $collection,
                 ));
@@ -121,16 +121,13 @@ final class Graph
     /**
      * @param  Map<string, object> $properties
      */
-    private function visitObjects(Node $node, Map $properties): Node
+    private function visitObjects(Node $node, Map $properties): void
     {
-        return $properties->reduce(
-            $node,
-            function(Node $node, string $property, object $value): Node {
-                return $node->relate(new Relation(
-                    new Relation\Property($property),
-                    $this->visit($value),
-                ));
-            },
+        $properties->foreach(
+            fn(string $property, object $value) => $node->relate(new Relation(
+                new Relation\Property($property),
+                $this->visit($value),
+            )),
         );
     }
 }

@@ -35,14 +35,12 @@ final class Node
         $this->relations = Map::of('string', Relation::class);
     }
 
-    public function relate(Relation $relation): self
+    public function relate(Relation $relation): void
     {
         $this->relations = ($this->relations)(
             $relation->property()->toString(),
             $relation,
         );
-
-        return $this;
     }
 
     public function class(): ClassName

@@ -24,7 +24,7 @@ class NodeTest extends TestCase
         $this->assertInstanceOf(Url::class, $node->location());
         $this->assertSame('file://'.__FILE__, $node->location()->toString());
         $this->assertCount(0, $node->relations());
-        $this->assertSame($node, $node->relate($relation = new Relation(
+        $this->assertNull($node->relate($relation = new Relation(
             new Property('bar'),
             new Node(new \stdClass)
         )));
