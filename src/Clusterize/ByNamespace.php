@@ -20,12 +20,17 @@ use function Innmind\Immutable\{
 
 final class ByNamespace implements Clusterize
 {
+    /** @var Map<NamespacePattern, string> */
     private Map $clusters;
 
+    /**
+     * @param Map<NamespacePattern, string> $clusters
+     */
     public function __construct(Map $clusters)
     {
         assertMap(NamespacePattern::class, 'string', $clusters, 1);
 
+        /** @var Map<NamespacePattern, string> */
         $this->clusters = $clusters;
     }
 
