@@ -13,6 +13,7 @@ use Innmind\Immutable\Set;
 final class Boundary
 {
     private NamespacePattern $namespace;
+    /** @var Set<NamespacePattern> */
     private Set $exclusions;
 
     public function __construct(
@@ -21,6 +22,7 @@ final class Boundary
         NamespacePattern ...$exclusions
     ) {
         $this->namespace = $namespace;
+        /** @var Set<NamespacePattern> */
         $this->exclusions = Set::of(NamespacePattern::class, $exclusion, ...$exclusions);
     }
 
