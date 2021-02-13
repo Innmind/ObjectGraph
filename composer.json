@@ -35,8 +35,5 @@
     "require-dev": {
         "phpunit/phpunit": "~8.0",
         "vimeo/psalm": "~3.7"
-    },
-    "scripts": {
-        "test": "vendor/bin/phpunit --colors=always"
     }
 }
