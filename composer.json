@@ -15,7 +15,7 @@
         "issues": "http://github.com/Innmind/ObjectGraph/issues"
     },
     "require": {
-        "php": "~7.4",
+        "php": "~7.4|~8.0",
         "innmind/immutable": "~3.0",
         "innmind/reflection": "~4.0",
         "innmind/graphviz": "~2.0",
