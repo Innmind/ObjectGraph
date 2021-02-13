@@ -12,13 +12,13 @@ use Innmind\Immutable\{
     Map,
     Set,
 };
-use function Innmind\Immutable\unwrap;
 
 final class Node
 {
     private ClassName $class;
     private Reference $reference;
     private Url $location;
+    /** @var Map<string, Relation> */
     private Map $relations;
     private bool $dependency = false;
     private bool $dependent = false;
@@ -32,6 +32,7 @@ final class Node
         $this->class = new ClassName($object);
         $this->reference = new Reference($object);
         $this->location = Url::of('file://'.$file);
+        /** @var Map<string, Relation> */
         $this->relations = Map::of('string', Relation::class);
     }
 
@@ -75,7 +76,7 @@ final class Node
     {
         return $this->relations->values()->reduce(
             false,
-            function(bool $isDependent, Relation $relation) use ($dependency): bool {
+            static function(bool $isDependent, Relation $relation) use ($dependency): bool {
                 return $isDependent || $relation->node()->comesFrom($dependency);
             },
         );

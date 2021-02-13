@@ -11,6 +11,7 @@ use Innmind\Immutable\Set;
 
 final class FlagDependencies
 {
+    /** @var Set<object> */
     private Set $dependencies;
 
     public function __construct(object ...$dependencies)

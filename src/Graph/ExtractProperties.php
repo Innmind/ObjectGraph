@@ -37,6 +37,7 @@ final class ExtractProperties implements Visit
 
         $properties = ReflectionClass::of(\get_class($object))->properties();
 
+        /** @var Map<string, mixed> */
         $properties = ReflectionObject::of(
             $object,
             null,
@@ -47,6 +48,7 @@ final class ExtractProperties implements Visit
 
         /**
          * @psalm-suppress MissingClosureReturnType
+         * @psalm-suppress MixedArgumentTypeCoercion
          * @var Map<object, Node>
          */
         return $properties
@@ -57,7 +59,7 @@ final class ExtractProperties implements Visit
 
                 return $value;
             })
-            ->filter(fn(string $property, $value): bool => \is_object($value))
+            ->filter(static fn(string $property, $value): bool => \is_object($value))
             ->reduce(
                 $nodes,
                 static function(Map $nodes, string $property, object $value) use ($visit, $node): Map {

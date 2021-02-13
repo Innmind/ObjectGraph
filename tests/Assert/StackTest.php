@@ -94,7 +94,7 @@ class StackTest extends TestCase
         $b->foo = $c;
         $c->foo = $a;
 
-        $stack = Stack::of(get_class($a), get_class($b), get_class($c));
+        $stack = Stack::of(\get_class($a), \get_class($b), \get_class($c));
 
         $this->assertTrue($stack(
             (new Graph)($a)

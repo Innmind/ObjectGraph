@@ -22,12 +22,18 @@ class RemoveDependenciesSubGraphTest extends TestCase
         //  |              |------|
         //  |-> level11
         //       |-> level4
-        $root = new Node(new class {});
-        $level10 = new Node(new class {});
-        $level11 = new Node(new class {});
-        $level2 = new Node(new class {});
-        $level3 = new Node(new class {});
-        $level4 = new Node(new class {});
+        $root = new Node(new class {
+        });
+        $level10 = new Node(new class {
+        });
+        $level11 = new Node(new class {
+        });
+        $level2 = new Node(new class {
+        });
+        $level3 = new Node(new class {
+        });
+        $level4 = new Node(new class {
+        });
         $root->relate($foo = new Relation(
             new Property('level10'),
             $level10

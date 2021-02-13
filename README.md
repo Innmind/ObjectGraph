@@ -1,9 +1,8 @@
 # ObjectGraph
 
-| `develop` |
-|-----------|
-| [![codecov](https://codecov.io/gh/Innmind/ObjectGraph/branch/develop/graph/badge.svg)](https://codecov.io/gh/Innmind/ObjectGraph) |
-| [![Build Status](https://github.com/Innmind/ObjectGraph/workflows/CI/badge.svg)](https://github.com/Innmind/ObjectGraph/actions?query=workflow%3ACI) |
+[![Build Status](https://github.com/innmind/objectgraph/workflows/CI/badge.svg?branch=master)](https://github.com/innmind/objectgraph/actions?query=workflow%3ACI)
+[![codecov](https://codecov.io/gh/innmind/objectgraph/branch/develop/graph/badge.svg)](https://codecov.io/gh/innmind/objectgraph)
+[![Type Coverage](https://shepherd.dev/github/innmind/objectgraph/coverage.svg)](https://shepherd.dev/github/innmind/objectgraph)
 
 Small library to generate an abstract graph out of an object and its dependencies.
 
