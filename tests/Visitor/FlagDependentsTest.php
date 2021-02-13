@@ -19,10 +19,14 @@ class FlagDependentsTest extends TestCase
         //  |-> level1 ------------|
         //       |-> level2        |
         //            |-> level3 <-|
-        $root = new Node(new class {});
-        $level1 = new Node(new class {});
-        $level2 = new Node(new class {});
-        $level3 = new Node($dependency = new class {});
+        $root = new Node(new class {
+        });
+        $level1 = new Node(new class {
+        });
+        $level2 = new Node(new class {
+        });
+        $level3 = new Node($dependency = new class {
+        });
         $root->relate(new Relation(
             new Property('level1'),
             $level1

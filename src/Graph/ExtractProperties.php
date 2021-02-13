@@ -59,7 +59,7 @@ final class ExtractProperties implements Visit
 
                 return $value;
             })
-            ->filter(fn(string $property, $value): bool => \is_object($value))
+            ->filter(static fn(string $property, $value): bool => \is_object($value))
             ->reduce(
                 $nodes,
                 static function(Map $nodes, string $property, object $value) use ($visit, $node): Map {

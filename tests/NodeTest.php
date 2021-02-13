@@ -17,7 +17,8 @@ class NodeTest extends TestCase
 {
     public function testInterface()
     {
-        $node = new Node($object = new class {});
+        $node = new Node($object = new class {
+        });
 
         $this->assertInstanceOf(Set::class, $node->relations());
         $this->assertSame(Relation::class, $node->relations()->type());
@@ -33,7 +34,8 @@ class NodeTest extends TestCase
         $this->assertNull($node->removeRelations());
         $this->assertCount(0, $node->relations());
         $this->assertTrue($node->comesFrom($object));
-        $this->assertFalse($node->comesFrom(new class {}));
+        $this->assertFalse($node->comesFrom(new class {
+        }));
         $this->assertFalse($node->isDependency());
         $this->assertNull($node->flagAsDependency());
         $this->assertTrue($node->isDependency());
@@ -48,7 +50,8 @@ class NodeTest extends TestCase
 
     public function testHighlightingPathInARecursiveGraphDoesNotSegfault()
     {
-        $node = new Node(new class {});
+        $node = new Node(new class {
+        });
         $node->relate(new Relation(
             new Property('self'),
             $node
@@ -62,7 +65,8 @@ class NodeTest extends TestCase
         $object = new class {
             public $foo;
         };
-        $dependency = new class {};
+        $dependency = new class {
+        };
         $object->foo = $dependency;
 
         $node = new Node($object);
@@ -72,7 +76,8 @@ class NodeTest extends TestCase
         ));
 
         $this->assertTrue($node->dependsOn($dependency));
-        $this->assertFalse($node->dependsOn(new class {}));
+        $this->assertFalse($node->dependsOn(new class {
+        }));
     }
 
     public function testFlagAsDependentOn()
@@ -81,8 +86,10 @@ class NodeTest extends TestCase
             public $foo;
             public $bar;
         };
-        $dependency = new class {};
-        $dependency2 = new class {};
+        $dependency = new class {
+        };
+        $dependency2 = new class {
+        };
         $object->foo = $dependency;
         $object->bar = $dependency2;
 

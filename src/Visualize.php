@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace Innmind\ObjectGraph;
 
-use Innmind\ObjectGraph\Exception\RecursiveGraph;
 use Innmind\Graphviz;
 use Innmind\Colour\RGBA;
 use Innmind\Stream\Readable;

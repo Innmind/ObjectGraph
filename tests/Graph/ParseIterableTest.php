@@ -25,7 +25,7 @@ class ParseIterableTest extends TestCase
 
     public function testDoesntParseIfAlreadyParsed()
     {
-        $iterable = (function() {
+        $iterable = (static function() {
             yield new \stdClass => new \stdClass;
         })();
         $visit = new ParseIterable;
@@ -47,7 +47,7 @@ class ParseIterableTest extends TestCase
 
     public function testParse()
     {
-        $iterable = (function($key, $value) {
+        $iterable = (static function($key, $value) {
             yield $key => $value;
         })($key = new \stdClass, $value = new \stdClass);
         $visit = new ParseIterable;

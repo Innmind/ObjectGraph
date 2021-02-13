@@ -27,11 +27,6 @@ final class Stack
         $this->nodes = Set::of(Node::class);
     }
 
-    public static function of(string ...$classes): self
-    {
-        return new self(...$classes);
-    }
-
     public function __invoke(Node $node): bool
     {
         try {
@@ -41,6 +36,11 @@ final class Stack
         } finally {
             $this->nodes = $this->nodes->clear();
         }
+    }
+
+    public static function of(string ...$classes): self
+    {
+        return new self(...$classes);
     }
 
     private function visit(Node $node, Sequence $stack): Sequence

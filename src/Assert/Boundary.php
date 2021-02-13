@@ -26,20 +26,6 @@ final class Boundary
         $this->exclusions = Set::of(NamespacePattern::class, $exclusion, ...$exclusions);
     }
 
-    public static function of(
-        string $namespace,
-        string $exclusion,
-        string ...$exclusions
-    ): self {
-        return new self(
-            new NamespacePattern($namespace),
-            new NamespacePattern($exclusion),
-            ...array_map(static function(string $exclusion): NamespacePattern {
-                return new NamespacePattern($exclusion);
-            }, $exclusions),
-        );
-    }
-
     public function __invoke(Node $node): bool
     {
         try {
@@ -49,6 +35,20 @@ final class Boundary
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    public static function of(
+        string $namespace,
+        string $exclusion,
+        string ...$exclusions
+    ): self {
+        return new self(
+            new NamespacePattern($namespace),
+            new NamespacePattern($exclusion),
+            ...\array_map(static function(string $exclusion): NamespacePattern {
+                return new NamespacePattern($exclusion);
+            }, $exclusions),
+        );
     }
 
     private function visit(Node $node): void
@@ -66,7 +66,7 @@ final class Boundary
 
     private function assert(Node $node): void
     {
-        $this->exclusions->foreach(function(NamespacePattern $namespace) use ($node): void {
+        $this->exclusions->foreach(static function(NamespacePattern $namespace) use ($node): void {
             if ($node->class()->in($namespace)) {
                 throw new \Exception;
             }

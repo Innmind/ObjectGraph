@@ -34,9 +34,6 @@ final class ByNamespace implements Clusterize
         $this->clusters = $clusters;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __invoke(Map $nodes): Set
     {
         $graphs = $this->clusters->values()->toMapOf(

@@ -12,7 +12,6 @@ use Innmind\Immutable\{
     Map,
     Set,
 };
-use function Innmind\Immutable\unwrap;
 
 final class Node
 {
@@ -77,7 +76,7 @@ final class Node
     {
         return $this->relations->values()->reduce(
             false,
-            function(bool $isDependent, Relation $relation) use ($dependency): bool {
+            static function(bool $isDependent, Relation $relation) use ($dependency): bool {
                 return $isDependent || $relation->node()->comesFrom($dependency);
             },
         );
