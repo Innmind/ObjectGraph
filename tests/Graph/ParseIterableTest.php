@@ -29,7 +29,7 @@ class ParseIterableTest extends TestCase
         })();
         $visit = new ParseIterable;
         $nodes = Map::of()
-            ($iterable, $node = new Node($iterable));
+            ($iterable, $node = Node::of($iterable));
 
         $this->assertTrue($node->relations()->empty());
         $this->assertSame($nodes, $visit($nodes, $iterable, $visit));

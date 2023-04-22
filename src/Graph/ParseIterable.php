@@ -34,7 +34,7 @@ final class ParseIterable implements Visit
             return $nodes;
         }
 
-        $node = new Node($object);
+        $node = Node::of($object);
         $nodes = ($nodes)($object, $node);
 
         $i = 0;
@@ -51,7 +51,7 @@ final class ParseIterable implements Visit
                     static fn() => throw new \LogicException,
                 );
 
-                $node->relate(new Relation(
+                $node->relate(Relation::of(
                     new Relation\Property("key[$i]"),
                     $keyNode,
                 ));
@@ -64,7 +64,7 @@ final class ParseIterable implements Visit
                     static fn() => throw new \LogicException,
                 );
 
-                $node->relate(new Relation(
+                $node->relate(Relation::of(
                     new Relation\Property("value[$i]"),
                     $valueNode,
                 ));

@@ -25,7 +25,7 @@ class ParseMapTest extends TestCase
             (new \stdClass, 42);
         $visit = new ParseMap;
         $nodes = Map::of()
-            ($map, $node = new Node($map));
+            ($map, $node = Node::of($map));
 
         $this->assertTrue($node->relations()->empty());
         $this->assertSame($nodes, $visit($nodes, $map, $visit));

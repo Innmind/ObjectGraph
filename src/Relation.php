@@ -11,10 +11,15 @@ final class Relation
     private Node $node;
     private bool $highlighted = false;
 
-    public function __construct(Property $property, Node $node)
+    private function __construct(Property $property, Node $node)
     {
         $this->property = $property;
         $this->node = $node;
+    }
+
+    public static function of(Property $property, Node $node): self
+    {
+        return new self($property, $node);
     }
 
     public function property(): Property

@@ -30,7 +30,7 @@ class ParseSetAndSequenceTest extends TestCase
     {
         $visit = new ParseSetAndSequence;
         $nodes = Map::of()
-            ($structure, $node = new Node($structure));
+            ($structure, $node = Node::of($structure));
 
         $this->assertTrue($node->relations()->empty());
         $this->assertSame($nodes, $visit($nodes, $structure, $visit));

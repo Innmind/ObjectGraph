@@ -16,16 +16,16 @@ class NodeTest extends TestCase
 {
     public function testInterface()
     {
-        $node = new Node($object = new class {
+        $node = Node::of($object = new class {
         });
 
         $this->assertInstanceOf(Set::class, $node->relations());
         $this->assertInstanceOf(Url::class, $node->location());
         $this->assertSame('file://'.__FILE__, $node->location()->toString());
         $this->assertCount(0, $node->relations());
-        $this->assertNull($node->relate($relation = new Relation(
+        $this->assertNull($node->relate($relation = Relation::of(
             new Property('bar'),
-            new Node(new \stdClass),
+            Node::of(new \stdClass),
         )));
         $this->assertCount(1, $node->relations());
         $this->assertSame([$relation], $node->relations()->toList());
@@ -48,9 +48,9 @@ class NodeTest extends TestCase
 
     public function testHighlightingPathInARecursiveGraphDoesNotSegfault()
     {
-        $node = new Node(new class {
+        $node = Node::of(new class {
         });
-        $node->relate(new Relation(
+        $node->relate(Relation::of(
             new Property('self'),
             $node,
         ));
@@ -67,10 +67,10 @@ class NodeTest extends TestCase
         };
         $object->foo = $dependency;
 
-        $node = new Node($object);
-        $node->relate(new Relation(
+        $node = Node::of($object);
+        $node->relate(Relation::of(
             new Property('foo'),
-            new Node($dependency),
+            Node::of($dependency),
         ));
 
         $this->assertTrue($node->dependsOn($dependency));
@@ -91,14 +91,14 @@ class NodeTest extends TestCase
         $object->foo = $dependency;
         $object->bar = $dependency2;
 
-        $node = new Node($object);
-        $node->relate($foo = new Relation(
+        $node = Node::of($object);
+        $node->relate($foo = Relation::of(
             new Property('foo'),
-            new Node($dependency),
+            Node::of($dependency),
         ));
-        $node->relate($bar = new Relation(
+        $node->relate($bar = Relation::of(
             new Property('bar'),
-            new Node($dependency2),
+            Node::of($dependency2),
         ));
 
         $this->assertFalse($node->isDependent());

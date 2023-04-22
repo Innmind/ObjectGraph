@@ -32,7 +32,7 @@ class ExtractPropertiesTest extends TestCase
         };
         $extract = new ExtractProperties;
         $nodes = Map::of()
-            ($object, $node = new Node($object));
+            ($object, $node = Node::of($object));
 
         $this->assertTrue($node->relations()->empty());
         $this->assertSame($nodes, $extract($nodes, $object, $extract));

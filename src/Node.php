@@ -25,7 +25,7 @@ final class Node
     private bool $highlighted = false;
     private bool $highlightingPath = false;
 
-    public function __construct(object $object)
+    private function __construct(object $object)
     {
         $file = (new \ReflectionObject($object))->getFileName();
 
@@ -34,6 +34,11 @@ final class Node
         $this->location = Url::of('file://'.$file);
         /** @var Map<string, Relation> */
         $this->relations = Map::of();
+    }
+
+    public static function of(object $object): self
+    {
+        return new self($object);
     }
 
     public function relate(Relation $relation): void

@@ -52,11 +52,11 @@ class ByNamespaceTest extends TestCase
 
         $clusters = $clusterize(
             Map::of()
-                (new Node($baz), $baz = Graphviz\Node::named('baz'))
-                (new Node($bar), $bar = Graphviz\Node::named('bar'))
-                (new Node($foo), $foo = Graphviz\Node::named('foo'))
-                (new Node($foo2), $foo2 = Graphviz\Node::named('foo2'))
-                (new Node($foo3), $foo3 = Graphviz\Node::named('foo3')),
+                (Node::of($baz), $baz = Graphviz\Node::named('baz'))
+                (Node::of($bar), $bar = Graphviz\Node::named('bar'))
+                (Node::of($foo), $foo = Graphviz\Node::named('foo'))
+                (Node::of($foo2), $foo2 = Graphviz\Node::named('foo2'))
+                (Node::of($foo3), $foo3 = Graphviz\Node::named('foo3')),
         );
 
         $this->assertInstanceOf(Set::class, $clusters);
@@ -123,11 +123,11 @@ class ByNamespaceTest extends TestCase
 
         $clusters = $clusterize(
             $nodes = Map::of()
-                (new Node($baz), Graphviz\Node::named('baz'))
-                (new Node($bar), Graphviz\Node::named('bar'))
-                (new Node($foo), Graphviz\Node::named('foo'))
-                (new Node($foo2), Graphviz\Node::named('foo2'))
-                (new Node($foo3), Graphviz\Node::named('foo3')),
+                (Node::of($baz), Graphviz\Node::named('baz'))
+                (Node::of($bar), Graphviz\Node::named('bar'))
+                (Node::of($foo), Graphviz\Node::named('foo'))
+                (Node::of($foo2), Graphviz\Node::named('foo2'))
+                (Node::of($foo3), Graphviz\Node::named('foo3')),
         );
         $clusters2 = $clusterize($nodes);
 

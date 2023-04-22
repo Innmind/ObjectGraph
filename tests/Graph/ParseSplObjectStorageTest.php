@@ -28,7 +28,7 @@ class ParseSplObjectStorageTest extends TestCase
         $spl->attach(new \stdClass, new \stdClass);
         $visit = new ParseSplObjectStorage;
         $nodes = Map::of()
-            ($spl, $node = new Node($spl));
+            ($spl, $node = Node::of($spl));
 
         $this->assertTrue($node->relations()->empty());
         $this->assertSame($nodes, $visit($nodes, $spl, $visit));

@@ -30,7 +30,7 @@ final class ExtractProperties implements Visit
             return $nodes;
         }
 
-        $node = new Node($object);
+        $node = Node::of($object);
         $nodes = ($nodes)($object, $node);
 
         $properties = ReflectionClass::of(\get_class($object))
@@ -68,7 +68,7 @@ final class ExtractProperties implements Visit
                         return $nodes;
                     }
 
-                    $node->relate(new Relation(
+                    $node->relate(Relation::of(
                         new Relation\Property($property),
                         $valueNode,
                     ));

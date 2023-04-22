@@ -19,27 +19,27 @@ class FlagDependenciesTest extends TestCase
         //  |-> level1 <----------|
         //       |-> level2       |
         //            |-> level3 -|
-        $root = new Node(new class {
+        $root = Node::of(new class {
         });
-        $level1 = new Node(new class {
+        $level1 = Node::of(new class {
         });
-        $level2 = new Node($dependency = new class {
+        $level2 = Node::of($dependency = new class {
         });
-        $level3 = new Node(new class {
+        $level3 = Node::of(new class {
         });
-        $root->relate(new Relation(
+        $root->relate(Relation::of(
             new Property('level1'),
             $level1,
         ));
-        $level1->relate(new Relation(
+        $level1->relate(Relation::of(
             new Property('level2'),
             $level2,
         ));
-        $level2->relate(new Relation(
+        $level2->relate(Relation::of(
             new Property('level3'),
             $level3,
         ));
-        $level3->relate(new Relation(
+        $level3->relate(Relation::of(
             new Property('recursion'),
             $level1,
         ));
