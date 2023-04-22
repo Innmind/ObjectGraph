@@ -44,7 +44,10 @@ final class ParseSplObjectStorage implements Visit
             $value = $object[$key];
 
             $nodes = $visit($nodes, $key, $visit);
-            $keyNode = $nodes->get($key);
+            $keyNode = $nodes->get($key)->match(
+                static fn($node) => $node,
+                static fn() => throw new \LogicException,
+            );
 
             $node->relate(new Relation(
                 new Relation\Property("key[$i]"),
@@ -53,7 +56,10 @@ final class ParseSplObjectStorage implements Visit
 
             if (\is_object($value)) {
                 $nodes = $visit($nodes, $value, $visit);
-                $valueNode = $nodes->get($value);
+                $valueNode = $nodes->get($value)->match(
+                    static fn($node) => $node,
+                    static fn() => throw new \LogicException,
+                );
 
                 $node->relate(new Relation(
                     new Relation\Property("value[$i]"),

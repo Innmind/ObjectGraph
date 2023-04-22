@@ -12,9 +12,8 @@ use Innmind\ObjectGraph\{
     Clusterize\ByNamespace,
     LocationRewriter\SublimeHandler,
 };
-use Innmind\Stream\Readable;
+use Innmind\Filesystem\File\Content;
 use Innmind\Immutable\Map;
-use function Innmind\Immutable\first;
 use Fixtures\Innmind\ObjectGraph\{
     Foo,
     Bar,
@@ -40,7 +39,7 @@ class VisualizeTest extends TestCase
 
         $dot = (new Visualize)($node);
 
-        $this->assertInstanceOf(Readable::class, $dot);
+        $this->assertInstanceOf(Content::class, $dot);
         $this->assertNotEmpty($dot->toString());
     }
 
@@ -62,7 +61,7 @@ class VisualizeTest extends TestCase
 
         $dot = (new Visualize)($node);
 
-        $this->assertInstanceOf(Readable::class, $dot);
+        $this->assertInstanceOf(Content::class, $dot);
         $this->assertNotEmpty($dot->toString());
     }
 
@@ -82,16 +81,17 @@ class VisualizeTest extends TestCase
 
         $dot = (new Visualize(new SublimeHandler))($node);
 
-        $this->assertInstanceOf(Readable::class, $dot);
+        $this->assertInstanceOf(Content::class, $dot);
         $this->assertNotEmpty($dot->toString());
     }
 
     public function testClusterize()
     {
         $clusterize = new ByNamespace(
-            Map::of(NamespacePattern::class, 'string')
-                (new NamespacePattern(Foo::class), 'foo')
-                (new NamespacePattern(Bar::class), 'bar'),
+            Map::of(
+                [new NamespacePattern(Foo::class), 'foo'],
+                [new NamespacePattern(Bar::class), 'bar'],
+            ),
         );
 
         // root
@@ -108,7 +108,7 @@ class VisualizeTest extends TestCase
 
         $dot = (new Visualize(null, $clusterize))($node);
 
-        $this->assertInstanceOf(Readable::class, $dot);
+        $this->assertInstanceOf(Content::class, $dot);
         $this->assertNotEmpty($dot->toString());
     }
 
@@ -125,11 +125,14 @@ class VisualizeTest extends TestCase
         $root = new Foo($a, $b);
 
         $node = $graph($root);
-        first($node->relations())->node()->highlight();
+        $node->relations()->find(static fn() => true)->match(
+            static fn($relation) => $relation->node()->highlight(),
+            static fn() => null,
+        );
 
         $dot = (new Visualize)($node);
 
-        $this->assertInstanceOf(Readable::class, $dot);
+        $this->assertInstanceOf(Content::class, $dot);
         $this->assertNotEmpty($dot->toString());
         $this->assertStringContainsString('#00ff00', $dot->toString());
         $this->assertSame(3, \substr_count($dot->toString(), '#00ff00')); // root + highlighted
@@ -148,11 +151,14 @@ class VisualizeTest extends TestCase
         $root = new Foo($a, $b);
 
         $node = $graph($root);
-        first($node->relations())->highlight();
+        $node->relations()->find(static fn() => true)->match(
+            static fn($relation) => $relation->highlight(),
+            static fn() => null,
+        );
 
         $dot = (new Visualize)($node);
 
-        $this->assertInstanceOf(Readable::class, $dot);
+        $this->assertInstanceOf(Content::class, $dot);
         $this->assertNotEmpty($dot->toString());
         $this->assertStringContainsString('#00ff00', $dot->toString());
         $this->assertSame(2, \substr_count($dot->toString(), '#00ff00')); // root + edge
@@ -171,11 +177,14 @@ class VisualizeTest extends TestCase
         $root = new Foo($a, $b);
 
         $node = $graph($root);
-        first($node->relations())->node()->flagAsDependent();
+        $node->relations()->find(static fn() => true)->match(
+            static fn($relation) => $relation->node()->flagAsDependent(),
+            static fn() => null,
+        );
 
         $dot = (new Visualize)($node);
 
-        $this->assertInstanceOf(Readable::class, $dot);
+        $this->assertInstanceOf(Content::class, $dot);
         $this->assertNotEmpty($dot->toString());
         $this->assertStringContainsString('#00b6ff', $dot->toString());
         $this->assertSame(1, \substr_count($dot->toString(), '#00b6ff')); // a

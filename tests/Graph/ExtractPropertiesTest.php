@@ -11,7 +11,6 @@ use Innmind\ObjectGraph\{
     Node,
 };
 use Innmind\Immutable\Map;
-use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
 
 class ExtractPropertiesTest extends TestCase
@@ -32,7 +31,7 @@ class ExtractPropertiesTest extends TestCase
             }
         };
         $extract = new ExtractProperties;
-        $nodes = Map::of('object', Node::class)
+        $nodes = Map::of()
             ($object, $node = new Node($object));
 
         $this->assertTrue($node->relations()->empty());
@@ -54,7 +53,7 @@ class ExtractPropertiesTest extends TestCase
             }
         };
         $extract = new ExtractProperties;
-        $nodes = Map::of('object', Node::class);
+        $nodes = Map::of();
 
         $newNodes = $extract(
             $nodes,
@@ -66,7 +65,10 @@ class ExtractPropertiesTest extends TestCase
         );
 
         $this->assertNotSame($nodes, $newNodes);
-        $relations = unwrap($newNodes->get($object)->relations());
+        $relations = $newNodes->get($object)->match(
+            static fn($node) => $node->relations()->toList(),
+            static fn() => null,
+        );
         $this->assertCount(2, $relations);
         $this->assertSame('prop', $relations[0]->property()->toString());
         $this->assertSame('set', $relations[1]->property()->toString());
@@ -87,7 +89,7 @@ class ExtractPropertiesTest extends TestCase
             }
         };
         $extract = new ExtractProperties;
-        $nodes = Map::of('object', Node::class);
+        $nodes = Map::of();
 
         $newNodes = $extract(
             $nodes,
@@ -96,7 +98,10 @@ class ExtractPropertiesTest extends TestCase
         );
 
         $this->assertNotSame($nodes, $newNodes);
-        $relations = unwrap($newNodes->get($object)->relations());
+        $relations = $newNodes->get($object)->match(
+            static fn($node) => $node->relations()->toList(),
+            static fn() => null,
+        );
         $this->assertCount(1, $relations);
         $this->assertSame('prop', $relations[0]->property()->toString());
     }

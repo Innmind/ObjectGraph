@@ -33,7 +33,7 @@ final class Node
         $this->reference = new Reference($object);
         $this->location = Url::of('file://'.$file);
         /** @var Map<string, Relation> */
-        $this->relations = Map::of('string', Relation::class);
+        $this->relations = Map::of();
     }
 
     public function relate(Relation $relation): void
@@ -64,7 +64,7 @@ final class Node
      */
     public function relations(): Set
     {
-        return $this->relations->values()->toSetOf(Relation::class);
+        return $this->relations->values()->toSet();
     }
 
     public function removeRelations(): void
@@ -131,7 +131,7 @@ final class Node
 
         $this->highlightingPath = true;
 
-        $this
+        $_ = $this
             ->relations
             ->values()
             ->foreach(static function(Relation $relation) use ($object): void {

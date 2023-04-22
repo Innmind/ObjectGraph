@@ -14,7 +14,7 @@ final class Acyclic
     public function __invoke(Node $node): bool
     {
         try {
-            $this->visit($node, Set::of(Node::class));
+            $this->visit($node, Set::of());
 
             return true;
         } catch (\Exception $e) {
@@ -25,7 +25,7 @@ final class Acyclic
     private function visit(Node $node, Set $visiting): void
     {
         $visiting = ($visiting)($node);
-        $node->relations()->foreach(function(Relation $relation) use ($visiting): void {
+        $_ = $node->relations()->foreach(function(Relation $relation) use ($visiting): void {
             if ($visiting->contains($relation->node())) {
                 throw new \Exception;
             }

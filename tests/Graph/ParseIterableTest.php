@@ -13,7 +13,6 @@ use Innmind\Immutable\{
     Map,
     Pair,
 };
-use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
 
 class ParseIterableTest extends TestCase
@@ -29,7 +28,7 @@ class ParseIterableTest extends TestCase
             yield new \stdClass => new \stdClass;
         })();
         $visit = new ParseIterable;
-        $nodes = Map::of('object', Node::class)
+        $nodes = Map::of()
             ($iterable, $node = new Node($iterable));
 
         $this->assertTrue($node->relations()->empty());
@@ -40,7 +39,7 @@ class ParseIterableTest extends TestCase
     public function testDoesntParseIfNotASplObjectStorage()
     {
         $visit = new ParseIterable;
-        $nodes = Map::of('object', Node::class);
+        $nodes = Map::of();
 
         $this->assertSame($nodes, $visit($nodes, new \stdClass, $visit));
     }
@@ -51,13 +50,16 @@ class ParseIterableTest extends TestCase
             yield $key => $value;
         })($key = new \stdClass, $value = new \stdClass);
         $visit = new ParseIterable;
-        $nodes = Map::of('object', Node::class);
+        $nodes = Map::of();
 
         $newNodes = $visit($nodes, $iterable, new ExtractProperties);
 
         $this->assertNotSame($nodes, $newNodes);
-        $node = $newNodes->get($iterable);
-        $relations = unwrap($node->relations());
+        $node = $newNodes->get($iterable)->match(
+            static fn($node) => $node,
+            static fn() => null,
+        );
+        $relations = $node->relations()->toList();
         $this->assertCount(2, $relations);
         $this->assertSame('key[0]', $relations[0]->property()->toString());
         $this->assertTrue($relations[0]->node()->comesFrom($key));

@@ -9,11 +9,9 @@ use Innmind\ObjectGraph\{
 };
 use Innmind\Reflection\{
     ReflectionClass,
-    ReflectionObject,
-    ExtractionStrategy\ReflectionStrategy,
+    Extract,
 };
 use Innmind\Immutable\Map;
-use function Innmind\Immutable\unwrap;
 
 final class ExtractProperties implements Visit
 {
@@ -35,15 +33,13 @@ final class ExtractProperties implements Visit
         $node = new Node($object);
         $nodes = ($nodes)($object, $node);
 
-        $properties = ReflectionClass::of(\get_class($object))->properties();
-
-        $properties = ReflectionObject::of(
-            $object,
-            null,
-            null,
-            new ReflectionStrategy,
-        )
-            ->extract(...unwrap($properties));
+        $properties = ReflectionClass::of(\get_class($object))
+            ->properties()
+            ->map(static fn($property) => $property->name());
+        $properties = (new Extract)($object, $properties)->match(
+            static fn($properties) => $properties,
+            static fn() => throw new \LogicException,
+        );
 
         /**
          * @psalm-suppress MissingClosureReturnType
@@ -63,7 +59,10 @@ final class ExtractProperties implements Visit
                 $nodes,
                 static function(Map $nodes, string $property, object $value) use ($visit, $node): Map {
                     $nodes = $visit($nodes, $value, $visit);
-                    $valueNode = $nodes->get($value);
+                    $valueNode = $nodes->get($value)->match(
+                        static fn($node) => $node,
+                        static fn() => throw new \LogicException,
+                    );
 
                     if ($value instanceof \ArrayObject && $valueNode->relations()->empty()) {
                         return $nodes;

@@ -26,22 +26,22 @@ class DelegateTest extends TestCase
             $inner3 = $this->createMock(Visit::class),
         );
         $object = new \stdClass;
-        $nodes = Map::of('object', Node::class);
+        $nodes = Map::of();
         $inner1
             ->expects($this->once())
             ->method('__invoke')
             ->with($nodes, $object, $delegate)
-            ->willReturn($nodes1 = Map::of('object', Node::class));
+            ->willReturn($nodes1 = Map::of());
         $inner2
             ->expects($this->once())
             ->method('__invoke')
             ->with($nodes1, $object, $delegate)
-            ->willReturn($nodes2 = Map::of('object', Node::class));
+            ->willReturn($nodes2 = Map::of());
         $inner3
             ->expects($this->once())
             ->method('__invoke')
             ->with($nodes2, $object, $delegate)
-            ->willReturn($nodes3 = Map::of('object', Node::class));
+            ->willReturn($nodes3 = Map::of());
 
         $this->assertSame($nodes3, $delegate($nodes, $object, $this->createMock(Visit::class)));
     }

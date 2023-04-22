@@ -10,7 +10,6 @@ use Innmind\ObjectGraph\{
 };
 use Innmind\Url\Url;
 use Innmind\Immutable\Set;
-use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
 
 class NodeTest extends TestCase
@@ -21,7 +20,6 @@ class NodeTest extends TestCase
         });
 
         $this->assertInstanceOf(Set::class, $node->relations());
-        $this->assertSame(Relation::class, $node->relations()->type());
         $this->assertInstanceOf(Url::class, $node->location());
         $this->assertSame('file://'.__FILE__, $node->location()->toString());
         $this->assertCount(0, $node->relations());
@@ -30,7 +28,7 @@ class NodeTest extends TestCase
             new Node(new \stdClass),
         )));
         $this->assertCount(1, $node->relations());
-        $this->assertSame([$relation], unwrap($node->relations()));
+        $this->assertSame([$relation], $node->relations()->toList());
         $this->assertNull($node->removeRelations());
         $this->assertCount(0, $node->relations());
         $this->assertTrue($node->comesFrom($object));

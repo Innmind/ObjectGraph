@@ -14,6 +14,9 @@ final class FlagDependents
     /** @var Set<object> */
     private Set $dependencies;
 
+    /**
+     * @no-named-arguments
+     */
     public function __construct(object ...$dependencies)
     {
         $this->dependencies = Set::objects(...$dependencies);

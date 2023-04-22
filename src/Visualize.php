@@ -4,8 +4,8 @@ declare(strict_types = 1);
 namespace Innmind\ObjectGraph;
 
 use Innmind\Graphviz;
+use Innmind\Filesystem\File\Content;
 use Innmind\Colour\RGBA;
-use Innmind\Stream\Readable;
 use Innmind\Url\Url;
 use Innmind\Immutable\{
     Map,
@@ -25,7 +25,7 @@ final class Visualize
         Clusterize $clusterize = null,
     ) {
         /** @var Map<Node, Graphviz\Node> */
-        $this->nodes = Map::of(Node::class, Graphviz\Node::class);
+        $this->nodes = Map::of();
         $this->rewriteLocation = $rewriteLocation ?? new class implements LocationRewriter {
             public function __invoke(Url $location): Url
             {
@@ -36,35 +36,38 @@ final class Visualize
             public function __invoke(Map $nodes): Set
             {
                 /** @var Set<Graphviz\Graph> */
-                return Set::of(Graphviz\Graph::class);
+                return Set::of();
             }
         };
     }
 
-    public function __invoke(Node $node): Readable
+    public function __invoke(Node $node): Content
     {
         try {
             $this->nodes = $this->nodes->clear();
 
-            $graph = Graphviz\Graph\Graph::directed(
+            $graph = Graphviz\Graph::directed(
                 'G',
-                Graphviz\Graph\Rankdir::leftToRight(),
+                Graphviz\Graph\Rankdir::leftToRight,
             );
 
             $root = $this->visit($node);
-            $root->shaped(
+            $root = $root->shaped(
                 Graphviz\Node\Shape::hexagon()
-                    ->fillWithColor(RGBA::of('#0f0'),
-                    ),
+                    ->fillWithColor(RGBA::of('#0f0')),
             );
-            $graph->add($root);
-            ($this->clusterize)($this->nodes)->foreach(
-                static function(Graphviz\Graph $cluster) use ($graph): void {
-                    $graph->cluster($cluster);
-                },
+            $graph = ($this->nodes)($node, $root)
+                ->values()
+                ->reduce(
+                    $graph,
+                    static fn(Graphviz\Graph $graph, $node) => $graph->add($node),
+                );
+            $graph = ($this->clusterize)($this->nodes)->reduce(
+                $graph,
+                static fn(Graphviz\Graph $graph, Graphviz\Graph $cluster) => $graph->cluster($cluster),
             );
 
-            return (new Graphviz\Layout\Dot)($graph);
+            return Graphviz\Layout\Dot::of()($graph);
         } finally {
             $this->nodes = $this->nodes->clear();
         }
@@ -73,36 +76,39 @@ final class Visualize
     private function visit(Node $node): Graphviz\Node
     {
         if ($this->nodes->contains($node)) {
-            return $this->nodes->get($node);
+            return $this->nodes->get($node)->match(
+                static fn($node) => $node,
+                static fn() => throw new \LogicException,
+            );
         }
 
-        $dotNode = Graphviz\Node\Node::named('object_'.$node->reference()->toString());
-        $dotNode->displayAs(
-            Str::of($node->class()->toString())
-                ->replace("\x00", '') // remove the invisible character used in the name of anonymous classes
-                ->replace('\\', '\\\\')
-                ->toString(),
-        );
-        $dotNode->target(
-            ($this->rewriteLocation)($node->location()),
-        );
+        $dotNode = Graphviz\Node::named('object_'.$node->reference()->toString())
+            ->displayAs(
+                Str::of($node->class()->toString())
+                    ->replace("\x00", '') // remove the invisible character used in the name of anonymous classes
+                    ->replace('\\', '\\\\')
+                    ->toString(),
+            )
+            ->target(
+                ($this->rewriteLocation)($node->location()),
+            );
 
         if ($node->isDependent()) {
-            $dotNode->shaped(
+            $dotNode = $dotNode->shaped(
                 Graphviz\Node\Shape::Mrecord()
                     ->fillWithColor(RGBA::of('#00b6ff')),
             );
         }
 
         if ($node->isDependency()) {
-            $dotNode->shaped(
+            $dotNode = $dotNode->shaped(
                 Graphviz\Node\Shape::box()
                     ->fillWithColor(RGBA::of('#ffb600')),
             );
         }
 
         if ($node->highlighted()) {
-            $dotNode->shaped(
+            $dotNode = $dotNode->shaped(
                 Graphviz\Node\Shape::ellipse()
                     ->withColor(RGBA::of('#0f0'))
                     ->fillWithColor(RGBA::of('#0f0')),
@@ -111,17 +117,30 @@ final class Visualize
 
         $this->nodes = ($this->nodes)($node, $dotNode);
 
-        $node->relations()->foreach(function(Relation $relation) use ($dotNode): void {
-            $child = $this->visit($relation->node());
+        $dotNode = $node
+            ->relations()
+            ->reduce(
+                $dotNode,
+                function(Graphviz\Node $dotNode, Relation $relation) {
+                    $child = $this->visit($relation->node());
 
-            $edge = $dotNode->linkedTo($child);
-            $edge->displayAs($relation->property()->toString());
+                    return $dotNode->linkedTo(
+                        $child->name(),
+                        static function($edge) use ($relation) {
+                            $edge = $edge->displayAs($relation->property()->toString());
 
-            if ($relation->highlighted()) {
-                $edge->bold();
-                $edge->useColor(RGBA::of('#0f0'));
-            }
-        });
+                            if ($relation->highlighted()) {
+                                $edge = $edge
+                                    ->bold()
+                                    ->useColor(RGBA::of('#0f0'));
+                            }
+
+                            return $edge;
+                        },
+                    );
+                },
+            );
+        $this->nodes = ($this->nodes)($node, $dotNode);
 
         return $dotNode;
     }

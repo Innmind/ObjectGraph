@@ -14,10 +14,6 @@ use Innmind\Immutable\{
     Map,
     Set,
 };
-use function Innmind\Immutable\{
-    first,
-    unwrap,
-};
 use Fixtures\Innmind\ObjectGraph\{
     Foo,
     Bar,
@@ -31,30 +27,14 @@ class ByNamespaceTest extends TestCase
     {
         $this->assertInstanceOf(
             Clusterize::class,
-            new ByNamespace(Map::of(NamespacePattern::class, 'string')),
+            new ByNamespace(Map::of()),
         );
-    }
-
-    public function testThrowWhenInvalidMapKey()
-    {
-        $this->expectException(\TypeError::class);
-        $this->expectExceptionMessage('Argument 1 must be of type Map<Innmind\ObjectGraph\NamespacePattern, string>');
-
-        new ByNamespace(Map::of('string', 'string'));
-    }
-
-    public function testThrowWhenInvalidMapValue()
-    {
-        $this->expectException(\TypeError::class);
-        $this->expectExceptionMessage('Argument 1 must be of type Map<Innmind\ObjectGraph\NamespacePattern, string>');
-
-        new ByNamespace(Map::of(NamespacePattern::class, 'object'));
     }
 
     public function testInvokation()
     {
         $clusterize = new ByNamespace(
-            Map::of(NamespacePattern::class, 'string')
+            Map::of()
                 (new NamespacePattern(Foo::class), 'foo')
                 (new NamespacePattern(Bar::class), 'bar')
                 (new NamespacePattern(Baz::class), 'baz')
@@ -71,21 +51,23 @@ class ByNamespaceTest extends TestCase
         );
 
         $clusters = $clusterize(
-            Map::of(Node::class, Graphviz\Node::class)
-                (new Node($baz), $baz = Graphviz\Node\Node::named('baz'))
-                (new Node($bar), $bar = Graphviz\Node\Node::named('bar'))
-                (new Node($foo), $foo = Graphviz\Node\Node::named('foo'))
-                (new Node($foo2), $foo2 = Graphviz\Node\Node::named('foo2'))
-                (new Node($foo3), $foo3 = Graphviz\Node\Node::named('foo3')),
+            Map::of()
+                (new Node($baz), $baz = Graphviz\Node::named('baz'))
+                (new Node($bar), $bar = Graphviz\Node::named('bar'))
+                (new Node($foo), $foo = Graphviz\Node::named('foo'))
+                (new Node($foo2), $foo2 = Graphviz\Node::named('foo2'))
+                (new Node($foo3), $foo3 = Graphviz\Node::named('foo3')),
         );
 
         $this->assertInstanceOf(Set::class, $clusters);
-        $this->assertSame(Graphviz\Graph::class, $clusters->type());
         $this->assertCount(3, $clusters);
-        $cluster = first($clusters);
+        $cluster = $clusters->find(static fn() => true)->match(
+            static fn($cluster) => $cluster,
+            static fn() => null,
+        );
         $this->assertSame('foo', $cluster->name()->toString());
         $this->assertCount(3, $cluster->roots());
-        $roots = unwrap($cluster->roots());
+        $roots = $cluster->roots()->toList();
         $this->assertSame('foo', \current($roots)->name()->toString());
         $this->assertNotSame($foo, \current($roots));
         \next($roots);
@@ -94,12 +76,12 @@ class ByNamespaceTest extends TestCase
         \next($roots);
         $this->assertSame('foo3', \current($roots)->name()->toString());
         $this->assertNotSame($foo3, \current($roots));
-        $clusters = unwrap($clusters);
+        $clusters = $clusters->toList();
         \next($clusters);
         $cluster = \current($clusters);
         $this->assertSame('bar', $cluster->name()->toString());
         $this->assertCount(1, $cluster->roots());
-        $roots = unwrap($cluster->roots());
+        $roots = $cluster->roots()->toList();
         $this->assertSame('bar', \current($roots)->name()->toString());
         $this->assertNotSame($bar, \current($roots));
         \next($clusters);
@@ -107,14 +89,23 @@ class ByNamespaceTest extends TestCase
         $this->assertSame('baz', $cluster->name()->toString());
         $this->assertCount(1, $cluster->roots());
         $roots = $cluster->roots();
-        $this->assertSame('baz', first($roots)->name()->toString());
-        $this->assertNotSame($baz, first($roots));
+        $this->assertSame(
+            'baz',
+            $roots->find(static fn() => true)->match(
+                static fn($node) => $node->name()->toString(),
+                static fn() => null,
+            ),
+        );
+        $this->assertNotSame($baz, $roots->find(static fn() => true)->match(
+            static fn($node) => $node,
+            static fn() => null,
+        ));
     }
 
     public function testClustersInstancesAreNotReused()
     {
         $clusterize = new ByNamespace(
-            Map::of(NamespacePattern::class, 'string')
+            Map::of()
                 (new NamespacePattern(Foo::class), 'foo')
                 (new NamespacePattern(Bar::class), 'bar')
                 (new NamespacePattern(Baz::class), 'baz')
@@ -131,12 +122,12 @@ class ByNamespaceTest extends TestCase
         );
 
         $clusters = $clusterize(
-            $nodes = Map::of(Node::class, Graphviz\Node::class)
-                (new Node($baz), Graphviz\Node\Node::named('baz'))
-                (new Node($bar), Graphviz\Node\Node::named('bar'))
-                (new Node($foo), Graphviz\Node\Node::named('foo'))
-                (new Node($foo2), Graphviz\Node\Node::named('foo2'))
-                (new Node($foo3), Graphviz\Node\Node::named('foo3')),
+            $nodes = Map::of()
+                (new Node($baz), Graphviz\Node::named('baz'))
+                (new Node($bar), Graphviz\Node::named('bar'))
+                (new Node($foo), Graphviz\Node::named('foo'))
+                (new Node($foo2), Graphviz\Node::named('foo2'))
+                (new Node($foo3), Graphviz\Node::named('foo3')),
         );
         $clusters2 = $clusterize($nodes);
 

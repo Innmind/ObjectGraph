@@ -20,7 +20,7 @@ final class ClassName
         $namespace = $namespace->toString();
         $self = Str::of($this->value);
 
-        return $self->contains($namespace) && $self->position($namespace) === 0;
+        return $self->startsWith($namespace);
     }
 
     public function toString(): string

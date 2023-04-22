@@ -10,7 +10,6 @@ use Innmind\ObjectGraph\{
     Node,
 };
 use Innmind\Immutable\Map;
-use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
 
 class ParseMapTest extends TestCase
@@ -22,10 +21,10 @@ class ParseMapTest extends TestCase
 
     public function testDoesntParseIfAlreadyParsed()
     {
-        $map = Map::of('mixed', 'mixed')
+        $map = Map::of()
             (new \stdClass, 42);
         $visit = new ParseMap;
-        $nodes = Map::of('object', Node::class)
+        $nodes = Map::of()
             ($map, $node = new Node($map));
 
         $this->assertTrue($node->relations()->empty());
@@ -36,25 +35,28 @@ class ParseMapTest extends TestCase
     public function testDoesntParseIfNotAnExpectedStructure()
     {
         $visit = new ParseMap;
-        $nodes = Map::of('object', Node::class);
+        $nodes = Map::of();
 
         $this->assertSame($nodes, $visit($nodes, new \stdClass, $visit));
     }
 
     public function testParse()
     {
-        $map = Map::of('mixed', 'mixed')
+        $map = Map::of()
             ($key = new \stdClass, 42)
             (42, $value = new \stdClass)
             ($value, $key);
         $visit = new ParseMap;
-        $nodes = Map::of('object', Node::class);
+        $nodes = Map::of();
 
         $newNodes = $visit($nodes, $map, new ExtractProperties);
 
         $this->assertNotSame($nodes, $newNodes);
-        $node = $newNodes->get($map);
-        $relations = unwrap($node->relations());
+        $node = $newNodes->get($map)->match(
+            static fn($node) => $node,
+            static fn() => null,
+        );
+        $relations = $node->relations()->toList();
         $this->assertCount(4, $relations);
         $this->assertSame('key[0]', $relations[0]->property()->toString());
         $this->assertTrue($relations[0]->node()->comesFrom($key));

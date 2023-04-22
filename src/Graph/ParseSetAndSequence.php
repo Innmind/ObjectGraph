@@ -12,7 +12,6 @@ use Innmind\Immutable\{
     Set,
     Sequence,
 };
-use function Innmind\Immutable\unwrap;
 
 final class ParseSetAndSequence implements Visit
 {
@@ -40,13 +39,16 @@ final class ParseSetAndSequence implements Visit
         $nodes = ($nodes)($object, $node);
 
         $i = 0;
-        $values = unwrap($object);
+        $values = $object->toList();
 
         /** @var mixed $value */
         foreach ($values as $value) {
             if (\is_object($value)) {
                 $nodes = $visit($nodes, $value, $visit);
-                $valueNode = $nodes->get($value);
+                $valueNode = $nodes->get($value)->match(
+                    static fn($node) => $node,
+                    static fn() => throw new \LogicException,
+                );
 
                 $node->relate(new Relation(
                     new Relation\Property((string) $i),

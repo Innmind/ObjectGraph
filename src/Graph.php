@@ -23,11 +23,14 @@ final class Graph
     public function __invoke(object $root): Node
     {
         $nodes = ($this->visit)(
-            Map::of('object', Node::class),
+            Map::of(),
             $root,
             $this->visit,
         );
 
-        return $nodes->get($root);
+        return $nodes->get($root)->match(
+            static fn($node) => $node,
+            static fn() => throw new \LogicException,
+        );
     }
 }

@@ -13,7 +13,6 @@ use Innmind\Immutable\{
     Map,
     Pair,
 };
-use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
 
 class ParseSplObjectStorageTest extends TestCase
@@ -28,7 +27,7 @@ class ParseSplObjectStorageTest extends TestCase
         $spl = new \SplObjectStorage;
         $spl->attach(new \stdClass, new \stdClass);
         $visit = new ParseSplObjectStorage;
-        $nodes = Map::of('object', Node::class)
+        $nodes = Map::of()
             ($spl, $node = new Node($spl));
 
         $this->assertTrue($node->relations()->empty());
@@ -39,7 +38,7 @@ class ParseSplObjectStorageTest extends TestCase
     public function testDoesntParseIfNotASplObjectStorage()
     {
         $visit = new ParseSplObjectStorage;
-        $nodes = Map::of('object', Node::class);
+        $nodes = Map::of();
 
         $this->assertSame($nodes, $visit($nodes, new \stdClass, $visit));
     }
@@ -49,13 +48,16 @@ class ParseSplObjectStorageTest extends TestCase
         $spl = new \SplObjectStorage;
         $spl->attach($key = new \stdClass, $value = new \stdClass);
         $visit = new ParseSplObjectStorage;
-        $nodes = Map::of('object', Node::class);
+        $nodes = Map::of();
 
         $newNodes = $visit($nodes, $spl, new ExtractProperties);
 
         $this->assertNotSame($nodes, $newNodes);
-        $node = $newNodes->get($spl);
-        $relations = unwrap($node->relations());
+        $node = $newNodes->get($spl)->match(
+            static fn($node) => $node,
+            static fn() => null,
+        );
+        $relations = $node->relations()->toList();
         $this->assertCount(2, $relations);
         $this->assertSame('key[0]', $relations[0]->property()->toString());
         $this->assertTrue($relations[0]->node()->comesFrom($key));

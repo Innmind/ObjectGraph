@@ -14,7 +14,6 @@ use Innmind\Immutable\{
     Set,
     Sequence,
 };
-use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
 
 class ParseSetAndSequenceTest extends TestCase
@@ -30,7 +29,7 @@ class ParseSetAndSequenceTest extends TestCase
     public function testDoesntParseIfAlreadyParsed($structure)
     {
         $visit = new ParseSetAndSequence;
-        $nodes = Map::of('object', Node::class)
+        $nodes = Map::of()
             ($structure, $node = new Node($structure));
 
         $this->assertTrue($node->relations()->empty());
@@ -41,7 +40,7 @@ class ParseSetAndSequenceTest extends TestCase
     public function testDoesntParseIfNotAnExpectedStructure()
     {
         $visit = new ParseSetAndSequence;
-        $nodes = Map::of('object', Node::class);
+        $nodes = Map::of();
 
         $this->assertSame($nodes, $visit($nodes, new \stdClass, $visit));
     }
@@ -52,13 +51,16 @@ class ParseSetAndSequenceTest extends TestCase
     public function testParse($structure, $object)
     {
         $visit = new ParseSetAndSequence;
-        $nodes = Map::of('object', Node::class);
+        $nodes = Map::of();
 
         $newNodes = $visit($nodes, $structure, new ExtractProperties);
 
         $this->assertNotSame($nodes, $newNodes);
-        $node = $newNodes->get($structure);
-        $relations = unwrap($node->relations());
+        $node = $newNodes->get($structure)->match(
+            static fn($node) => $node,
+            static fn() => null,
+        );
+        $relations = $node->relations()->toList();
         $this->assertCount(1, $relations);
         $this->assertSame('1', $relations[0]->property()->toString());
         $this->assertTrue($relations[0]->node()->comesFrom($object));

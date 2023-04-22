@@ -16,13 +16,16 @@ final class Boundary
     /** @var Set<NamespacePattern> */
     private Set $exclusions;
 
+    /**
+     * @no-named-arguments
+     */
     public function __construct(
         NamespacePattern $namespace,
         NamespacePattern $exclusion,
         NamespacePattern ...$exclusions,
     ) {
         $this->namespace = $namespace;
-        $this->exclusions = Set::of(NamespacePattern::class, $exclusion, ...$exclusions);
+        $this->exclusions = Set::of($exclusion, ...$exclusions);
     }
 
     public function __invoke(Node $node): bool
@@ -36,6 +39,9 @@ final class Boundary
         }
     }
 
+    /**
+     * @no-named-arguments
+     */
     public static function of(
         string $namespace,
         string $exclusion,
@@ -58,20 +64,20 @@ final class Boundary
             return;
         }
 
-        $node->relations()->foreach(function(Relation $relation): void {
+        $_ = $node->relations()->foreach(function(Relation $relation): void {
             $this->visit($relation->node());
         });
     }
 
     private function assert(Node $node): void
     {
-        $this->exclusions->foreach(static function(NamespacePattern $namespace) use ($node): void {
+        $_ = $this->exclusions->foreach(static function(NamespacePattern $namespace) use ($node): void {
             if ($node->class()->in($namespace)) {
                 throw new \Exception;
             }
         });
 
-        $node->relations()->foreach(function(Relation $relation): void {
+        $_ = $node->relations()->foreach(function(Relation $relation): void {
             $this->assert($relation->node());
         });
     }

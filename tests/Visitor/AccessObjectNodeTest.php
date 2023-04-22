@@ -8,7 +8,6 @@ use Innmind\ObjectGraph\{
     Graph,
     Exception\ObjectNotFound,
 };
-use function Innmind\Immutable\first;
 use Fixtures\Innmind\ObjectGraph\Foo;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +30,15 @@ class AccessObjectNodeTest extends TestCase
         $target = (new AccessObjectNode($leaf))($node);
 
         $this->assertSame(
-            first(first($node->relations())->node()->relations())->node(), // Foo -> a -> Foo -> a -> Foo
+            $node
+                ->relations()
+                ->find(static fn() => true)
+                ->map(static fn($relation) => $relation->node()->relations())
+                ->flatMap(static fn($relations) => $relations->find(static fn() => true))
+                ->match(
+                    static fn($relation) => $relation->node(),
+                    static fn() => null,
+                ), // Foo -> a -> Foo -> a -> Foo
             $target,
         );
     }

@@ -13,10 +13,6 @@ use Innmind\Immutable\{
     Map,
     Set,
 };
-use function Innmind\Immutable\{
-    unwrap,
-    first,
-};
 use PHPUnit\Framework\TestCase;
 
 class GraphTest extends TestCase
@@ -37,7 +33,7 @@ class GraphTest extends TestCase
 
         $this->assertInstanceOf(Node::class, $node);
         $this->assertCount(2, $node->relations());
-        [$a, $b] = unwrap($node->relations());
+        [$a, $b] = $node->relations()->toList();
         $this->assertSame('a', $a->property()->toString());
         $this->assertSame(Foo::class, $a->node()->class()->toString());
         $this->assertSame('b', $b->property()->toString());
@@ -45,8 +41,22 @@ class GraphTest extends TestCase
         $this->assertCount(1, $a->node()->relations());
         $this->assertCount(1, $b->node()->relations());
         $this->assertSame(
-            first($a->node()->relations())->node(),
-            first($b->node()->relations())->node(),
+            $a
+                ->node()
+                ->relations()
+                ->find(static fn() => true)
+                ->match(
+                    static fn($relation) => $relation->node(),
+                    static fn() => null,
+                ),
+            $b
+                ->node()
+                ->relations()
+                ->find(static fn() => true)
+                ->match(
+                    static fn($relation) => $relation->node(),
+                    static fn() => null,
+                ),
         );
     }
 
@@ -68,10 +78,24 @@ class GraphTest extends TestCase
         $node = $graph($a);
 
         $this->assertCount(1, $node->relations());
-        $this->assertSame('foo', first($node->relations())->property()->toString());
+        $this->assertSame(
+            'foo',
+            $node->relations()->find(static fn() => true)->match(
+                static fn($relation) => $relation->property()->toString(),
+                static fn() => null,
+            ),
+        );
         $this->assertSame(
             $node,
-            first(first($node->relations())->node()->relations())->node(),
+            $node
+                ->relations()
+                ->find(static fn() => true)
+                ->map(static fn($relation) => $relation->node()->relations())
+                ->flatMap(static fn($relations) => $relations->find(static fn() => true))
+                ->match(
+                    static fn($relation) => $relation->node(),
+                    static fn() => null,
+                ),
         );
     }
 
@@ -88,9 +112,10 @@ class GraphTest extends TestCase
 
             public function __construct($a, $b)
             {
-                $this->map = Map::of('object', 'mixed')
-                    ($a, $b)
-                    ($b, 'foo');
+                $this->map = Map::of(
+                    [$a, $b],
+                    [$b, 'foo'],
+                );
                 $this->set = Set::objects($b);
             }
         };
@@ -121,16 +146,52 @@ class GraphTest extends TestCase
         $node->highlightPathTo($leaf);
 
         $this->assertInstanceOf(Node::class, $node);
-        [$a, $b] = unwrap($node->relations());
+        [$a, $b] = $node->relations()->toList();
         $this->assertTrue($a->highlighted());
         $this->assertTrue($b->highlighted());
         $this->assertTrue($a->node()->highlighted());
         $this->assertTrue($b->node()->highlighted());
-        $this->assertTrue(first($a->node()->relations())->highlighted());
-        $this->assertTrue(first($b->node()->relations())->highlighted());
-        $this->assertTrue(first($a->node()->relations())->node()->highlighted());
-        $this->assertTrue(first($b->node()->relations())->node()->highlighted());
-        [$a, $b] = unwrap($b->node()->relations());
+        $this->assertTrue(
+            $a
+                ->node()
+                ->relations()
+                ->find(static fn() => true)
+                ->match(
+                    static fn($relation) => $relation->highlighted(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertTrue(
+            $b
+                ->node()
+                ->relations()
+                ->find(static fn() => true)
+                ->match(
+                    static fn($relation) => $relation->highlighted(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertTrue(
+            $a
+                ->node()
+                ->relations()
+                ->find(static fn() => true)
+                ->match(
+                    static fn($relation) => $relation->node()->highlighted(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertTrue(
+            $b
+                ->node()
+                ->relations()
+                ->find(static fn() => true)
+                ->match(
+                    static fn($relation) => $relation->node()->highlighted(),
+                    static fn() => null,
+                ),
+        );
+        [$a, $b] = $b->node()->relations()->toList();
         $this->assertFalse($b->highlighted());
         $this->assertFalse($b->node()->highlighted());
     }

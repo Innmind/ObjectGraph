@@ -19,11 +19,14 @@ final class Stack
     /** @var Set<Node> */
     private Set $nodes;
 
+    /**
+     * @no-named-arguments
+     */
     private function __construct(string ...$classes)
     {
         $this->stack = Sequence::strings(...$classes);
         /** @var Set<Node> */
-        $this->nodes = Set::of(Node::class);
+        $this->nodes = Set::of();
     }
 
     public function __invoke(Node $node): bool
@@ -31,18 +34,26 @@ final class Stack
         try {
             $this->nodes = $this->nodes->clear();
 
-            return $this->visit($node, $this->stack)->size() === 0;
+            return $this->visit($this->stack, $node)->size() === 0;
         } finally {
             $this->nodes = $this->nodes->clear();
         }
     }
 
+    /**
+     * @no-named-arguments
+     */
     public static function of(string ...$classes): self
     {
         return new self(...$classes);
     }
 
-    private function visit(Node $node, Sequence $stack): Sequence
+    /**
+     * @param Sequence<string> $stack
+     *
+     * @return Sequence<string>
+     */
+    private function visit(Sequence $stack, Node $node): Sequence
     {
         if ($this->nodes->contains($node)) {
             return $stack;
@@ -54,15 +65,21 @@ final class Stack
             return $stack;
         }
 
-        if ($stack->first() === $node->class()->toString()) {
+        $first = $stack->first()->match(
+            static fn($first) => $first,
+            static fn() => throw new \LogicException,
+        );
+
+        if ($first === $node->class()->toString()) {
             $stack = $stack->drop(1);
         }
 
-        return $node->relations()->reduce(
-            $stack,
-            function(Sequence $stack, Relation $relation): Sequence {
-                return $this->visit($relation->node(), $stack);
-            },
-        );
+        return $node
+            ->relations()
+            ->map(static fn($relation) => $relation->node())
+            ->reduce(
+                $stack,
+                $this->visit(...),
+            );
     }
 }
