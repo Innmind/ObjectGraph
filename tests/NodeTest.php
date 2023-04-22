@@ -24,7 +24,7 @@ class NodeTest extends TestCase
         $this->assertSame('file://'.__FILE__, $node->location()->toString());
         $this->assertCount(0, $node->relations());
         $this->assertNull($node->relate($relation = Relation::of(
-            new Property('bar'),
+            Property::of('bar'),
             Node::of(new \stdClass),
         )));
         $this->assertCount(1, $node->relations());
@@ -51,7 +51,7 @@ class NodeTest extends TestCase
         $node = Node::of(new class {
         });
         $node->relate(Relation::of(
-            new Property('self'),
+            Property::of('self'),
             $node,
         ));
 
@@ -69,7 +69,7 @@ class NodeTest extends TestCase
 
         $node = Node::of($object);
         $node->relate(Relation::of(
-            new Property('foo'),
+            Property::of('foo'),
             Node::of($dependency),
         ));
 
@@ -93,11 +93,11 @@ class NodeTest extends TestCase
 
         $node = Node::of($object);
         $node->relate($foo = Relation::of(
-            new Property('foo'),
+            Property::of('foo'),
             Node::of($dependency),
         ));
         $node->relate($bar = Relation::of(
-            new Property('bar'),
+            Property::of('bar'),
             Node::of($dependency2),
         ));
 

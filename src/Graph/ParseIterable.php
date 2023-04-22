@@ -52,7 +52,7 @@ final class ParseIterable implements Visit
                 );
 
                 $node->relate(Relation::of(
-                    new Relation\Property("key[$i]"),
+                    Relation\Property::of("key[$i]"),
                     $keyNode,
                 ));
             }
@@ -65,7 +65,7 @@ final class ParseIterable implements Visit
                 );
 
                 $node->relate(Relation::of(
-                    new Relation\Property("value[$i]"),
+                    Relation\Property::of("value[$i]"),
                     $valueNode,
                 ));
             }

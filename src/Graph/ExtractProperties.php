@@ -69,7 +69,7 @@ final class ExtractProperties implements Visit
                     }
 
                     $node->relate(Relation::of(
-                        new Relation\Property($property),
+                        Relation\Property::of($property),
                         $valueNode,
                     ));
 

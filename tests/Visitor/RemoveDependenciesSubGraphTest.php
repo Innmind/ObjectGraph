@@ -35,28 +35,28 @@ class RemoveDependenciesSubGraphTest extends TestCase
         $level4 = Node::of(new class {
         });
         $root->relate($foo = Relation::of(
-            new Property('level10'),
+            Property::of('level10'),
             $level10,
         ));
         $root->relate(Relation::of(
-            new Property('level11'),
+            Property::of('level11'),
             $level11,
         ));
         $level10->relate(Relation::of(
-            new Property('level2'),
+            Property::of('level2'),
             $level2,
         ));
         $level2->relate(Relation::of(
-            new Property('level3'),
+            Property::of('level3'),
             $level3,
         ));
         $level3->relate(Relation::of(
-            new Property('recursion'),
+            Property::of('recursion'),
             $level10,
         ));
         $level11->flagAsDependency();
         $level11->relate(Relation::of(
-            new Property('level4'),
+            Property::of('level4'),
             $level4,
         ));
 

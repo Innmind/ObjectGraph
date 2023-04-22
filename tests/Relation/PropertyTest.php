@@ -13,7 +13,7 @@ class PropertyTest extends TestCase
 {
     public function testInterface()
     {
-        $class = new Property('foo');
+        $class = Property::of('foo');
 
         $this->assertSame('foo', $class->toString());
     }
@@ -22,6 +22,6 @@ class PropertyTest extends TestCase
     {
         $this->expectException(DomainException::class);
 
-        new Property('');
+        Property::of('');
     }
 }

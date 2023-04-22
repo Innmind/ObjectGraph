@@ -51,7 +51,7 @@ final class ParseSetAndSequence implements Visit
                 );
 
                 $node->relate(Relation::of(
-                    new Relation\Property((string) $i),
+                    Relation\Property::of((string) $i),
                     $valueNode,
                 ));
             }
