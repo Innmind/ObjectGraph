@@ -41,6 +41,10 @@ final class Boundary
 
     /**
      * @no-named-arguments
+     *
+     * @param literal-string $namespace
+     * @param literal-string $exclusion
+     * @param literal-string $exclusions
      */
     public static function of(
         string $namespace,
@@ -48,11 +52,9 @@ final class Boundary
         string ...$exclusions,
     ): self {
         return new self(
-            new NamespacePattern($namespace),
-            new NamespacePattern($exclusion),
-            ...\array_map(static function(string $exclusion): NamespacePattern {
-                return new NamespacePattern($exclusion);
-            }, $exclusions),
+            NamespacePattern::of($namespace),
+            NamespacePattern::of($exclusion),
+            ...\array_map(NamespacePattern::of(...), $exclusions),
         );
     }
 

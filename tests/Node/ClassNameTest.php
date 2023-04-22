@@ -22,7 +22,7 @@ class ClassNameTest extends TestCase
     {
         $class = new ClassName($this);
 
-        $this->assertTrue($class->in(new NamespacePattern('Tests\\Innmind\ObjectGraph')));
-        $this->assertFalse($class->in(new NamespacePattern('Innmind\ObjectGraph')));
+        $this->assertTrue($class->in(NamespacePattern::of('Tests\\Innmind\ObjectGraph')));
+        $this->assertFalse($class->in(NamespacePattern::of('Innmind\ObjectGraph')));
     }
 }

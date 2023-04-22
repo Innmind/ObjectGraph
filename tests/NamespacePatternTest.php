@@ -13,7 +13,7 @@ class NamespacePatternTest extends TestCase
 {
     public function testInterface()
     {
-        $namespace = new NamespacePattern('Foo\Bar');
+        $namespace = NamespacePattern::of('Foo\Bar');
 
         $this->assertSame('Foo\\Bar', $namespace->toString());
     }
@@ -23,7 +23,7 @@ class NamespacePatternTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Foo\\42Bar');
 
-        new NamespacePattern('Foo\\42Bar');
+        NamespacePattern::of('Foo\\42Bar');
     }
 
     public function testThrowWhenEmptyNamespace()
@@ -31,6 +31,6 @@ class NamespacePatternTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('');
 
-        new NamespacePattern('');
+        NamespacePattern::of('');
     }
 }

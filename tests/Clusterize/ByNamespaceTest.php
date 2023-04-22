@@ -35,10 +35,10 @@ class ByNamespaceTest extends TestCase
     {
         $clusterize = new ByNamespace(
             Map::of()
-                (new NamespacePattern(Foo::class), 'foo')
-                (new NamespacePattern(Bar::class), 'bar')
-                (new NamespacePattern(Baz::class), 'baz')
-                (new NamespacePattern(Free::class), 'free'),
+                (NamespacePattern::of(Foo::class), 'foo')
+                (NamespacePattern::of(Bar::class), 'bar')
+                (NamespacePattern::of(Baz::class), 'baz')
+                (NamespacePattern::of(Free::class), 'free'),
         );
 
         $baz = new Baz(
@@ -106,10 +106,10 @@ class ByNamespaceTest extends TestCase
     {
         $clusterize = new ByNamespace(
             Map::of()
-                (new NamespacePattern(Foo::class), 'foo')
-                (new NamespacePattern(Bar::class), 'bar')
-                (new NamespacePattern(Baz::class), 'baz')
-                (new NamespacePattern(Free::class), 'free'),
+                (NamespacePattern::of(Foo::class), 'foo')
+                (NamespacePattern::of(Bar::class), 'bar')
+                (NamespacePattern::of(Baz::class), 'baz')
+                (NamespacePattern::of(Free::class), 'free'),
         );
 
         $baz = new Baz(
