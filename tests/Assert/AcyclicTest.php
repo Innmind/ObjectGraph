@@ -32,7 +32,7 @@ class AcyclicTest extends TestCase
         $this->assertFalse(
             (new Acyclic)(
                 (new Graph)($a)
-            )
+            ),
         );
     }
 
@@ -58,7 +58,7 @@ class AcyclicTest extends TestCase
         $this->assertTrue(
             (new Acyclic)(
                 (new Graph)($a)
-            )
+            ),
         );
     }
 }

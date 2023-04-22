@@ -27,7 +27,7 @@ class NodeTest extends TestCase
         $this->assertCount(0, $node->relations());
         $this->assertNull($node->relate($relation = new Relation(
             new Property('bar'),
-            new Node(new \stdClass)
+            new Node(new \stdClass),
         )));
         $this->assertCount(1, $node->relations());
         $this->assertSame([$relation], unwrap($node->relations()));
@@ -54,7 +54,7 @@ class NodeTest extends TestCase
         });
         $node->relate(new Relation(
             new Property('self'),
-            $node
+            $node,
         ));
 
         $this->assertNull($node->highlightPathTo(new \stdClass));
@@ -72,7 +72,7 @@ class NodeTest extends TestCase
         $node = new Node($object);
         $node->relate(new Relation(
             new Property('foo'),
-            new Node($dependency)
+            new Node($dependency),
         ));
 
         $this->assertTrue($node->dependsOn($dependency));
@@ -96,11 +96,11 @@ class NodeTest extends TestCase
         $node = new Node($object);
         $node->relate($foo = new Relation(
             new Property('foo'),
-            new Node($dependency)
+            new Node($dependency),
         ));
         $node->relate($bar = new Relation(
             new Property('bar'),
-            new Node($dependency2)
+            new Node($dependency2),
         ));
 
         $this->assertFalse($node->isDependent());

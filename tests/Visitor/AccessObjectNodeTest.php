@@ -32,7 +32,7 @@ class AccessObjectNodeTest extends TestCase
 
         $this->assertSame(
             first(first($node->relations())->node()->relations())->node(), // Foo -> a -> Foo -> a -> Foo
-            $target
+            $target,
         );
     }
 

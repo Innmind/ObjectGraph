@@ -29,19 +29,19 @@ class FlagDependenciesTest extends TestCase
         });
         $root->relate(new Relation(
             new Property('level1'),
-            $level1
+            $level1,
         ));
         $level1->relate(new Relation(
             new Property('level2'),
-            $level2
+            $level2,
         ));
         $level2->relate(new Relation(
             new Property('level3'),
-            $level3
+            $level3,
         ));
         $level3->relate(new Relation(
             new Property('recursion'),
-            $level1
+            $level1,
         ));
         $flagDependencies = new FlagDependencies($dependency);
 

@@ -16,6 +16,6 @@ interface Visit
     public function __invoke(
         Map $nodes,
         object $object,
-        self $visit
+        self $visit,
     ): Map;
 }

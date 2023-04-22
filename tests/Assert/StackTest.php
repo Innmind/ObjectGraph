@@ -20,19 +20,19 @@ class StackTest extends TestCase
     {
         $object = new Baz(
             new Bar(
-                new Foo
-            )
+                new Foo,
+            ),
         );
         $stack = Stack::of(Baz::class, Bar::class, Foo::class);
 
         $this->assertTrue($stack(
-            (new Graph)($object)
+            (new Graph)($object),
         ));
 
         $stack = Stack::of(Baz::class, Foo::class);
 
         $this->assertTrue($stack(
-            (new Graph)($object)
+            (new Graph)($object),
         ));
     }
 
@@ -40,14 +40,14 @@ class StackTest extends TestCase
     {
         $object = new Baz(
             new Bar(
-                new Foo
-            )
+                new Foo,
+            ),
         );
 
         $stack = Stack::of(Baz::class, Foo::class, \stdClass::class);
 
         $this->assertFalse($stack(
-            (new Graph)($object)
+            (new Graph)($object),
         ));
     }
 
@@ -55,19 +55,19 @@ class StackTest extends TestCase
     {
         $object = new Baz(
             new Bar(
-                new Foo
-            )
+                new Foo,
+            ),
         );
         $stack = Stack::of(Baz::class, Bar::class);
 
         $this->assertTrue($stack(
-            (new Graph)($object)
+            (new Graph)($object),
         ));
 
         $stack = Stack::of(Baz::class, Foo::class);
 
         $this->assertTrue($stack(
-            (new Graph)($object)
+            (new Graph)($object),
         ));
     }
 
@@ -97,7 +97,7 @@ class StackTest extends TestCase
         $stack = Stack::of(\get_class($a), \get_class($b), \get_class($c));
 
         $this->assertTrue($stack(
-            (new Graph)($a)
+            (new Graph)($a),
         ));
     }
 }

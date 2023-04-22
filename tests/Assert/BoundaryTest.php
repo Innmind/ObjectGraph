@@ -23,18 +23,18 @@ class BoundaryTest extends TestCase
         $boundary = Boundary::of(
             Baz::class,
             'Innmind\\ObjectGraph',
-            'stdClass'
+            'stdClass',
         );
         $object = new Indirection(
             new Baz(
                 new Bar(
-                    new Foo
-                )
-            )
+                    new Foo,
+                ),
+            ),
         );
 
         $this->assertTrue($boundary(
-            (new Graph)($object)
+            (new Graph)($object),
         ));
     }
 
@@ -42,18 +42,18 @@ class BoundaryTest extends TestCase
     {
         $boundary = Boundary::of(
             Free::class,
-            'stdClass'
+            'stdClass',
         );
         $object = new Indirection(
             new Free(
                 new Indirection(
-                    new \stdClass
-                )
-            )
+                    new \stdClass,
+                ),
+            ),
         );
 
         $this->assertFalse($boundary(
-            (new Graph)($object)
+            (new Graph)($object),
         ));
     }
 }

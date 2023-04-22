@@ -25,7 +25,7 @@ final class ExtractProperties implements Visit
     public function __invoke(
         Map $nodes,
         object $object,
-        Visit $visit
+        Visit $visit,
     ): Map {
         if ($nodes->contains($object)) {
             /** @var Map<object, Node> */

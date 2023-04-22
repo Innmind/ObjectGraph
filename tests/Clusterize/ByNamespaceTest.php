@@ -31,7 +31,7 @@ class ByNamespaceTest extends TestCase
     {
         $this->assertInstanceOf(
             Clusterize::class,
-            new ByNamespace(Map::of(NamespacePattern::class, 'string'))
+            new ByNamespace(Map::of(NamespacePattern::class, 'string')),
         );
     }
 
@@ -58,16 +58,16 @@ class ByNamespaceTest extends TestCase
                 (new NamespacePattern(Foo::class), 'foo')
                 (new NamespacePattern(Bar::class), 'bar')
                 (new NamespacePattern(Baz::class), 'baz')
-                (new NamespacePattern(Free::class), 'free')
+                (new NamespacePattern(Free::class), 'free'),
         );
 
         $baz = new Baz(
             $bar = new Bar(
                 $foo = new Foo(
                     $foo2 = new Foo,
-                    $foo3 = new Foo
-                )
-            )
+                    $foo3 = new Foo,
+                ),
+            ),
         );
 
         $clusters = $clusterize(
@@ -76,7 +76,7 @@ class ByNamespaceTest extends TestCase
                 (new Node($bar), $bar = Graphviz\Node\Node::named('bar'))
                 (new Node($foo), $foo = Graphviz\Node\Node::named('foo'))
                 (new Node($foo2), $foo2 = Graphviz\Node\Node::named('foo2'))
-                (new Node($foo3), $foo3 = Graphviz\Node\Node::named('foo3'))
+                (new Node($foo3), $foo3 = Graphviz\Node\Node::named('foo3')),
         );
 
         $this->assertInstanceOf(Set::class, $clusters);
@@ -118,16 +118,16 @@ class ByNamespaceTest extends TestCase
                 (new NamespacePattern(Foo::class), 'foo')
                 (new NamespacePattern(Bar::class), 'bar')
                 (new NamespacePattern(Baz::class), 'baz')
-                (new NamespacePattern(Free::class), 'free')
+                (new NamespacePattern(Free::class), 'free'),
         );
 
         $baz = new Baz(
             $bar = new Bar(
                 $foo = new Foo(
                     $foo2 = new Foo,
-                    $foo3 = new Foo
-                )
-            )
+                    $foo3 = new Foo,
+                ),
+            ),
         );
 
         $clusters = $clusterize(
@@ -136,7 +136,7 @@ class ByNamespaceTest extends TestCase
                 (new Node($bar), Graphviz\Node\Node::named('bar'))
                 (new Node($foo), Graphviz\Node\Node::named('foo'))
                 (new Node($foo2), Graphviz\Node\Node::named('foo2'))
-                (new Node($foo3), Graphviz\Node\Node::named('foo3'))
+                (new Node($foo3), Graphviz\Node\Node::named('foo3')),
         );
         $clusters2 = $clusterize($nodes);
 

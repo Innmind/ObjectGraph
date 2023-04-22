@@ -73,7 +73,7 @@ final class ByNamespace implements Clusterize
     private function cluster(
         Map $nodes,
         Graphviz\Graph $cluster,
-        NamespacePattern $pattern
+        NamespacePattern $pattern,
     ): void {
         $nodes
             ->filter(static function(Node $node) use ($pattern): bool {

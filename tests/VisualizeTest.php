@@ -91,7 +91,7 @@ class VisualizeTest extends TestCase
         $clusterize = new ByNamespace(
             Map::of(NamespacePattern::class, 'string')
                 (new NamespacePattern(Foo::class), 'foo')
-                (new NamespacePattern(Bar::class), 'bar')
+                (new NamespacePattern(Bar::class), 'bar'),
         );
 
         // root

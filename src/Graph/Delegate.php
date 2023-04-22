@@ -27,7 +27,7 @@ final class Delegate implements Visit
     public function __invoke(
         Map $nodes,
         object $object,
-        Visit $visit
+        Visit $visit,
     ): Map {
         foreach ($this->visitors as $visit) {
             $nodes = $visit($nodes, $object, $this);

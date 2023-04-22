@@ -19,7 +19,7 @@ final class Boundary
     public function __construct(
         NamespacePattern $namespace,
         NamespacePattern $exclusion,
-        NamespacePattern ...$exclusions
+        NamespacePattern ...$exclusions,
     ) {
         $this->namespace = $namespace;
         $this->exclusions = Set::of(NamespacePattern::class, $exclusion, ...$exclusions);
@@ -39,7 +39,7 @@ final class Boundary
     public static function of(
         string $namespace,
         string $exclusion,
-        string ...$exclusions
+        string ...$exclusions,
     ): self {
         return new self(
             new NamespacePattern($namespace),

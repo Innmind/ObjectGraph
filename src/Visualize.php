@@ -22,7 +22,7 @@ final class Visualize
 
     public function __construct(
         LocationRewriter $rewriteLocation = null,
-        Clusterize $clusterize = null
+        Clusterize $clusterize = null,
     ) {
         /** @var Map<Node, Graphviz\Node> */
         $this->nodes = Map::of(Node::class, Graphviz\Node::class);
@@ -54,8 +54,8 @@ final class Visualize
             $root = $this->visit($node);
             $root->shaped(
                 Graphviz\Node\Shape::hexagon()
-                    ->fillWithColor(RGBA::of('#0f0')
-                ),
+                    ->fillWithColor(RGBA::of('#0f0'),
+                    ),
             );
             $graph->add($root);
             ($this->clusterize)($this->nodes)->foreach(
