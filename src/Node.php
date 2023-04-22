@@ -29,7 +29,7 @@ final class Node
     {
         $file = (new \ReflectionObject($object))->getFileName();
 
-        $this->class = new ClassName($object);
+        $this->class = ClassName::of($object);
         $this->reference = Reference::of($object);
         $this->location = Url::of('file://'.$file);
         /** @var Map<string, Relation> */

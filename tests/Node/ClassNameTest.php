@@ -13,14 +13,14 @@ class ClassNameTest extends TestCase
 {
     public function testInterface()
     {
-        $class = new ClassName(new \stdClass);
+        $class = ClassName::of(new \stdClass);
 
         $this->assertSame('stdClass', $class->toString());
     }
 
     public function testIn()
     {
-        $class = new ClassName($this);
+        $class = ClassName::of($this);
 
         $this->assertTrue($class->in(NamespacePattern::of('Tests\\Innmind\ObjectGraph')));
         $this->assertFalse($class->in(NamespacePattern::of('Innmind\ObjectGraph')));

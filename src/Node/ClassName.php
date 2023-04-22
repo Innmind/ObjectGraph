@@ -6,13 +6,24 @@ namespace Innmind\ObjectGraph\Node;
 use Innmind\ObjectGraph\NamespacePattern;
 use Innmind\Immutable\Str;
 
+/**
+ * @psalm-immutable
+ */
 final class ClassName
 {
     private string $value;
 
-    public function __construct(object $object)
+    private function __construct(object $object)
     {
         $this->value = \get_class($object);
+    }
+
+    /**
+     * @psalm-pure
+     */
+    public static function of(object $object): self
+    {
+        return new self($object);
     }
 
     public function in(NamespacePattern $namespace): bool
