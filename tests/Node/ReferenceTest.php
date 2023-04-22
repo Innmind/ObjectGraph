@@ -10,16 +10,16 @@ class ReferenceTest extends TestCase
 {
     public function testInterface()
     {
-        $reference = new Reference($object = new \stdClass);
+        $reference = Reference::of($object = new \stdClass);
 
         $this->assertSame(\spl_object_hash($object), $reference->toString());
     }
 
     public function testEquals()
     {
-        $reference = new Reference($object = new \stdClass);
+        $reference = Reference::of($object = new \stdClass);
 
-        $this->assertTrue($reference->equals(new Reference($object)));
-        $this->assertFalse($reference->equals(new Reference(new \stdClass)));
+        $this->assertTrue($reference->equals(Reference::of($object)));
+        $this->assertFalse($reference->equals(Reference::of(new \stdClass)));
     }
 }

@@ -30,7 +30,7 @@ final class Node
         $file = (new \ReflectionObject($object))->getFileName();
 
         $this->class = new ClassName($object);
-        $this->reference = new Reference($object);
+        $this->reference = Reference::of($object);
         $this->location = Url::of('file://'.$file);
         /** @var Map<string, Relation> */
         $this->relations = Map::of();
@@ -99,7 +99,7 @@ final class Node
 
     public function comesFrom(object $object): bool
     {
-        return $this->reference->equals(new Reference($object));
+        return $this->reference->equals(Reference::of($object));
     }
 
     public function flagAsDependency(): void
