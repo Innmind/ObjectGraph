@@ -8,18 +8,15 @@ use Innmind\ObjectGraph\{
     Node\Reference,
 };
 use Innmind\Url\Url;
-use Innmind\Immutable\{
-    Map,
-    Set,
-};
+use Innmind\Immutable\Set;
 
 final class Node
 {
     private ClassName $class;
     private Reference $reference;
     private Url $location;
-    /** @var Map<string, Relation> */
-    private Map $relations;
+    /** @var Set<Relation> */
+    private Set $relations;
     private bool $dependency = false;
     private bool $dependent = false;
     private bool $highlighted = false;
@@ -32,8 +29,8 @@ final class Node
         $this->class = ClassName::of($object);
         $this->reference = Reference::of($object);
         $this->location = Url::of('file://'.$file);
-        /** @var Map<string, Relation> */
-        $this->relations = Map::of();
+        /** @var Set<Relation> */
+        $this->relations = Set::of();
     }
 
     public static function of(object $object): self
@@ -43,10 +40,10 @@ final class Node
 
     public function relate(Relation $relation): void
     {
-        $this->relations = ($this->relations)(
-            $relation->property()->toString(),
-            $relation,
-        );
+        $this->relations = $this
+            ->relations
+            ->filter(static fn($known) => $known->property()->toString() !== $relation->property()->toString())
+            ->add($relation);
     }
 
     public function class(): ClassName
@@ -69,7 +66,7 @@ final class Node
      */
     public function relations(): Set
     {
-        return $this->relations->values()->toSet();
+        return $this->relations;
     }
 
     public function removeRelations(): void
@@ -79,12 +76,7 @@ final class Node
 
     public function dependsOn(object $dependency): bool
     {
-        return $this->relations->values()->reduce(
-            false,
-            static function(bool $isDependent, Relation $relation) use ($dependency): bool {
-                return $isDependent || $relation->node()->comesFrom($dependency);
-            },
-        );
+        return $this->relations->any(static fn($relation) => $relation->node()->comesFrom($dependency));
     }
 
     public function flagAsDependent(): void
@@ -138,11 +130,11 @@ final class Node
 
         $_ = $this
             ->relations
-            ->values()
             ->foreach(static function(Relation $relation) use ($object): void {
                 $relation->highlightPathTo($object);
             });
-        $highlighted = $this->relations->values()
+        $highlighted = $this
+            ->relations
             ->filter(static function(Relation $relation): bool {
                 return $relation->highlighted();
             });
