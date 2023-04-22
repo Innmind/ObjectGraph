@@ -21,7 +21,6 @@ final class Stack
 
     private function __construct(string ...$classes)
     {
-        /** @var Sequence<string> */
         $this->stack = Sequence::strings(...$classes);
         /** @var Set<Node> */
         $this->nodes = Set::of(Node::class);

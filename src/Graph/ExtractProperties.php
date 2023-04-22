@@ -18,7 +18,7 @@ use function Innmind\Immutable\unwrap;
 final class ExtractProperties implements Visit
 {
     /**
-     * @var Map<object, Node> $nodes
+     * @param Map<object, Node> $nodes
      *
      * @return Map<object, Node>
      */
@@ -37,7 +37,6 @@ final class ExtractProperties implements Visit
 
         $properties = ReflectionClass::of(\get_class($object))->properties();
 
-        /** @var Map<string, mixed> */
         $properties = ReflectionObject::of(
             $object,
             null,
@@ -52,14 +51,14 @@ final class ExtractProperties implements Visit
          * @var Map<object, Node>
          */
         return $properties
-            ->map(static function(string $property, $value) {
+            ->map(static function(string $_, $value) {
                 if (\is_array($value)) {
                     return new \ArrayObject($value);
                 }
 
                 return $value;
             })
-            ->filter(static fn(string $property, $value): bool => \is_object($value))
+            ->filter(static fn(string $_, $value): bool => \is_object($value))
             ->reduce(
                 $nodes,
                 static function(Map $nodes, string $property, object $value) use ($visit, $node): Map {

@@ -30,7 +30,6 @@ final class ByNamespace implements Clusterize
     {
         assertMap(NamespacePattern::class, 'string', $clusters, 1);
 
-        /** @var Map<NamespacePattern, string> */
         $this->clusters = $clusters;
     }
 

@@ -22,7 +22,6 @@ final class Boundary
         NamespacePattern ...$exclusions
     ) {
         $this->namespace = $namespace;
-        /** @var Set<NamespacePattern> */
         $this->exclusions = Set::of(NamespacePattern::class, $exclusion, ...$exclusions);
     }
 

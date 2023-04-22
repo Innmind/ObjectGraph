@@ -15,7 +15,7 @@ use Innmind\Immutable\{
 final class ParseSplObjectStorage implements Visit
 {
     /**
-     * @var Map<object, Node> $nodes
+     * @param Map<object, Node> $nodes
      *
      * @return Map<object, Node>
      */

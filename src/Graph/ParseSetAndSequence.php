@@ -17,7 +17,7 @@ use function Innmind\Immutable\unwrap;
 final class ParseSetAndSequence implements Visit
 {
     /**
-     * @var Map<object, Node> $nodes
+     * @param Map<object, Node> $nodes
      *
      * @return Map<object, Node>
      */

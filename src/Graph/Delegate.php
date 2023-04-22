@@ -11,13 +11,16 @@ final class Delegate implements Visit
     /** @var list<Visit> */
     private array $visitors;
 
+    /**
+     * @no-named-arguments
+     */
     public function __construct(Visit ...$visitors)
     {
         $this->visitors = $visitors;
     }
 
     /**
-     * @var Map<object, Node> $nodes
+     * @param Map<object, Node> $nodes
      *
      * @return Map<object, Node>
      */

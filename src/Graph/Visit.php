@@ -9,7 +9,7 @@ use Innmind\Immutable\Map;
 interface Visit
 {
     /**
-     * @var Map<object, Node> $nodes
+     * @param Map<object, Node> $nodes
      *
      * @return Map<object, Node>
      */
