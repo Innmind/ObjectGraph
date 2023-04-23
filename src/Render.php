@@ -11,6 +11,9 @@ use Innmind\Immutable\{
     Str,
 };
 
+/**
+ * @psalm-immutable
+ */
 final class Render
 {
     private RewriteLocation $rewriteLocation;
@@ -41,6 +44,9 @@ final class Render
         return Graphviz\Layout\Dot::of()($graphviz);
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function of(RewriteLocation $rewriteLocation = null): self
     {
         return new self($rewriteLocation ?? new RewriteLocation\NoOp);
@@ -80,6 +86,9 @@ final class Render
             );
     }
 
+    /**
+     * @psalm-pure
+     */
     private static function name(Node\Reference $reference): Graphviz\Node\Name
     {
         return Graphviz\Node\Name::of('object_'.$reference->toString());
