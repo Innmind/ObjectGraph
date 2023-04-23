@@ -3,11 +3,11 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\ObjectGraph;
 
-use Innmind\ObjectGraph\Flatten;
+use Innmind\ObjectGraph\Lookup;
 use Fixtures\Innmind\ObjectGraph\Foo;
 use PHPUnit\Framework\TestCase;
 
-class FlattenTest extends TestCase
+class LookupTest extends TestCase
 {
     public function testInvokation()
     {
@@ -20,7 +20,7 @@ class FlattenTest extends TestCase
         $b = new Foo($leaf);
         $root = new Foo($a, $b);
 
-        $nodes = Flatten::of()($root)->nodes();
+        $nodes = Lookup::of()($root)->nodes();
 
         $this->assertCount(4, $nodes);
         $fromLeaf = $nodes
@@ -106,7 +106,7 @@ class FlattenTest extends TestCase
         $a->foo = $b;
         $b->bar = $a;
 
-        $nodes = Flatten::of()($a)->nodes();
+        $nodes = Lookup::of()($a)->nodes();
 
         $this->assertCount(2, $nodes);
         $fromA = $nodes

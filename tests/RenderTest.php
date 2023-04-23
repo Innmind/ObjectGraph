@@ -5,7 +5,7 @@ namespace Tests\Innmind\ObjectGraph;
 
 use Innmind\ObjectGraph\{
     Render,
-    Flatten,
+    Lookup,
     Locate,
 };
 use Innmind\Filesystem\File\Content;
@@ -25,7 +25,7 @@ class RenderTest extends TestCase
         $b = new Foo($leaf);
         $root = new Foo($a, $b);
 
-        $graph = Flatten::of()($root);
+        $graph = Lookup::of()($root);
         $graph = Locate::of()($graph);
         $graph = $graph->mapNode(static fn($node) => match ($node->comesFrom($leaf)) {
             true => $node->flagAsDependency(),
@@ -78,7 +78,7 @@ class RenderTest extends TestCase
         $a->foo = $b;
         $b->bar = $a;
 
-        $dot = Render::of()(Flatten::of()($a));
+        $dot = Render::of()(Lookup::of()($a));
 
         $this->assertInstanceOf(Content::class, $dot);
         $this->assertNotEmpty($dot->toString());

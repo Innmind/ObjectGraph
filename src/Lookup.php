@@ -16,7 +16,7 @@ use Innmind\Immutable\{
     Set,
 };
 
-final class Flatten
+final class Lookup
 {
     private function __construct()
     {
