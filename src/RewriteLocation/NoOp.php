@@ -6,6 +6,9 @@ namespace Innmind\ObjectGraph\RewriteLocation;
 use Innmind\ObjectGraph\RewriteLocation;
 use Innmind\Url\Url;
 
+/**
+ * @psalm-immutable
+ */
 final class NoOp implements RewriteLocation
 {
     public function __invoke(Url $location): Url
