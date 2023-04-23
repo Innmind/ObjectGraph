@@ -42,7 +42,7 @@ final class Render
 
     private function render(Node $node): Graphviz\Node
     {
-        $render = Graphviz\Node::of(self::name($node))
+        $render = Graphviz\Node::of(self::name($node->reference()))
             ->displayAs(
                 Str::of($node->class()->toString())
                     ->replace("\x00", '') // remove the invisible character used in the name of anonymous classes
@@ -56,14 +56,14 @@ final class Render
             ->reduce(
                 $render,
                 static fn(Graphviz\Node $render, $relation) => $render->linkedTo(
-                    self::name($relation->node()),
+                    self::name($relation->reference()),
                     static fn($edge) => $edge->displayAs($relation->property()->toString()),
                 ),
             );
     }
 
-    private static function name(Node $node): Graphviz\Node\Name
+    private static function name(Node\Reference $reference): Graphviz\Node\Name
     {
-        return Graphviz\Node\Name::of('object_'.$node->reference()->toString());
+        return Graphviz\Node\Name::of('object_'.$reference->toString());
     }
 }

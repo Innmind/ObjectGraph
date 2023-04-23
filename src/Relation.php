@@ -26,9 +26,9 @@ final class Relation
         return $this->property;
     }
 
-    public function node(): Node
+    public function reference(): Node\Reference
     {
-        return $this->node;
+        return $this->node->reference();
     }
 
     public function refersTo(object $object): bool
