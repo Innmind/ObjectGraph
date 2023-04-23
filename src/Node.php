@@ -17,10 +17,6 @@ final class Node
     private Url $location;
     /** @var Set<Relation> */
     private Set $relations;
-    private bool $dependency = false;
-    private bool $dependent = false;
-    private bool $highlighted = false;
-    private bool $highlightingPath = false;
 
     /**
      * @param Set<Relation> $relations
@@ -84,70 +80,8 @@ final class Node
         return $this->relations->any(static fn($relation) => $relation->node()->comesFrom($dependency));
     }
 
-    public function flagAsDependent(): void
-    {
-        $this->dependent = true;
-    }
-
-    public function isDependent(): bool
-    {
-        return $this->dependent;
-    }
-
     public function comesFrom(object $object): bool
     {
         return $this->reference->equals(Reference::of($object));
-    }
-
-    public function flagAsDependency(): void
-    {
-        $this->dependency = true;
-    }
-
-    public function isDependency(): bool
-    {
-        return $this->dependency;
-    }
-
-    public function highlight(): void
-    {
-        $this->highlighted = true;
-    }
-
-    public function highlighted(): bool
-    {
-        return $this->highlighted;
-    }
-
-    public function highlightPathTo(object $object): void
-    {
-        if ($this->highlightingPath) {
-            return;
-        }
-
-        if ($this->comesFrom($object)) {
-            $this->highlight();
-
-            return;
-        }
-
-        $this->highlightingPath = true;
-
-        $_ = $this
-            ->relations
-            ->foreach(static function(Relation $relation) use ($object): void {
-                $relation->highlightPathTo($object);
-            });
-        $highlighted = $this
-            ->relations
-            ->filter(static function(Relation $relation): bool {
-                return $relation->highlighted();
-            });
-
-        if (!$highlighted->empty()) {
-            $this->highlight();
-        }
-
-        $this->highlightingPath = false;
     }
 }

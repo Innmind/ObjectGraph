@@ -9,7 +9,6 @@ final class Relation
 {
     private Property $property;
     private Node $node;
-    private bool $highlighted = false;
 
     private function __construct(Property $property, Node $node)
     {
@@ -30,24 +29,5 @@ final class Relation
     public function node(): Node
     {
         return $this->node;
-    }
-
-    public function highlight(): void
-    {
-        $this->highlighted = true;
-    }
-
-    public function highlighted(): bool
-    {
-        return $this->highlighted;
-    }
-
-    public function highlightPathTo(object $object): void
-    {
-        $this->node->highlightPathTo($object);
-
-        if ($this->node->highlighted()) {
-            $this->highlight();
-        }
     }
 }
