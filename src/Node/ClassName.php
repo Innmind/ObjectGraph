@@ -3,9 +3,6 @@ declare(strict_types = 1);
 
 namespace Innmind\ObjectGraph\Node;
 
-use Innmind\ObjectGraph\NamespacePattern;
-use Innmind\Immutable\Str;
-
 /**
  * @psalm-immutable
  */
@@ -24,14 +21,6 @@ final class ClassName
     public static function of(object $object): self
     {
         return new self($object);
-    }
-
-    public function in(NamespacePattern $namespace): bool
-    {
-        $namespace = $namespace->toString();
-        $self = Str::of($this->value);
-
-        return $self->startsWith($namespace);
     }
 
     public function toString(): string
