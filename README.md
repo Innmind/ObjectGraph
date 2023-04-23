@@ -46,6 +46,6 @@ Factory::build()
 
 This will generate a `graph.svg` file representing the object graph of your application.
 
-> **Note** This example uses `innmind/operating-system` to generate the svg file but the package is not a direct dependency, you can use the content returned by `$visualize()` however you wish.
+> **Note** This example uses `innmind/operating-system` to generate the svg file but the package is not a direct dependency, you can use the content returned by `$render()` however you wish.
 
-> **Note 2**: You can pass an implementation of [`RewriteLocation`](src/RewriteLocation.php) as the first argument of `Render` so you can rewrite the url to the class file that will be used in the generated graph (useful if you want to generate urls to [open the files directly in your IDE](https://github.com/sanduhrs/phpstorm-url-handler#usage)).
+> **Note**: You can pass an implementation of [`RewriteLocation`](src/RewriteLocation.php) as the first argument of `Render` so you can rewrite the url to the class file that will be used in the generated graph (useful if you want to generate urls to [open the files directly in your IDE](https://github.com/sanduhrs/phpstorm-url-handler#usage)).
