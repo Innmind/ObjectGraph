@@ -22,20 +22,25 @@ final class Node
     private bool $highlighted = false;
     private bool $highlightingPath = false;
 
-    private function __construct(object $object)
+    /**
+     * @param Set<Relation> $relations
+     */
+    private function __construct(object $object, Set $relations)
     {
         $file = (new \ReflectionObject($object))->getFileName();
 
         $this->class = ClassName::of($object);
         $this->reference = Reference::of($object);
         $this->location = Url::of('file://'.$file);
-        /** @var Set<Relation> */
-        $this->relations = Set::of();
+        $this->relations = $relations;
     }
 
-    public static function of(object $object): self
+    /**
+     * @param Set<Relation>|null $relations
+     */
+    public static function of(object $object, Set $relations = null): self
     {
-        return new self($object);
+        return new self($object, $relations ?? Set::of());
     }
 
     public function relate(Relation $relation): void
