@@ -16,21 +16,20 @@ class NodeTest extends TestCase
 {
     public function testInterface()
     {
-        $node = Node::of($object = new class {
-        });
+        $node = Node::of(
+            $object = new class {
+            },
+            Set::of($relation = Relation::of(
+                Property::of('bar'),
+                Node::of(new \stdClass),
+            )),
+        );
 
         $this->assertInstanceOf(Set::class, $node->relations());
         $this->assertInstanceOf(Url::class, $node->location());
         $this->assertSame('file://'.__FILE__, $node->location()->toString());
-        $this->assertCount(0, $node->relations());
-        $this->assertNull($node->relate($relation = Relation::of(
-            Property::of('bar'),
-            Node::of(new \stdClass),
-        )));
         $this->assertCount(1, $node->relations());
         $this->assertSame([$relation], $node->relations()->toList());
-        $this->assertNull($node->removeRelations());
-        $this->assertCount(0, $node->relations());
         $this->assertTrue($node->comesFrom($object));
         $this->assertFalse($node->comesFrom(new class {
         }));
@@ -45,11 +44,10 @@ class NodeTest extends TestCase
         };
         $object->foo = $dependency;
 
-        $node = Node::of($object);
-        $node->relate(Relation::of(
+        $node = Node::of($object, Set::of(Relation::of(
             Property::of('foo'),
             Node::of($dependency),
-        ));
+        )));
 
         $this->assertTrue($node->dependsOn($dependency));
         $this->assertFalse($node->dependsOn(new class {

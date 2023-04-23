@@ -39,14 +39,6 @@ final class Node
         return new self($object, $relations ?? Set::of());
     }
 
-    public function relate(Relation $relation): void
-    {
-        $this->relations = $this
-            ->relations
-            ->filter(static fn($known) => $known->property()->toString() !== $relation->property()->toString())
-            ->add($relation);
-    }
-
     public function class(): ClassName
     {
         return $this->class;
@@ -68,11 +60,6 @@ final class Node
     public function relations(): Set
     {
         return $this->relations;
-    }
-
-    public function removeRelations(): void
-    {
-        $this->relations = $this->relations->clear();
     }
 
     public function dependsOn(object $dependency): bool
