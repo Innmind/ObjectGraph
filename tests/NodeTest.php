@@ -5,6 +5,7 @@ namespace Tests\Innmind\ObjectGraph;
 
 use Innmind\ObjectGraph\{
     Node,
+    Node\Reference,
     Relation,
     Relation\Property,
 };
@@ -21,7 +22,7 @@ class NodeTest extends TestCase
             },
             Set::of($relation = Relation::of(
                 Property::of('bar'),
-                Node::of(new \stdClass),
+                Reference::of(new \stdClass),
             )),
         );
 
@@ -46,7 +47,7 @@ class NodeTest extends TestCase
 
         $node = Node::of($object, Set::of(Relation::of(
             Property::of('foo'),
-            Node::of($dependency),
+            Reference::of($dependency),
         )));
 
         $this->assertTrue($node->dependsOn($dependency));

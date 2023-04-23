@@ -3,22 +3,25 @@ declare(strict_types = 1);
 
 namespace Innmind\ObjectGraph;
 
-use Innmind\ObjectGraph\Relation\Property;
+use Innmind\ObjectGraph\{
+    Relation\Property,
+    Node\Reference,
+};
 
 final class Relation
 {
     private Property $property;
-    private Node $node;
+    private Reference $reference;
 
-    private function __construct(Property $property, Node $node)
+    private function __construct(Property $property, Reference $reference)
     {
         $this->property = $property;
-        $this->node = $node;
+        $this->reference = $reference;
     }
 
-    public static function of(Property $property, Node $node): self
+    public static function of(Property $property, Reference $reference): self
     {
-        return new self($property, $node);
+        return new self($property, $reference);
     }
 
     public function property(): Property
@@ -26,13 +29,13 @@ final class Relation
         return $this->property;
     }
 
-    public function reference(): Node\Reference
+    public function reference(): Reference
     {
-        return $this->node->reference();
+        return $this->reference;
     }
 
     public function refersTo(object $object): bool
     {
-        return $this->node->comesFrom($object);
+        return $this->reference->equals(Reference::of($object));
     }
 }

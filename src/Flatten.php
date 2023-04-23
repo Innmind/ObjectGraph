@@ -3,7 +3,10 @@ declare(strict_types = 1);
 
 namespace Innmind\ObjectGraph;
 
-use Innmind\ObjectGraph\Relation\Property;
+use Innmind\ObjectGraph\{
+    Relation\Property,
+    Node\Reference,
+};
 use Innmind\Reflection\{
     ReflectionClass,
     Extract,
@@ -30,7 +33,7 @@ final class Flatten
                 $properties
                     ->map(static fn($name, $object) => Relation::of(
                         Property::of($name),
-                        Node::of($object),
+                        Reference::of($object),
                     ))
                     ->values()
                     ->toSet(),
