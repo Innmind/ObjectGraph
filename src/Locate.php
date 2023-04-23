@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace Innmind\ObjectGraph;
 
 use Innmind\Url\Url;
-use Innmind\Immutable\Set;
 
 final class Locate
 {
@@ -12,14 +11,9 @@ final class Locate
     {
     }
 
-    /**
-     * @param Set<Node> $nodes
-     *
-     * @return Set<Node>
-     */
-    public function __invoke(Set $nodes): Set
+    public function __invoke(Graph $graph): Graph
     {
-        return $nodes->map(static fn($node) => $node->locatedAt(Url::of(
+        return $graph->mapNode(static fn($node) => $node->locatedAt(Url::of(
             'file://'.(new \ReflectionClass($node->class()->toString()))->getFileName(),
         )));
     }

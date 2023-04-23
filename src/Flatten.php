@@ -22,12 +22,9 @@ final class Flatten
     {
     }
 
-    /**
-     * @return Set<Node>
-     */
-    public function __invoke(object $object): Set
+    public function __invoke(object $object): Graph
     {
-        return self::visit(Map::of(), $object)
+        $nodes = self::visit(Map::of(), $object)
             ->map(static fn($object, $properties) => Node::of(
                 $object,
                 $properties
@@ -40,6 +37,11 @@ final class Flatten
             ))
             ->values()
             ->toSet();
+
+        return $nodes->find(static fn($node) => $node->comesFrom($object))->match(
+            static fn($root) => Graph::of($root, $nodes),
+            static fn() => throw new \LogicException('Root node not found'),
+        );
     }
 
     public static function of(): self

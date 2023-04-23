@@ -19,20 +19,18 @@ final class Render
         $this->rewriteLocation = $rewriteLocation;
     }
 
-    /**
-     * @param Set<Node> $nodes
-     */
-    public function __invoke(Set $nodes): Content
+    public function __invoke(Graph $graph): Content
     {
-        $graph = Graphviz\Graph::directed('G', Graphviz\Graph\Rankdir::leftToRight);
-        $graph = $nodes
+        $graphviz = Graphviz\Graph::directed('G', Graphviz\Graph\Rankdir::leftToRight);
+        $graphviz = $graph
+            ->nodes()
             ->map($this->render(...))
             ->reduce(
-                $graph,
+                $graphviz,
                 static fn(Graphviz\Graph $graph, $node) => $graph->add($node),
             );
 
-        return Graphviz\Layout\Dot::of()($graph);
+        return Graphviz\Layout\Dot::of()($graphviz);
     }
 
     public static function of(LocationRewriter $rewriteLocation = null): self

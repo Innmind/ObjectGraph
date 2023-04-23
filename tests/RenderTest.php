@@ -25,9 +25,9 @@ class RenderTest extends TestCase
         $b = new Foo($leaf);
         $root = new Foo($a, $b);
 
-        $nodes = Flatten::of()($root);
-        $nodes = Locate::of()($nodes);
-        $dot = Render::of()($nodes);
+        $graph = Flatten::of()($root);
+        $graph = Locate::of()($graph);
+        $dot = Render::of()($graph);
 
         $this->assertInstanceOf(Content::class, $dot);
         $this->assertNotEmpty($dot->toString());
@@ -41,11 +41,11 @@ class RenderTest extends TestCase
         $this->assertStringStartsWith('object_', $lines[2]);
         $this->assertStringEndsWith('[label="a"];', $lines[2]);
         $this->assertStringStartsWith('object_', $lines[3]);
-        $this->assertStringEndsWith('[label="b"];', $lines[3]);
+        $this->assertStringEndsWith('[label="a"];', $lines[3]);
         $this->assertStringStartsWith('object_', $lines[4]);
         $this->assertStringEndsWith('[label="a"];', $lines[4]);
         $this->assertStringStartsWith('object_', $lines[5]);
-        $this->assertStringEndsWith('[label="a"];', $lines[5]);
+        $this->assertStringEndsWith('[label="b"];', $lines[5]);
         $this->assertStringStartsWith('object_', $lines[6]);
         $this->assertStringContainsString('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo", URL="file://', $lines[6]);
         $this->assertStringEndsWith('fixtures/Foo.php"];', $lines[6]);

@@ -20,7 +20,7 @@ class FlattenTest extends TestCase
         $b = new Foo($leaf);
         $root = new Foo($a, $b);
 
-        $nodes = Flatten::of()($root);
+        $nodes = Flatten::of()($root)->nodes();
 
         $this->assertCount(4, $nodes);
         $fromLeaf = $nodes
@@ -106,7 +106,7 @@ class FlattenTest extends TestCase
         $a->foo = $b;
         $b->bar = $a;
 
-        $nodes = Flatten::of()($a);
+        $nodes = Flatten::of()($a)->nodes();
 
         $this->assertCount(2, $nodes);
         $fromA = $nodes
