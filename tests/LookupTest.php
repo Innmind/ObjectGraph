@@ -144,4 +144,24 @@ class LookupTest extends TestCase
                 ),
         );
     }
+
+    public function testTraverseLists()
+    {
+        $root = new class {
+            private array $list;
+
+            public function __construct()
+            {
+                $this->list = [
+                    'foo' => new \stdClass,
+                    'bar' => new \stdClass,
+                ];
+            }
+        };
+
+        $graph = Lookup::of()($root);
+
+        // root + list prop as an ArrayObject + the 2 stdClass
+        $this->assertCount(4, $graph->nodes());
+    }
 }

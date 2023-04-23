@@ -14,6 +14,7 @@ use Innmind\Reflection\{
 use Innmind\Immutable\{
     Map,
     Set,
+    Sequence,
 };
 
 final class Lookup
@@ -69,6 +70,10 @@ final class Lookup
      */
     private static function lookup(Map $found, object $object): Map
     {
+        if ($object instanceof \ArrayObject) {
+            return self::lookupArray($found, $object);
+        }
+
         $properties = ReflectionClass::of($object::class)
             ->properties()
             ->map(static fn($property) => $property->name());
@@ -92,6 +97,29 @@ final class Lookup
             ->match(
                 static fn($found) => $found,
                 static fn() => $found,
+            );
+    }
+
+    /**
+     * @param Map<object, Map<non-empty-string, object>> $found
+     *
+     * @return Map<object, Map<non-empty-string, object>>
+     */
+    private static function lookupArray(Map $found, \ArrayObject $object): Map
+    {
+        $values = Sequence::of(...\array_values($object->getArrayCopy()));
+        $indices = $values
+            ->indices()
+            ->map(static fn($index) => (string) $index);
+        $properties = self::keepObjects(Map::of(
+            ...$indices->zip($values)->toList(),
+        ));
+
+        return $properties
+            ->values()
+            ->reduce(
+                ($found)($object, $properties),
+                self::visit(...),
             );
     }
 
