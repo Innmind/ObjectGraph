@@ -41,13 +41,13 @@ class RenderTest extends TestCase
         $this->assertStringStartsWith('object_', $lines[2]);
         $this->assertStringEndsWith('[label="a"];', $lines[2]);
         $this->assertStringStartsWith('object_', $lines[3]);
-        $this->assertStringEndsWith('[label="a"];', $lines[3]);
+        $this->assertStringEndsWith('[label="b"];', $lines[3]);
         $this->assertStringStartsWith('object_', $lines[4]);
         $this->assertStringEndsWith('[label="a"];', $lines[4]);
         $this->assertStringStartsWith('object_', $lines[5]);
-        $this->assertStringEndsWith('[label="b"];', $lines[5]);
+        $this->assertStringEndsWith('[label="a"];', $lines[5]);
         $this->assertStringStartsWith('object_', $lines[6]);
-        $this->assertStringContainsString('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo", URL="file://', $lines[6]);
+        $this->assertStringContainsString('[shape="hexagon", style="filled", fillcolor="#00ff00", label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo", URL="file://', $lines[6]);
         $this->assertStringEndsWith('fixtures/Foo.php"];', $lines[6]);
         $this->assertStringStartsWith('object_', $lines[7]);
         $this->assertStringContainsString('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo", URL="file://', $lines[7]);

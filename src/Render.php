@@ -5,6 +5,7 @@ namespace Innmind\ObjectGraph;
 
 use Innmind\Filesystem\File\Content;
 use Innmind\Graphviz;
+use Innmind\Colour\RGBA;
 use Innmind\Immutable\{
     Set,
     Str,
@@ -21,9 +22,16 @@ final class Render
 
     public function __invoke(Graph $graph): Content
     {
-        $graphviz = Graphviz\Graph::directed('G', Graphviz\Graph\Rankdir::leftToRight);
+        $graphviz = Graphviz\Graph::directed('G', Graphviz\Graph\Rankdir::leftToRight)->add(
+            $this
+                ->render($graph->root())
+                ->shaped(
+                    Graphviz\Node\Shape::hexagon()->fillWithColor(RGBA::of('#0f0')),
+                ),
+        );
         $graphviz = $graph
             ->nodes()
+            ->remove($graph->root())
             ->map($this->render(...))
             ->reduce(
                 $graphviz,

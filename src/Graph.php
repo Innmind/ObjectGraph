@@ -45,6 +45,11 @@ final class Graph
         );
     }
 
+    public function root(): Node
+    {
+        return $this->root;
+    }
+
     /**
      * @return Set<Node>
      */
