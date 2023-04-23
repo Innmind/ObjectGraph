@@ -164,4 +164,16 @@ class LookupTest extends TestCase
         // root + list prop as an ArrayObject + the 2 stdClass
         $this->assertCount(4, $graph->nodes());
     }
+
+    public function testTraverseSplObjectStorage()
+    {
+        $spl = new \SplObjectStorage;
+        $spl[new \stdClass] = 42;
+        $spl[new \stdClass] = new \stdClass;
+
+        $graph = Lookup::of()($spl);
+
+        // SplObjectStorage + 2 keys + 1 value
+        $this->assertCount(4, $graph->nodes());
+    }
 }
