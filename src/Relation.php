@@ -30,4 +30,9 @@ final class Relation
     {
         return $this->node;
     }
+
+    public function refersTo(object $object): bool
+    {
+        return $this->node->comesFrom($object);
+    }
 }

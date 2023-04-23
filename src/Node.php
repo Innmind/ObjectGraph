@@ -64,7 +64,7 @@ final class Node
 
     public function dependsOn(object $dependency): bool
     {
-        return $this->relations->any(static fn($relation) => $relation->node()->comesFrom($dependency));
+        return $this->relations->any(static fn($relation) => $relation->refersTo($dependency));
     }
 
     public function comesFrom(object $object): bool

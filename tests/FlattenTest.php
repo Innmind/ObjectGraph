@@ -44,7 +44,7 @@ class FlattenTest extends TestCase
                 ->relations()
                 ->find(static fn($relation) => $relation->property()->toString() === 'a')
                 ->match(
-                    static fn($relation) => $relation->node()->comesFrom($leaf),
+                    static fn($relation) => $relation->refersTo($leaf),
                     static fn() => null,
                 ),
         );
@@ -61,7 +61,7 @@ class FlattenTest extends TestCase
                 ->relations()
                 ->find(static fn($relation) => $relation->property()->toString() === 'a')
                 ->match(
-                    static fn($relation) => $relation->node()->comesFrom($leaf),
+                    static fn($relation) => $relation->refersTo($leaf),
                     static fn() => null,
                 ),
         );
@@ -78,7 +78,7 @@ class FlattenTest extends TestCase
                 ->relations()
                 ->find(static fn($relation) => $relation->property()->toString() === 'a')
                 ->match(
-                    static fn($relation) => $relation->node()->comesFrom($a),
+                    static fn($relation) => $relation->refersTo($a),
                     static fn() => null,
                 ),
         );
@@ -87,7 +87,7 @@ class FlattenTest extends TestCase
                 ->relations()
                 ->find(static fn($relation) => $relation->property()->toString() === 'b')
                 ->match(
-                    static fn($relation) => $relation->node()->comesFrom($b),
+                    static fn($relation) => $relation->refersTo($b),
                     static fn() => null,
                 ),
         );
@@ -122,7 +122,7 @@ class FlattenTest extends TestCase
                 ->relations()
                 ->find(static fn($relation) => $relation->property()->toString() === 'foo')
                 ->match(
-                    static fn($relation) => $relation->node()->comesFrom($b),
+                    static fn($relation) => $relation->refersTo($b),
                     static fn() => null,
                 ),
         );
@@ -139,7 +139,7 @@ class FlattenTest extends TestCase
                 ->relations()
                 ->find(static fn($relation) => $relation->property()->toString() === 'bar')
                 ->match(
-                    static fn($relation) => $relation->node()->comesFrom($a),
+                    static fn($relation) => $relation->refersTo($a),
                     static fn() => null,
                 ),
         );
