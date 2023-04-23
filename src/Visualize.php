@@ -18,11 +18,9 @@ final class Visualize
     /** @var Map<Node, Graphviz\Node> */
     private Map $nodes;
     private LocationRewriter $rewriteLocation;
-    private Clusterize $clusterize;
 
     public function __construct(
         LocationRewriter $rewriteLocation = null,
-        Clusterize $clusterize = null,
     ) {
         /** @var Map<Node, Graphviz\Node> */
         $this->nodes = Map::of();
@@ -30,13 +28,6 @@ final class Visualize
             public function __invoke(Url $location): Url
             {
                 return $location;
-            }
-        };
-        $this->clusterize = $clusterize ?? new class implements Clusterize {
-            public function __invoke(Map $nodes): Set
-            {
-                /** @var Set<Graphviz\Graph> */
-                return Set::of();
             }
         };
     }
@@ -62,10 +53,6 @@ final class Visualize
                     $graph,
                     static fn(Graphviz\Graph $graph, $node) => $graph->add($node),
                 );
-            $graph = ($this->clusterize)($this->nodes)->reduce(
-                $graph,
-                static fn(Graphviz\Graph $graph, Graphviz\Graph $cluster) => $graph->cluster($cluster),
-            );
 
             return Graphviz\Layout\Dot::of()($graph);
         } finally {

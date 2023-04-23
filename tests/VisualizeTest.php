@@ -9,15 +9,10 @@ use Innmind\ObjectGraph\{
     Node,
     NamespacePattern,
     Visitor\FlagDependencies,
-    Clusterize\ByNamespace,
     LocationRewriter\SublimeHandler,
 };
 use Innmind\Filesystem\File\Content;
-use Innmind\Immutable\Map;
-use Fixtures\Innmind\ObjectGraph\{
-    Foo,
-    Bar,
-};
+use Fixtures\Innmind\ObjectGraph\Foo;
 use PHPUnit\Framework\TestCase;
 
 class VisualizeTest extends TestCase
@@ -80,33 +75,6 @@ class VisualizeTest extends TestCase
         $node = $graph($root);
 
         $dot = (new Visualize(new SublimeHandler))($node);
-
-        $this->assertInstanceOf(Content::class, $dot);
-        $this->assertNotEmpty($dot->toString());
-    }
-
-    public function testClusterize()
-    {
-        $clusterize = new ByNamespace(
-            Map::of(
-                [NamespacePattern::of(Foo::class), 'foo'],
-                [NamespacePattern::of(Bar::class), 'bar'],
-            ),
-        );
-
-        // root
-        //  |-> a
-        //  |    |-> leaf <-|
-        //  |-> b ----------|
-        $graph = new Graph;
-        $leaf = new Foo;
-        $a = new Foo($leaf);
-        $b = new Foo($leaf);
-        $root = new Foo($a, $b);
-
-        $node = $graph(new Bar($root));
-
-        $dot = (new Visualize(null, $clusterize))($node);
 
         $this->assertInstanceOf(Content::class, $dot);
         $this->assertNotEmpty($dot->toString());
