@@ -100,6 +100,31 @@ final class Node
         return $this->relations;
     }
 
+    public function removeRelations(): self
+    {
+        return new self(
+            $this->class,
+            $this->reference,
+            $this->location,
+            $this->relations->clear(),
+            $this->dependency,
+        );
+    }
+
+    /**
+     * @param callable(Relation): bool $filter
+     */
+    public function filterRelation(callable $filter): self
+    {
+        return new self(
+            $this->class,
+            $this->reference,
+            $this->location,
+            $this->relations->filter($filter),
+            $this->dependency,
+        );
+    }
+
     public function dependsOn(object $dependency): bool
     {
         return $this->relations->any(static fn($relation) => $relation->refersTo($dependency));

@@ -57,4 +57,43 @@ final class Graph
     {
         return ($this->nodes)($this->root);
     }
+
+    public function removeDependenciesSubGraph(): self
+    {
+        if ($this->root->dependency()) {
+            return new self(
+                $this->root->removeRelations(),
+                $this->nodes->clear(),
+            );
+        }
+
+        $toRemove = $this
+            ->nodes
+            ->filter(static fn($node) => $node->dependency())
+            ->flatMap(static fn($node) => $node->relations())
+            ->map(static fn($relation) => $relation->reference())
+            ->flatMap(
+                fn($reference) => $this
+                    ->nodes
+                    ->find(static fn($node) => $reference->equals($node->reference()))
+                    ->map(static fn($node) => $node->relations()->map(
+                        static fn($relation) => $relation->reference(),
+                    ))
+                    ->match(
+                        static fn($references) => ($references)($reference),
+                        static fn() => Set::of($reference),
+                    ),
+            );
+        $nodes = $this
+            ->nodes
+            ->filter(static fn($node) => !$toRemove->any(
+                static fn($reference) => $reference->equals($node->reference()),
+            ))
+            ->map(static fn($node) => match ($node->dependency()) {
+                true => $node->removeRelations(),
+                false => $node,
+            });
+
+        return new self($this->root, $nodes);
+    }
 }
