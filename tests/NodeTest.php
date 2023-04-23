@@ -9,7 +9,6 @@ use Innmind\ObjectGraph\{
     Relation,
     Relation\Property,
 };
-use Innmind\Url\Url;
 use Innmind\Immutable\Set;
 use PHPUnit\Framework\TestCase;
 
@@ -27,8 +26,6 @@ class NodeTest extends TestCase
         );
 
         $this->assertInstanceOf(Set::class, $node->relations());
-        $this->assertInstanceOf(Url::class, $node->location());
-        $this->assertSame('file://'.__FILE__, $node->location()->toString());
         $this->assertCount(1, $node->relations());
         $this->assertSame([$relation], $node->relations()->toList());
         $this->assertTrue($node->comesFrom($object));

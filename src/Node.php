@@ -8,7 +8,10 @@ use Innmind\ObjectGraph\{
     Node\Reference,
 };
 use Innmind\Url\Url;
-use Innmind\Immutable\Set;
+use Innmind\Immutable\{
+    Set,
+    Maybe,
+};
 
 /**
  * @psalm-immutable
@@ -17,21 +20,24 @@ final class Node
 {
     private ClassName $class;
     private Reference $reference;
-    private Url $location;
+    /** @var Maybe<Url> */
+    private Maybe $location;
     /** @var Set<Relation> */
     private Set $relations;
 
     /**
+     * @param Maybe<Url> $location
      * @param Set<Relation> $relations
      */
-    private function __construct(object $object, Set $relations)
-    {
-        /** @psalm-suppress ImpureMethodCall */
-        $file = (new \ReflectionObject($object))->getFileName();
-
-        $this->class = ClassName::of($object);
-        $this->reference = Reference::of($object);
-        $this->location = Url::of('file://'.$file);
+    private function __construct(
+        ClassName $class,
+        Reference $reference,
+        Maybe $location,
+        Set $relations,
+    ) {
+        $this->class = $class;
+        $this->reference = $reference;
+        $this->location = $location;
         $this->relations = $relations;
     }
 
@@ -42,7 +48,15 @@ final class Node
      */
     public static function of(object $object, Set $relations = null): self
     {
-        return new self($object, $relations ?? Set::of());
+        /** @var Maybe<Url> */
+        $location = Maybe::nothing();
+
+        return new self(
+            ClassName::of($object),
+            Reference::of($object),
+            $location,
+            $relations ?? Set::of(),
+        );
     }
 
     public function class(): ClassName
@@ -55,7 +69,20 @@ final class Node
         return $this->reference;
     }
 
-    public function location(): Url
+    public function locatedAt(Url $location): self
+    {
+        return new self(
+            $this->class,
+            $this->reference,
+            Maybe::just($location),
+            $this->relations,
+        );
+    }
+
+    /**
+     * @return Maybe<Url>
+     */
+    public function location(): Maybe
     {
         return $this->location;
     }

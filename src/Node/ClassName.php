@@ -8,6 +8,7 @@ namespace Innmind\ObjectGraph\Node;
  */
 final class ClassName
 {
+    /** @var class-string */
     private string $value;
 
     private function __construct(object $object)
@@ -23,6 +24,9 @@ final class ClassName
         return new self($object);
     }
 
+    /**
+     * @return class-string
+     */
     public function toString(): string
     {
         return $this->value;

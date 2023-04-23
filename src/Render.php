@@ -48,8 +48,14 @@ final class Render
                     ->replace("\x00", '') // remove the invisible character used in the name of anonymous classes
                     ->replace('\\', '\\\\')
                     ->toString(),
-            )
-            ->target(($this->rewriteLocation)($node->location()));
+            );
+        $render = $node
+            ->location()
+            ->map(fn($node) => ($this->rewriteLocation)($node))
+            ->match(
+                static fn($location) => $render->target($location),
+                static fn() => $render,
+            );
 
         return $node
             ->relations()

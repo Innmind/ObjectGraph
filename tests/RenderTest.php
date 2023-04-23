@@ -6,6 +6,7 @@ namespace Tests\Innmind\ObjectGraph;
 use Innmind\ObjectGraph\{
     Render,
     Flatten,
+    Locate,
 };
 use Innmind\Filesystem\File\Content;
 use Fixtures\Innmind\ObjectGraph\Foo;
@@ -24,7 +25,9 @@ class RenderTest extends TestCase
         $b = new Foo($leaf);
         $root = new Foo($a, $b);
 
-        $dot = Render::of()(Flatten::of()($root));
+        $nodes = Flatten::of()($root);
+        $nodes = Locate::of()($nodes);
+        $dot = Render::of()($nodes);
 
         $this->assertInstanceOf(Content::class, $dot);
         $this->assertNotEmpty($dot->toString());
