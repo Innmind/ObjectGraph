@@ -24,6 +24,7 @@ final class Node
     private Maybe $location;
     /** @var Set<Relation> */
     private Set $relations;
+    private bool $dependency;
 
     /**
      * @param Maybe<Url> $location
@@ -34,11 +35,13 @@ final class Node
         Reference $reference,
         Maybe $location,
         Set $relations,
+        bool $dependency,
     ) {
         $this->class = $class;
         $this->reference = $reference;
         $this->location = $location;
         $this->relations = $relations;
+        $this->dependency = $dependency;
     }
 
     /**
@@ -56,6 +59,7 @@ final class Node
             Reference::of($object),
             $location,
             $relations ?? Set::of(),
+            false,
         );
     }
 
@@ -76,6 +80,7 @@ final class Node
             $this->reference,
             Maybe::just($location),
             $this->relations,
+            $this->dependency,
         );
     }
 
@@ -103,5 +108,21 @@ final class Node
     public function comesFrom(object $object): bool
     {
         return $this->reference->equals(Reference::of($object));
+    }
+
+    public function flagAsDependency(): self
+    {
+        return new self(
+            $this->class,
+            $this->reference,
+            $this->location,
+            $this->relations,
+            true,
+        );
+    }
+
+    public function dependency(): bool
+    {
+        return $this->dependency;
     }
 }

@@ -27,6 +27,10 @@ class RenderTest extends TestCase
 
         $graph = Flatten::of()($root);
         $graph = Locate::of()($graph);
+        $graph = $graph->mapNode(static fn($node) => match ($node->comesFrom($leaf)) {
+            true => $node->flagAsDependency(),
+            false => $node,
+        });
         $dot = Render::of()($graph);
 
         $this->assertInstanceOf(Content::class, $dot);
@@ -53,7 +57,7 @@ class RenderTest extends TestCase
         $this->assertStringContainsString('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo", URL="file://', $lines[7]);
         $this->assertStringEndsWith('fixtures/Foo.php"];', $lines[7]);
         $this->assertStringStartsWith('object_', $lines[8]);
-        $this->assertStringContainsString('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo", URL="file://', $lines[8]);
+        $this->assertStringContainsString('[shape="box", style="filled", fillcolor="#ffb600", label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo", URL="file://', $lines[8]);
         $this->assertStringEndsWith('fixtures/Foo.php"];', $lines[8]);
         $this->assertStringStartsWith('object_', $lines[9]);
         $this->assertStringContainsString('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo", URL="file://', $lines[9]);

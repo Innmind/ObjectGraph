@@ -63,6 +63,12 @@ final class Render
                 static fn() => $render,
             );
 
+        if ($node->dependency()) {
+            $render = $render->shaped(
+                Graphviz\Node\Shape::box()->fillWithColor(RGBA::of('#ffb600')),
+            );
+        }
+
         return $node
             ->relations()
             ->reduce(
