@@ -8,18 +8,18 @@
     "authors": [
         {
             "name": "Baptiste Langlade",
-            "email": "langlade.baptiste@gmail.com"
+            "email": "baptiste.langlade@hey.com"
         }
     ],
     "support": {
         "issues": "http://github.com/Innmind/ObjectGraph/issues"
     },
     "require": {
-        "php": "~7.4|~8.0",
-        "innmind/immutable": "~3.0",
-        "innmind/reflection": "~4.0",
-        "innmind/graphviz": "~2.0",
-        "innmind/url": "~3.0"
+        "php": "~8.1",
+        "innmind/immutable": "~4.13",
+        "innmind/reflection": "~5.0",
+        "innmind/graphviz": "~3.2",
+        "innmind/url": "~4.1"
     },
     "autoload": {
         "psr-4": {
@@ -34,7 +34,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~9.0",
-        "vimeo/psalm": "~4.4",
-        "innmind/coding-standard": "^1.1"
+        "vimeo/psalm": "~5.6",
+        "innmind/coding-standard": "~2.0",
+        "symfony/var-dumper": "^6.2"
     }
 }

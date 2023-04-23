@@ -3,18 +3,31 @@ declare(strict_types = 1);
 
 namespace Innmind\ObjectGraph;
 
-use Innmind\ObjectGraph\Relation\Property;
+use Innmind\ObjectGraph\{
+    Relation\Property,
+    Node\Reference,
+};
 
+/**
+ * @psalm-immutable
+ */
 final class Relation
 {
     private Property $property;
-    private Node $node;
-    private bool $highlighted = false;
+    private Reference $reference;
 
-    public function __construct(Property $property, Node $node)
+    private function __construct(Property $property, Reference $reference)
     {
         $this->property = $property;
-        $this->node = $node;
+        $this->reference = $reference;
+    }
+
+    /**
+     * @psalm-pure
+     */
+    public static function of(Property $property, Reference $reference): self
+    {
+        return new self($property, $reference);
     }
 
     public function property(): Property
@@ -22,27 +35,13 @@ final class Relation
         return $this->property;
     }
 
-    public function node(): Node
+    public function reference(): Reference
     {
-        return $this->node;
+        return $this->reference;
     }
 
-    public function highlight(): void
+    public function refersTo(object $object): bool
     {
-        $this->highlighted = true;
-    }
-
-    public function highlighted(): bool
-    {
-        return $this->highlighted;
-    }
-
-    public function highlightPathTo(object $object): void
-    {
-        $this->node->highlightPathTo($object);
-
-        if ($this->node->highlighted()) {
-            $this->highlight();
-        }
+        return $this->reference->equals(Reference::of($object));
     }
 }

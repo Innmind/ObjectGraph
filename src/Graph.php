@@ -3,31 +3,97 @@ declare(strict_types = 1);
 
 namespace Innmind\ObjectGraph;
 
-use Innmind\Immutable\Map;
+use Innmind\Immutable\Set;
 
+/**
+ * @psalm-immutable
+ */
 final class Graph
 {
-    private Graph\Visit $visit;
+    private Node $root;
+    /** @var Set<Node> */
+    private Set $nodes;
 
-    public function __construct()
+    /**
+     * @param Set<Node> $nodes
+     */
+    private function __construct(Node $root, Set $nodes)
     {
-        $this->visit = new Graph\Delegate(
-            new Graph\ParseSplObjectStorage,
-            new Graph\ParseIterable,
-            new Graph\ParseSetAndSequence,
-            new Graph\ParseMap,
-            new Graph\ExtractProperties,
+        $this->root = $root;
+        $this->nodes = $nodes;
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @param Set<Node> $nodes
+     */
+    public static function of(Node $root, Set $nodes): self
+    {
+        return new self($root, $nodes->remove($root));
+    }
+
+    /**
+     * @param callable(Node): Node $map
+     */
+    public function mapNode(callable $map): self
+    {
+        /** @psalm-suppress ImpureFunctionCall */
+        return new self(
+            $map($this->root),
+            $this->nodes->map($map),
         );
     }
 
-    public function __invoke(object $root): Node
+    public function root(): Node
     {
-        $nodes = ($this->visit)(
-            Map::of('object', Node::class),
-            $root,
-            $this->visit,
-        );
+        return $this->root;
+    }
 
-        return $nodes->get($root);
+    /**
+     * @return Set<Node>
+     */
+    public function nodes(): Set
+    {
+        return ($this->nodes)($this->root);
+    }
+
+    public function removeDependenciesSubGraph(): self
+    {
+        if ($this->root->dependency()) {
+            return new self(
+                $this->root->removeRelations(),
+                $this->nodes->clear(),
+            );
+        }
+
+        $toRemove = $this
+            ->nodes
+            ->filter(static fn($node) => $node->dependency())
+            ->flatMap(static fn($node) => $node->relations())
+            ->map(static fn($relation) => $relation->reference())
+            ->flatMap(
+                fn($reference) => $this
+                    ->nodes
+                    ->find(static fn($node) => $reference->equals($node->reference()))
+                    ->map(static fn($node) => $node->relations()->map(
+                        static fn($relation) => $relation->reference(),
+                    ))
+                    ->match(
+                        static fn($references) => ($references)($reference),
+                        static fn() => Set::of($reference),
+                    ),
+            );
+        $nodes = $this
+            ->nodes
+            ->filter(static fn($node) => !$toRemove->any(
+                static fn($reference) => $reference->equals($node->reference()),
+            ))
+            ->map(static fn($node) => match ($node->dependency()) {
+                true => $node->removeRelations(),
+                false => $node,
+            });
+
+        return new self($this->root, $nodes);
     }
 }
