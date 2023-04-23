@@ -6,132 +6,248 @@ namespace Tests\Innmind\ObjectGraph;
 use Innmind\ObjectGraph\{
     Graph,
     Node,
-    Visitor\AccessObjectNode,
+    Node\Reference,
+    Relation,
+    Relation\Property,
 };
-use Fixtures\Innmind\ObjectGraph\Foo;
-use Innmind\Immutable\{
-    Map,
-    Set,
-};
-use function Innmind\Immutable\{
-    unwrap,
-    first,
-};
+use Innmind\Immutable\Set;
 use PHPUnit\Framework\TestCase;
 
 class GraphTest extends TestCase
 {
-    public function testInvokation()
+    public function testRemoveDependenciesSubGraph()
     {
         // root
-        //  |-> a
-        //  |    |-> leaf <-|
-        //  |-> b ----------|
-        $graph = new Graph;
-        $leaf = new Foo;
-        $a = new Foo($leaf);
-        $b = new Foo($leaf);
-        $root = new Foo($a, $b);
+        //  |-> level10 <---------|
+        //  |    |-> level2       |
+        //  |         |-> level3  |
+        //  |              |------|
+        //  |-> level11
+        //       |-> level4
+        $root = new \stdClass;
+        $level10 = new \stdClass;
+        $level11 = new \stdClass;
+        $level2 = new \stdClass;
+        $level3 = new \stdClass;
+        $level4 = new \stdClass;
+        $graph = Graph::of(
+            Node::of(
+                $root,
+                Set::of(
+                    Relation::of(
+                        Property::of('level10'),
+                        Reference::of($level10),
+                    ),
+                    Relation::of(
+                        Property::of('level11'),
+                        Reference::of($level11),
+                    ),
+                ),
+            ),
+            Set::of(
+                Node::of(
+                    $level10,
+                    Set::of(Relation::of(
+                        Property::of('level2'),
+                        Reference::of($level2),
+                    )),
+                ),
+                Node::of(
+                    $level11,
+                    Set::of(Relation::of(
+                        Property::of('level4'),
+                        Reference::of($level4),
+                    )),
+                )->flagAsDependency(),
+                Node::of(
+                    $level2,
+                    Set::of(Relation::of(
+                        Property::of('level3'),
+                        Reference::of($level3),
+                    )),
+                ),
+                Node::of(
+                    $level3,
+                    Set::of(Relation::of(
+                        Property::of('level10'),
+                        Reference::of($level10),
+                    )),
+                ),
+                Node::of($level4),
+            ),
+        );
 
-        $node = $graph($root);
+        $graph = $graph->removeDependenciesSubGraph();
 
-        $this->assertInstanceOf(Node::class, $node);
-        $this->assertCount(2, $node->relations());
-        [$a, $b] = unwrap($node->relations());
-        $this->assertSame('a', $a->property()->toString());
-        $this->assertSame(Foo::class, $a->node()->class()->toString());
-        $this->assertSame('b', $b->property()->toString());
-        $this->assertSame(Foo::class, $b->node()->class()->toString());
-        $this->assertCount(1, $a->node()->relations());
-        $this->assertCount(1, $b->node()->relations());
-        $this->assertSame(
-            first($a->node()->relations())->node(),
-            first($b->node()->relations())->node(),
+        $this->assertCount(5, $graph->nodes());
+        $this->assertNull(
+            $graph
+                ->nodes()
+                ->find(static fn($node) => $node->comesFrom($level4))
+                ->match(
+                    static fn($node) => $node,
+                    static fn() => null,
+                ),
+        );
+
+        // root
+        //  |-> level10 <---------|
+        //  |    |-> level2       |
+        //  |         |-> level3  |
+        //  |              |------|
+        //  |-> level11
+        //       |-> level4
+        $root = new \stdClass;
+        $level10 = new \stdClass;
+        $level11 = new \stdClass;
+        $level2 = new \stdClass;
+        $level3 = new \stdClass;
+        $level4 = new \stdClass;
+        $graph = Graph::of(
+            Node::of(
+                $root,
+                Set::of(
+                    Relation::of(
+                        Property::of('level10'),
+                        Reference::of($level10),
+                    ),
+                    Relation::of(
+                        Property::of('level11'),
+                        Reference::of($level11),
+                    ),
+                ),
+            ),
+            Set::of(
+                Node::of(
+                    $level10,
+                    Set::of(Relation::of(
+                        Property::of('level2'),
+                        Reference::of($level2),
+                    )),
+                )->flagAsDependency(),
+                Node::of(
+                    $level11,
+                    Set::of(Relation::of(
+                        Property::of('level4'),
+                        Reference::of($level4),
+                    )),
+                ),
+                Node::of(
+                    $level2,
+                    Set::of(Relation::of(
+                        Property::of('level3'),
+                        Reference::of($level3),
+                    )),
+                ),
+                Node::of(
+                    $level3,
+                    Set::of(Relation::of(
+                        Property::of('level10'),
+                        Reference::of($level10),
+                    )),
+                ),
+                Node::of($level4),
+            ),
+        );
+
+        $graph = $graph->removeDependenciesSubGraph();
+
+        $this->assertCount(4, $graph->nodes());
+        $this->assertNull(
+            $graph
+                ->nodes()
+                ->find(static fn($node) => $node->comesFrom($level2))
+                ->match(
+                    static fn($node) => $node,
+                    static fn() => null,
+                ),
+        );
+        $this->assertNull(
+            $graph
+                ->nodes()
+                ->find(static fn($node) => $node->comesFrom($level3))
+                ->match(
+                    static fn($node) => $node,
+                    static fn() => null,
+                ),
+        );
+        $this->assertNotNull(
+            $graph
+                ->nodes()
+                ->find(static fn($node) => $node->comesFrom($level10))
+                ->match(
+                    static fn($node) => $node,
+                    static fn() => null,
+                ),
         );
     }
 
-    public function testCyclicGraph()
-    {
-        $graph = new Graph;
-
-        // a <-----|
-        //  |-> b -|
-        $a = new class {
-            public $foo;
-        };
-        $b = new class {
-            public $bar;
-        };
-        $a->foo = $b;
-        $b->bar = $a;
-
-        $node = $graph($a);
-
-        $this->assertCount(1, $node->relations());
-        $this->assertSame('foo', first($node->relations())->property()->toString());
-        $this->assertSame(
-            $node,
-            first(first($node->relations())->node()->relations())->node(),
-        );
-    }
-
-    public function testDiscoverObjectsInIterables()
-    {
-        $graph = new Graph;
-
-        $innerA = new \stdClass;
-        $innerB = new \stdClass;
-        $a = new class($innerA, $innerB) {
-            public $map;
-            public $set;
-            public $ints = [42];
-
-            public function __construct($a, $b)
-            {
-                $this->map = Map::of('object', 'mixed')
-                    ($a, $b)
-                    ($b, 'foo');
-                $this->set = Set::objects($b);
-            }
-        };
-
-        $node = $graph($a);
-
-        $this->assertInstanceOf(Node::class, (new AccessObjectNode($innerA))($node));
-        $this->assertInstanceOf(Node::class, (new AccessObjectNode($innerB))($node));
-
-        $nodeRelations = $node->relations();
-        $this->assertCount(2, $nodeRelations);
-    }
-
-    public function testHighlightPathToLeaf()
+    public function testRemoveRootSubGraph()
     {
         // root
-        //  |-> a
-        //  |    |-> leaf <-|
-        //  |-> b ----------|
-        //       |-> new Foo
-        $graph = new Graph;
-        $leaf = new Foo;
-        $a = new Foo($leaf);
-        $b = new Foo($leaf, new Foo);
-        $root = new Foo($a, $b);
+        //  |-> level10 <---------|
+        //  |    |-> level2       |
+        //  |         |-> level3  |
+        //  |              |------|
+        //  |-> level11
+        //       |-> level4
+        $root = new \stdClass;
+        $level10 = new \stdClass;
+        $level11 = new \stdClass;
+        $level2 = new \stdClass;
+        $level3 = new \stdClass;
+        $level4 = new \stdClass;
+        $graph = Graph::of(
+            Node::of(
+                $root,
+                Set::of(
+                    Relation::of(
+                        Property::of('level10'),
+                        Reference::of($level10),
+                    ),
+                    Relation::of(
+                        Property::of('level11'),
+                        Reference::of($level11),
+                    ),
+                ),
+            )->flagAsDependency(),
+            Set::of(
+                Node::of(
+                    $level10,
+                    Set::of(Relation::of(
+                        Property::of('level2'),
+                        Reference::of($level2),
+                    )),
+                ),
+                Node::of(
+                    $level11,
+                    Set::of(Relation::of(
+                        Property::of('level4'),
+                        Reference::of($level4),
+                    )),
+                ),
+                Node::of(
+                    $level2,
+                    Set::of(Relation::of(
+                        Property::of('level3'),
+                        Reference::of($level3),
+                    )),
+                ),
+                Node::of(
+                    $level3,
+                    Set::of(Relation::of(
+                        Property::of('level10'),
+                        Reference::of($level10),
+                    )),
+                ),
+                Node::of($level4),
+            ),
+        );
 
-        $node = $graph($root);
-        $node->highlightPathTo($leaf);
+        $graph = $graph->removeDependenciesSubGraph();
 
-        $this->assertInstanceOf(Node::class, $node);
-        [$a, $b] = unwrap($node->relations());
-        $this->assertTrue($a->highlighted());
-        $this->assertTrue($b->highlighted());
-        $this->assertTrue($a->node()->highlighted());
-        $this->assertTrue($b->node()->highlighted());
-        $this->assertTrue(first($a->node()->relations())->highlighted());
-        $this->assertTrue(first($b->node()->relations())->highlighted());
-        $this->assertTrue(first($a->node()->relations())->node()->highlighted());
-        $this->assertTrue(first($b->node()->relations())->node()->highlighted());
-        [$a, $b] = unwrap($b->node()->relations());
-        $this->assertFalse($b->highlighted());
-        $this->assertFalse($b->node()->highlighted());
+        $this->assertCount(1, $graph->nodes());
+        $this->assertTrue($graph->nodes()->contains($graph->root()));
+        $this->assertCount(0, $graph->root()->relations());
     }
 }

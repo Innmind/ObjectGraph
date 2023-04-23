@@ -5,7 +5,10 @@ namespace Innmind\ObjectGraph;
 
 use Innmind\Url\Url;
 
-interface LocationRewriter
+/**
+ * @psalm-immutable
+ */
+interface RewriteLocation
 {
     public function __invoke(Url $location): Url;
 }

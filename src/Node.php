@@ -9,38 +9,57 @@ use Innmind\ObjectGraph\{
 };
 use Innmind\Url\Url;
 use Innmind\Immutable\{
-    Map,
     Set,
+    Maybe,
 };
 
+/**
+ * @psalm-immutable
+ */
 final class Node
 {
     private ClassName $class;
     private Reference $reference;
-    private Url $location;
-    /** @var Map<string, Relation> */
-    private Map $relations;
-    private bool $dependency = false;
-    private bool $dependent = false;
-    private bool $highlighted = false;
-    private bool $highlightingPath = false;
+    /** @var Maybe<Url> */
+    private Maybe $location;
+    /** @var Set<Relation> */
+    private Set $relations;
+    private bool $dependency;
 
-    public function __construct(object $object)
-    {
-        $file = (new \ReflectionObject($object))->getFileName();
-
-        $this->class = new ClassName($object);
-        $this->reference = new Reference($object);
-        $this->location = Url::of('file://'.$file);
-        /** @var Map<string, Relation> */
-        $this->relations = Map::of('string', Relation::class);
+    /**
+     * @param Maybe<Url> $location
+     * @param Set<Relation> $relations
+     */
+    private function __construct(
+        ClassName $class,
+        Reference $reference,
+        Maybe $location,
+        Set $relations,
+        bool $dependency,
+    ) {
+        $this->class = $class;
+        $this->reference = $reference;
+        $this->location = $location;
+        $this->relations = $relations;
+        $this->dependency = $dependency;
     }
 
-    public function relate(Relation $relation): void
+    /**
+     * @psalm-pure
+     *
+     * @param Set<Relation>|null $relations
+     */
+    public static function of(object $object, Set $relations = null): self
     {
-        $this->relations = ($this->relations)(
-            $relation->property()->toString(),
-            $relation,
+        /** @var Maybe<Url> */
+        $location = Maybe::nothing();
+
+        return new self(
+            ClassName::of($object),
+            Reference::of($object),
+            $location,
+            $relations ?? Set::of(),
+            false,
         );
     }
 
@@ -54,7 +73,21 @@ final class Node
         return $this->reference;
     }
 
-    public function location(): Url
+    public function locatedAt(Url $location): self
+    {
+        return new self(
+            $this->class,
+            $this->reference,
+            Maybe::just($location),
+            $this->relations,
+            $this->dependency,
+        );
+    }
+
+    /**
+     * @return Maybe<Url>
+     */
+    public function location(): Maybe
     {
         return $this->location;
     }
@@ -64,88 +97,57 @@ final class Node
      */
     public function relations(): Set
     {
-        return $this->relations->values()->toSetOf(Relation::class);
+        return $this->relations;
     }
 
-    public function removeRelations(): void
+    public function removeRelations(): self
     {
-        $this->relations = $this->relations->clear();
+        return new self(
+            $this->class,
+            $this->reference,
+            $this->location,
+            $this->relations->clear(),
+            $this->dependency,
+        );
+    }
+
+    /**
+     * @param callable(Relation): bool $filter
+     */
+    public function filterRelation(callable $filter): self
+    {
+        return new self(
+            $this->class,
+            $this->reference,
+            $this->location,
+            $this->relations->filter($filter),
+            $this->dependency,
+        );
     }
 
     public function dependsOn(object $dependency): bool
     {
-        return $this->relations->values()->reduce(
-            false,
-            static function(bool $isDependent, Relation $relation) use ($dependency): bool {
-                return $isDependent || $relation->node()->comesFrom($dependency);
-            },
-        );
-    }
-
-    public function flagAsDependent(): void
-    {
-        $this->dependent = true;
-    }
-
-    public function isDependent(): bool
-    {
-        return $this->dependent;
+        return $this->relations->any(static fn($relation) => $relation->refersTo($dependency));
     }
 
     public function comesFrom(object $object): bool
     {
-        return $this->reference->equals(new Reference($object));
+        return $this->reference->equals(Reference::of($object));
     }
 
-    public function flagAsDependency(): void
+    public function flagAsDependency(): self
     {
-        $this->dependency = true;
+        return new self(
+            $this->class,
+            $this->reference,
+            $this->location,
+            $this->relations,
+            true,
+        );
     }
 
-    public function isDependency(): bool
+    public function dependency(): bool
     {
         return $this->dependency;
-    }
-
-    public function highlight(): void
-    {
-        $this->highlighted = true;
-    }
-
-    public function highlighted(): bool
-    {
-        return $this->highlighted;
-    }
-
-    public function highlightPathTo(object $object): void
-    {
-        if ($this->highlightingPath) {
-            return;
-        }
-
-        if ($this->comesFrom($object)) {
-            $this->highlight();
-
-            return;
-        }
-
-        $this->highlightingPath = true;
-
-        $this
-            ->relations
-            ->values()
-            ->foreach(static function(Relation $relation) use ($object): void {
-                $relation->highlightPathTo($object);
-            });
-        $highlighted = $this->relations->values()
-            ->filter(static function(Relation $relation): bool {
-                return $relation->highlighted();
-            });
-
-        if (!$highlighted->empty()) {
-            $this->highlight();
-        }
-
-        $this->highlightingPath = false;
     }
 }

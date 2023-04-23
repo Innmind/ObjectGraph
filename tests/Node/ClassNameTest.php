@@ -3,26 +3,15 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\ObjectGraph\Node;
 
-use Innmind\ObjectGraph\{
-    Node\ClassName,
-    NamespacePattern,
-};
+use Innmind\ObjectGraph\Node\ClassName;
 use PHPUnit\Framework\TestCase;
 
 class ClassNameTest extends TestCase
 {
     public function testInterface()
     {
-        $class = new ClassName(new \stdClass);
+        $class = ClassName::of(new \stdClass);
 
         $this->assertSame('stdClass', $class->toString());
-    }
-
-    public function testIn()
-    {
-        $class = new ClassName($this);
-
-        $this->assertTrue($class->in(new NamespacePattern('Tests\\Innmind\ObjectGraph')));
-        $this->assertFalse($class->in(new NamespacePattern('Innmind\ObjectGraph')));
     }
 }

@@ -3,25 +3,15 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\ObjectGraph\Relation;
 
-use Innmind\ObjectGraph\{
-    Relation\Property,
-    Exception\DomainException,
-};
+use Innmind\ObjectGraph\Relation\Property;
 use PHPUnit\Framework\TestCase;
 
 class PropertyTest extends TestCase
 {
     public function testInterface()
     {
-        $class = new Property('foo');
+        $class = Property::of('foo');
 
         $this->assertSame('foo', $class->toString());
-    }
-
-    public function testThrowWhenEmptyClass()
-    {
-        $this->expectException(DomainException::class);
-
-        new Property('');
     }
 }
