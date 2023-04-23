@@ -13,9 +13,9 @@ use Innmind\Immutable\{
 
 final class Render
 {
-    private LocationRewriter $rewriteLocation;
+    private RewriteLocation $rewriteLocation;
 
-    private function __construct(LocationRewriter $rewriteLocation)
+    private function __construct(RewriteLocation $rewriteLocation)
     {
         $this->rewriteLocation = $rewriteLocation;
     }
@@ -41,9 +41,9 @@ final class Render
         return Graphviz\Layout\Dot::of()($graphviz);
     }
 
-    public static function of(LocationRewriter $rewriteLocation = null): self
+    public static function of(RewriteLocation $rewriteLocation = null): self
     {
-        return new self($rewriteLocation ?? new LocationRewriter\NoOp);
+        return new self($rewriteLocation ?? new RewriteLocation\NoOp);
     }
 
     private function render(Node $node): Graphviz\Node

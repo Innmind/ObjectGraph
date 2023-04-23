@@ -1,11 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-namespace Tests\Innmind\ObjectGraph\LocationRewriter;
+namespace Tests\Innmind\ObjectGraph\RewriteLocation;
 
 use Innmind\ObjectGraph\{
-    LocationRewriter\SublimeHandler,
-    LocationRewriter,
+    RewriteLocation\SublimeHandler,
+    RewriteLocation,
 };
 use Innmind\Url\Url;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +14,7 @@ class SublimeHandlerTest extends TestCase
 {
     public function testInterface()
     {
-        $this->assertInstanceOf(LocationRewriter::class, new SublimeHandler);
+        $this->assertInstanceOf(RewriteLocation::class, new SublimeHandler);
     }
 
     public function testInvokation()

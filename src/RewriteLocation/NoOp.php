@@ -1,12 +1,12 @@
 <?php
 declare(strict_types = 1);
 
-namespace Innmind\ObjectGraph\LocationRewriter;
+namespace Innmind\ObjectGraph\RewriteLocation;
 
-use Innmind\ObjectGraph\LocationRewriter;
+use Innmind\ObjectGraph\RewriteLocation;
 use Innmind\Url\Url;
 
-final class NoOp implements LocationRewriter
+final class NoOp implements RewriteLocation
 {
     public function __invoke(Url $location): Url
     {

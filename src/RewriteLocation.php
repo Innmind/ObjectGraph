@@ -5,7 +5,7 @@ namespace Innmind\ObjectGraph;
 
 use Innmind\Url\Url;
 
-interface LocationRewriter
+interface RewriteLocation
 {
     public function __invoke(Url $location): Url;
 }
