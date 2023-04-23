@@ -10,6 +10,9 @@ use Innmind\ObjectGraph\{
 use Innmind\Url\Url;
 use Innmind\Immutable\Set;
 
+/**
+ * @psalm-immutable
+ */
 final class Node
 {
     private ClassName $class;
@@ -23,6 +26,7 @@ final class Node
      */
     private function __construct(object $object, Set $relations)
     {
+        /** @psalm-suppress ImpureMethodCall */
         $file = (new \ReflectionObject($object))->getFileName();
 
         $this->class = ClassName::of($object);
@@ -32,6 +36,8 @@ final class Node
     }
 
     /**
+     * @psalm-pure
+     *
      * @param Set<Relation>|null $relations
      */
     public static function of(object $object, Set $relations = null): self

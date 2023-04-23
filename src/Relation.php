@@ -8,6 +8,9 @@ use Innmind\ObjectGraph\{
     Node\Reference,
 };
 
+/**
+ * @psalm-immutable
+ */
 final class Relation
 {
     private Property $property;
@@ -19,6 +22,9 @@ final class Relation
         $this->reference = $reference;
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function of(Property $property, Reference $reference): self
     {
         return new self($property, $reference);
