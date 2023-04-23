@@ -44,13 +44,17 @@ class RenderTest extends TestCase
         $this->assertStringStartsWith('object_', $lines[5]);
         $this->assertStringEndsWith('[label="a"];', $lines[5]);
         $this->assertStringStartsWith('object_', $lines[6]);
-        $this->assertStringEndsWith('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo"];', $lines[6]);
+        $this->assertStringContainsString('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo", URL="file://', $lines[6]);
+        $this->assertStringEndsWith('fixtures/Foo.php"];', $lines[6]);
         $this->assertStringStartsWith('object_', $lines[7]);
-        $this->assertStringEndsWith('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo"];', $lines[7]);
+        $this->assertStringContainsString('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo", URL="file://', $lines[7]);
+        $this->assertStringEndsWith('fixtures/Foo.php"];', $lines[7]);
         $this->assertStringStartsWith('object_', $lines[8]);
-        $this->assertStringEndsWith('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo"];', $lines[8]);
+        $this->assertStringContainsString('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo", URL="file://', $lines[8]);
+        $this->assertStringEndsWith('fixtures/Foo.php"];', $lines[8]);
         $this->assertStringStartsWith('object_', $lines[9]);
-        $this->assertStringEndsWith('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo"];', $lines[9]);
+        $this->assertStringContainsString('[label="Fixtures\\\\Innmind\\\\ObjectGraph\\\\Foo", URL="file://', $lines[9]);
+        $this->assertStringEndsWith('fixtures/Foo.php"];', $lines[9]);
         $this->assertSame('}', $lines[10]);
     }
 

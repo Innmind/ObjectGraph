@@ -12,8 +12,11 @@ use Innmind\Immutable\{
 
 final class Render
 {
-    private function __construct()
+    private LocationRewriter $rewriteLocation;
+
+    private function __construct(LocationRewriter $rewriteLocation)
     {
+        $this->rewriteLocation = $rewriteLocation;
     }
 
     /**
@@ -23,7 +26,7 @@ final class Render
     {
         $graph = Graphviz\Graph::directed('G', Graphviz\Graph\Rankdir::leftToRight);
         $graph = $nodes
-            ->map(self::render(...))
+            ->map($this->render(...))
             ->reduce(
                 $graph,
                 static fn(Graphviz\Graph $graph, $node) => $graph->add($node),
@@ -32,12 +35,12 @@ final class Render
         return Graphviz\Layout\Dot::of()($graph);
     }
 
-    public static function of(): self
+    public static function of(LocationRewriter $rewriteLocation = null): self
     {
-        return new self;
+        return new self($rewriteLocation ?? new LocationRewriter\NoOp);
     }
 
-    private static function render(Node $node): Graphviz\Node
+    private function render(Node $node): Graphviz\Node
     {
         $render = Graphviz\Node::of(self::name($node))
             ->displayAs(
@@ -45,7 +48,8 @@ final class Render
                     ->replace("\x00", '') // remove the invisible character used in the name of anonymous classes
                     ->replace('\\', '\\\\')
                     ->toString(),
-            );
+            )
+            ->target(($this->rewriteLocation)($node->location()));
 
         return $node
             ->relations()
