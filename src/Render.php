@@ -17,15 +17,19 @@ use Innmind\Immutable\{
 final class Render
 {
     private RewriteLocation $rewriteLocation;
+    private Graphviz\Graph\Rankdir $direction;
 
-    private function __construct(RewriteLocation $rewriteLocation)
-    {
+    private function __construct(
+        RewriteLocation $rewriteLocation,
+        Graphviz\Graph\Rankdir $direction,
+    ) {
         $this->rewriteLocation = $rewriteLocation;
+        $this->direction = $direction;
     }
 
     public function __invoke(Graph $graph): Content
     {
-        $graphviz = Graphviz\Graph::directed('G', Graphviz\Graph\Rankdir::leftToRight)->add(
+        $graphviz = Graphviz\Graph::directed('G', $this->direction)->add(
             $this
                 ->render($graph->root())
                 ->shaped(
@@ -49,7 +53,15 @@ final class Render
      */
     public static function of(RewriteLocation $rewriteLocation = null): self
     {
-        return new self($rewriteLocation ?? new RewriteLocation\NoOp);
+        return new self(
+            $rewriteLocation ?? new RewriteLocation\NoOp,
+            Graphviz\Graph\Rankdir::leftToRight,
+        );
+    }
+
+    public function fromTopToBottom(): self
+    {
+        return new self($this->rewriteLocation, Graphviz\Graph\Rankdir::topToBottom);
     }
 
     private function render(Node $node): Graphviz\Node

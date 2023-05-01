@@ -88,4 +88,33 @@ class RenderTest extends TestCase
             ->toList();
         $this->assertCount(7, $lines);
     }
+
+    public function testRenderFromTopToBottom()
+    {
+        // root
+        //  |-> a
+        //  |    |-> leaf <-|
+        //  |-> b ----------|
+        $leaf = new Foo;
+        $a = new Foo($leaf);
+        $b = new Foo($leaf);
+        $root = new Foo($a, $b);
+
+        $graph = Lookup::of()($root);
+        $graph = Locate::of()($graph);
+        $graph = $graph->mapNode(static fn($node) => match ($node->comesFrom($leaf)) {
+            true => $node->flagAsDependency(),
+            false => $node,
+        });
+        $dot = Render::of()->fromTopToBottom()($graph);
+
+        $this->assertInstanceOf(Content::class, $dot);
+        $this->assertNotEmpty($dot->toString());
+        $lines = $dot
+            ->lines()
+            ->map(static fn($line) => $line->str()->trim()->toString())
+            ->toList();
+        $this->assertCount(11, $lines);
+        $this->assertSame('rankdir="TB";', $lines[1]);
+    }
 }
