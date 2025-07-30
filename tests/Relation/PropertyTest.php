@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Tests\Innmind\ObjectGraph\Relation;
 
 use Innmind\ObjectGraph\Relation\Property;
-use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class PropertyTest extends TestCase
 {

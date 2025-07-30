@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Tests\Innmind\ObjectGraph\Node;
 
 use Innmind\ObjectGraph\Node\Reference;
-use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class ReferenceTest extends TestCase
 {
