@@ -6,10 +6,7 @@ namespace Innmind\ObjectGraph;
 use Innmind\Filesystem\File\Content;
 use Innmind\Graphviz;
 use Innmind\Colour\RGBA;
-use Innmind\Immutable\{
-    Set,
-    Str,
-};
+use Innmind\Immutable\Str;
 
 /**
  * @psalm-immutable
