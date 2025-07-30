@@ -11,6 +11,7 @@ use Innmind\Url\Url;
  */
 final class NoOp implements RewriteLocation
 {
+    #[\Override]
     public function __invoke(Url $location): Url
     {
         return $location;
