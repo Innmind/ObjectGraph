@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.3.0 - 2025-07-30
+
+### Changed
+
+- Requires PHP `~8.2`
+- Requires `innmind/foundation:~1.3`
+- Requires `innmind/graphviz:~4.0`
+
+### Fixed
+
+- PHP `8.4` deprecations
+
 ## 3.2.0 - 2023-09-17
 
 ### Added

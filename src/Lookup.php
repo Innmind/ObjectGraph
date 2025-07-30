@@ -13,7 +13,6 @@ use Innmind\Reflection\{
 };
 use Innmind\Immutable\{
     Map,
-    Set,
     Sequence,
 };
 

@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Tests\Innmind\ObjectGraph\Node;
 
 use Innmind\ObjectGraph\Node\ClassName;
-use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class ClassNameTest extends TestCase
 {

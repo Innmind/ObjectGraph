@@ -8,7 +8,7 @@ use Innmind\ObjectGraph\{
     RewriteLocation,
 };
 use Innmind\Url\Url;
-use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class SublimeHandlerTest extends TestCase
 {

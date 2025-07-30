@@ -6,10 +6,7 @@ namespace Innmind\ObjectGraph;
 use Innmind\Filesystem\File\Content;
 use Innmind\Graphviz;
 use Innmind\Colour\RGBA;
-use Innmind\Immutable\{
-    Set,
-    Str,
-};
+use Innmind\Immutable\Str;
 
 /**
  * @psalm-immutable
@@ -51,7 +48,7 @@ final class Render
     /**
      * @psalm-pure
      */
-    public static function of(RewriteLocation $rewriteLocation = null): self
+    public static function of(?RewriteLocation $rewriteLocation = null): self
     {
         return new self(
             $rewriteLocation ?? new RewriteLocation\NoOp,
@@ -66,6 +63,7 @@ final class Render
 
     private function render(Node $node): Graphviz\Node
     {
+        /** @psalm-suppress ArgumentTypeCoercion As a class name can't be empty */
         $render = Graphviz\Node::of(self::name($node->reference()))
             ->displayAs(
                 Str::of($node->class()->toString())
