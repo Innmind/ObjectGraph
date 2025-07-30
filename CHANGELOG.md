@@ -5,6 +5,8 @@
 ### Changed
 
 - Requires PHP `~8.2`
+- Requires `innmind/foundation:~1.3`
+- Requires `innmind/graphviz:~4.0`
 
 ### Fixed
 

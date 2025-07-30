@@ -63,6 +63,7 @@ final class Render
 
     private function render(Node $node): Graphviz\Node
     {
+        /** @psalm-suppress ArgumentTypeCoercion As a class name can't be empty */
         $render = Graphviz\Node::of(self::name($node->reference()))
             ->displayAs(
                 Str::of($node->class()->toString())
