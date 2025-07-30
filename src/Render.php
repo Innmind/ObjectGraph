@@ -48,7 +48,7 @@ final class Render
     /**
      * @psalm-pure
      */
-    public static function of(RewriteLocation $rewriteLocation = null): self
+    public static function of(?RewriteLocation $rewriteLocation = null): self
     {
         return new self(
             $rewriteLocation ?? new RewriteLocation\NoOp,
