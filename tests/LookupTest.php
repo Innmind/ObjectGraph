@@ -5,7 +5,7 @@ namespace Tests\Innmind\ObjectGraph;
 
 use Innmind\ObjectGraph\Lookup;
 use Fixtures\Innmind\ObjectGraph\Foo;
-use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class LookupTest extends TestCase
 {

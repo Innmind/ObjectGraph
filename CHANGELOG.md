@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Requires PHP `~8.2`
+
 ### Fixed
 
 - PHP `8.4` deprecations

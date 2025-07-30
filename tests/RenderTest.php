@@ -10,7 +10,7 @@ use Innmind\ObjectGraph\{
 };
 use Innmind\Filesystem\File\Content;
 use Fixtures\Innmind\ObjectGraph\Foo;
-use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class RenderTest extends TestCase
 {
@@ -34,7 +34,7 @@ class RenderTest extends TestCase
         $dot = Render::of()($graph);
 
         $this->assertInstanceOf(Content::class, $dot);
-        $this->assertNotEmpty($dot->toString());
+        $this->assertNotSame('', $dot->toString());
         $lines = $dot
             ->lines()
             ->map(static fn($line) => $line->str()->trim()->toString())
@@ -81,7 +81,7 @@ class RenderTest extends TestCase
         $dot = Render::of()(Lookup::of()($a));
 
         $this->assertInstanceOf(Content::class, $dot);
-        $this->assertNotEmpty($dot->toString());
+        $this->assertNotSame('', $dot->toString());
         $lines = $dot
             ->lines()
             ->map(static fn($line) => $line->str()->trim()->toString())
@@ -109,7 +109,7 @@ class RenderTest extends TestCase
         $dot = Render::of()->fromTopToBottom()($graph);
 
         $this->assertInstanceOf(Content::class, $dot);
-        $this->assertNotEmpty($dot->toString());
+        $this->assertNotSame('', $dot->toString());
         $lines = $dot
             ->lines()
             ->map(static fn($line) => $line->str()->trim()->toString())
