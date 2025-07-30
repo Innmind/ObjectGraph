@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest]
-        php-version: ['8.1', '8.2', '8.3']
+        php-version: ['8.2', '8.3']
     name: 'PHPUnit'
     steps:
       - name: Checkout
@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['8.1', '8.2', '8.3']
+        php-version: ['8.2', '8.3']
     name: 'Psalm'
     steps:
       - name: Checkout
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['8.1']
+        php-version: ['8.2']
     name: 'CS'
     steps:
       - name: Checkout
