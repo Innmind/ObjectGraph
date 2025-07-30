@@ -49,7 +49,7 @@ final class Node
      *
      * @param Set<Relation>|null $relations
      */
-    public static function of(object $object, Set $relations = null): self
+    public static function of(object $object, ?Set $relations = null): self
     {
         /** @var Maybe<Url> */
         $location = Maybe::nothing();

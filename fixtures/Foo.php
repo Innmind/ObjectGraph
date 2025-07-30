@@ -8,7 +8,7 @@ final class Foo
     private $a;
     private $b;
 
-    public function __construct(self $a = null, self $b = null)
+    public function __construct(?self $a = null, ?self $b = null)
     {
         $this->a = $a;
         $this->b = $b;
