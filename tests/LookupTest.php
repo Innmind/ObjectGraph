@@ -22,7 +22,7 @@ class LookupTest extends TestCase
 
         $nodes = Lookup::of()($root)->nodes();
 
-        $this->assertCount(4, $nodes);
+        $this->assertSame(4, $nodes->size());
         $fromLeaf = $nodes
             ->find(static fn($node) => $node->comesFrom($leaf))
             ->match(
@@ -38,7 +38,7 @@ class LookupTest extends TestCase
                 static fn() => null,
             );
         $this->assertNotNull($fromA);
-        $this->assertCount(1, $fromA->relations());
+        $this->assertSame(1, $fromA->relations()->size());
         $this->assertTrue(
             $fromA
                 ->relations()
@@ -55,7 +55,7 @@ class LookupTest extends TestCase
                 static fn() => null,
             );
         $this->assertNotNull($fromB);
-        $this->assertCount(1, $fromB->relations());
+        $this->assertSame(1, $fromB->relations()->size());
         $this->assertTrue(
             $fromB
                 ->relations()
@@ -72,7 +72,7 @@ class LookupTest extends TestCase
                 static fn() => null,
             );
         $this->assertNotNull($fromRoot);
-        $this->assertCount(2, $fromRoot->relations());
+        $this->assertSame(2, $fromRoot->relations()->size());
         $this->assertTrue(
             $fromRoot
                 ->relations()
@@ -108,7 +108,7 @@ class LookupTest extends TestCase
 
         $nodes = Lookup::of()($a)->nodes();
 
-        $this->assertCount(2, $nodes);
+        $this->assertSame(2, $nodes->size());
         $fromA = $nodes
             ->find(static fn($node) => $node->comesFrom($a))
             ->match(
@@ -116,7 +116,7 @@ class LookupTest extends TestCase
                 static fn() => null,
             );
         $this->assertNotNull($fromA);
-        $this->assertCount(1, $fromA->relations());
+        $this->assertSame(1, $fromA->relations()->size());
         $this->assertTrue(
             $fromA
                 ->relations()
@@ -133,7 +133,7 @@ class LookupTest extends TestCase
                 static fn() => null,
             );
         $this->assertNotNull($fromB);
-        $this->assertCount(1, $fromB->relations());
+        $this->assertSame(1, $fromB->relations()->size());
         $this->assertTrue(
             $fromB
                 ->relations()
@@ -162,7 +162,7 @@ class LookupTest extends TestCase
         $graph = Lookup::of()($root);
 
         // root + list prop as an ArrayObject + the 2 stdClass
-        $this->assertCount(4, $graph->nodes());
+        $this->assertSame(4, $graph->nodes()->size());
     }
 
     public function testTraverseSplObjectStorage()
@@ -174,6 +174,6 @@ class LookupTest extends TestCase
         $graph = Lookup::of()($spl);
 
         // SplObjectStorage + 2 keys + 1 value
-        $this->assertCount(4, $graph->nodes());
+        $this->assertSame(4, $graph->nodes()->size());
     }
 }

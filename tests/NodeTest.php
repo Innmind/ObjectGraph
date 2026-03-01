@@ -26,7 +26,7 @@ class NodeTest extends TestCase
         );
 
         $this->assertInstanceOf(Set::class, $node->relations());
-        $this->assertCount(1, $node->relations());
+        $this->assertSame(1, $node->relations()->size());
         $this->assertSame([$relation], $node->relations()->toList());
         $this->assertTrue($node->comesFrom($object));
         $this->assertFalse($node->comesFrom(new class {
