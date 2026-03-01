@@ -79,7 +79,7 @@ class GraphTest extends TestCase
 
         $graph = $graph->removeDependenciesSubGraph();
 
-        $this->assertCount(5, $graph->nodes());
+        $this->assertSame(5, $graph->nodes()->size());
         $this->assertNull(
             $graph
                 ->nodes()
@@ -152,7 +152,7 @@ class GraphTest extends TestCase
 
         $graph = $graph->removeDependenciesSubGraph();
 
-        $this->assertCount(4, $graph->nodes());
+        $this->assertSame(4, $graph->nodes()->size());
         $this->assertNull(
             $graph
                 ->nodes()
@@ -246,8 +246,8 @@ class GraphTest extends TestCase
 
         $graph = $graph->removeDependenciesSubGraph();
 
-        $this->assertCount(1, $graph->nodes());
+        $this->assertSame(1, $graph->nodes()->size());
         $this->assertTrue($graph->nodes()->contains($graph->root()));
-        $this->assertCount(0, $graph->root()->relations());
+        $this->assertSame(0, $graph->root()->relations()->size());
     }
 }
